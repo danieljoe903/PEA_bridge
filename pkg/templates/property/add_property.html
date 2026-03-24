@@ -1,0 +1,51 @@
+{% extends "app_base.html" %}
+
+{% block title %}Add Property | PEA-bridge{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h3 class="text-white mb-4">Add Property</h3>
+
+    <form method="POST" enctype="multipart/form-data" accept="image/*">
+
+            {{ form.csrf_token }}
+
+                    <div class="mb-3">
+                    {{ form.title.label(class="form-label text-info") }}
+                    {{ form.title(class="form-control") }}
+                    </div>
+
+                    <div class="mb-3">
+                    {{ form.type.label(class="form-label text-info") }}
+                    {{ form.type(class="form-control") }}
+                    </div>
+
+                    <div class="mb-3">
+                    {{ form.address.label(class="form-label text-info") }}
+                    {{ form.address(class="form-control") }}
+                    </div>
+
+                    <div class="mb-3">
+                    {{ form.state.label(class="form-label text-info") }}
+                    {{ form.state(class="form-control") }}
+                    </div>
+
+                    <div class="mb-3">
+                    {{ form.price.label(class="form-label text-info") }}
+                    {{ form.price(class="form-control") }}
+                    </div>
+
+                    <div class="mb-3">
+                    {{ form.images.label(class="form-label text-info") }}
+                    {{ form.images(class="form-control") }}
+                    </div>
+                    
+                    {{ form.submit(class="btn btn-outline-success") }}
+
+    </form>
+
+</div>
+
+{% endblock %}

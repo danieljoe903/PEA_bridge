@@ -1,0 +1,108 @@
+{% extends "app_base.html" %}
+{% block title %}Explore Properties | PEA-bridge{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row mb-5 justify-content-center">
+    <div class="col-12 col-md-6 ">
+        <form class=" w-100 bg-light p-2 rounded-2 ">
+            <input type="search" class="form-control" id="search" placeholder="search for more properties">
+        </form>
+        <div id="search_result" class="mt-2"></div>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+    <h3 class="text-white mb-0">Explore Properties</h3>
+  </div>
+
+  <div class="row g-3">
+    {% if properties and properties|length > 0 %}
+      {% for p in properties %}
+        <div class="col-12 col-md-6 col-xl-4">
+          <div class="card h-100 shadow" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+            <img
+              src="{{ url_for('static', filename=covers[p.property_id]) }}"
+              alt="property"
+              style="height:220px;object-fit:cover;border-top-left-radius:14px;border-top-right-radius:14px;"
+            >
+
+            <div class="card-body">
+              <h5 class="mb-1">{{ p.property_title or "Untitled Property" }}</h5>
+
+              <div class="text-white-50 small mb-2">
+                Type: {{ p.property_type|title }} •
+                Status: {{ p.property_status|replace("_"," ")|title }}
+              </div>
+
+              <div class="fw-bold mb-3">
+                ₦ {{ "{:,.0f}".format(p.price or 0) }}
+              </div>
+                  <div class="fw-bold mb-3">
+                      {{ p.states.state_name if p.states else "No State" }}
+                    </div>
+              <div class="d-flex gap-2 flex-wrap">
+                <a href="{{ url_for('property.public_property_detail', property_id=p.property_id) }}"
+                   class="btn btn-outline-light btn-sm">
+                  View
+                </a>
+
+                <form action="{{ url_for('interest.request_interest', property_id=p.property_id) }}"
+                      method="post">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button class="btn btn-success btn-sm fw-bold">
+                    Request
+                  </button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="col-12">
+        <div class="card shadow p-4 text-center" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+          <h5 class="mb-2">No available properties yet</h5>
+          <p class="text-white-50 mb-0">Check back later for verified property listings.</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+  $(document).ready(function(){
+
+$('#search_result').hide()
+$('#search').keyup(function(){
+  var searchData= $(this).val()
+  if(searchData < 2){
+    $("#search_result").hide();
+    return;
+  }
+
+  $.ajax({
+
+    url:'{{ url_for("property.search_view") }}',
+    type:'GET',
+    dataType:'text',
+    data:'search='+searchData,
+    success:function(resp){
+      $('#search_result').show().html(resp)
+
+    }
+  });
+})
+
+
+  })
+</script>
+
+
+
+{% endblock %}

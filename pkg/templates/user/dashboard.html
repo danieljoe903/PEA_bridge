@@ -1,0 +1,245 @@
+{% extends "app_base.html" %}
+{% block title %}Dashboard | PEA-bridge{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <!-- PROFILE -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm p-3 text-white" style="background:#0f172a;border:none;border-radius:14px;">
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+
+          <img src="{{ url_for('static', filename=user.image_url or 'uploads/default.png') }}"
+               class="rounded-circle"
+               alt="user"
+               width="90"
+               height="90"
+               style="object-fit:cover;">
+
+          <div class="flex-grow-1">
+            <h4 class="mb-1">{{ user.user_fname }} {{ user.users_lname }}</h4>
+
+            <div class="text-white-50 small">
+              <span>Email: {{ user.email }}</span>
+              <span class="mx-2">|</span>
+              <span>Phone: {{ user.phone }}</span>
+            </div>
+
+            <div class="mt-2 d-flex gap-2 flex-wrap">
+              {% if user.is_verified %}
+                <span class="badge bg-success">Verified User</span>
+              {% else %}
+                <span class="badge bg-warning text-dark">Not Verified</span>
+              {% endif %}
+
+              {% if agent_profile %}
+                {% if agent_profile.agency_status == "active" %}
+                  <span class="badge bg-info text-dark">Verified Agent</span>
+                {% elif agent_profile.agency_status == "pending" %}
+                  <span class="badge bg-warning text-dark">Agent Pending</span>
+                {% elif agent_profile.agency_status == "suspended" %}
+                  <span class="badge bg-danger">Agent Suspended</span>
+                {% else %}
+                  <span class="badge bg-secondary">Not an Agent</span>
+                {% endif %}
+              {% else %}
+                <span class="badge bg-secondary">Not an Agent</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="ms-auto d-flex gap-2">
+            <a href="{{ url_for('property.add_property') }}" class="btn btn-sm btn-success fw-bold">
+              + Add Property
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="row mb-4">
+    <div class="col-12 col-md-3 mb-3">
+      <div class="card shadow text-center p-3" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+        <h6 class="mb-1">Total Properties</h6>
+        <p class="fs-3 mb-0">{{ total_properties or 0 }}</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-3 mb-3">
+      <div class="card shadow text-center p-3" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+        <h6 class="mb-1">Transactions</h6>
+        <p class="fs-3 mb-0">{{ total_transactions or 0 }}</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-3 mb-3">
+      <div class="card shadow text-center p-3" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+        <h6 class="mb-1">Pending Verifications</h6>
+        <p class="fs-3 mb-0">{{ pending_verification or 0 }}</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-3 mb-3">
+      <div class="card shadow text-center p-3" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+        <h6 class="mb-1">Approved Properties</h6>
+        <p class="fs-3 mb-0">{{ approved_property or 0 }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY PROPERTIES -->
+  <div class="card shadow-lg mb-4" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+    <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h4 class="mb-0">My Properties</h4>
+        <a href="{{ url_for('property.list_properties') }}" class="btn btn-sm btn-outline-light">View all</a>
+      </div>
+
+      <div class="table-responsive mt-3">
+        <table class="table table-dark table-striped align-middle text-break mb-0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if my_properties and my_properties|length > 0 %}
+              {% for p in my_properties %}
+                <tr>
+                  <td>{{ p.property_id }}</td>
+                  <td>{{ p.property_title or "Untitled" }}</td>
+                  <td>{{ p.property_type }}</td>
+                  <td>
+                    {% if p.property_status == "available" %}
+                      <span class="badge bg-success">Available</span>
+                    {% elif p.property_status == "under_verification" %}
+                      <span class="badge bg-warning text-dark">Pending</span>
+                    {% elif p.property_status == "rejected" %}
+                      <span class="badge bg-secondary">Rejected</span>
+                    {% else %}
+                      <span class="badge bg-info text-dark">{{ p.property_status|title }}</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-end">
+                    <a class="btn btn-sm btn-outline-light"
+                       href="{{ url_for('property.view_property', property_id=p.property_id) }}">
+                      View
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="5" class="text-center text-white-50 py-4">
+                  No properties yet. Click “Add Property” to create your first listing.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY INTEREST -->
+  <div class="card shadow-lg mb-4" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+    <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h4 class="mb-0">My Interest</h4>
+        <a href="{{ url_for('interest.my_interest') }}" class="btn btn-sm btn-outline-light">View all</a>
+      </div>
+
+      <div class="table-responsive mt-3">
+        <table class="table table-dark table-striped align-middle text-break mb-0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Property</th>
+              <th>Owner</th>
+              <th>Agent</th>
+              <th>Date Requested</th>
+              <th>Status</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if my_interest and my_interest|length > 0 %}
+              {% for it in my_interest %}
+                <tr>
+                  <td>{{ it.interest_id }}</td>
+
+                  <td>
+                    {{ it.property.property_title if it.property else "Property" }}
+                  </td>
+
+                  <td>
+                    {% if it.property and it.property.owner %}
+                      {{ it.property.owner.user_fname }} {{ it.property.owner.users_lname }}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
+
+                  <td>
+                    {% if it.property and it.property.agent and it.property.agent.user %}
+                      {% if it.property.agent.agency_status == "active" %}
+                        {{ it.property.agent.user.user_fname }} {{ it.property.agent.user.users_lname }}
+                      {% elif it.property.agent.agency_status == "pending" %}
+                        Pending Agent
+                      {% elif it.property.agent.agency_status == "suspended" %}
+                        Suspended Agent
+                      {% else %}
+                        No Agent
+                      {% endif %}
+                    {% else %}
+                      No Agent
+                    {% endif %}
+                  </td>
+
+                  <td>
+                    {{ it.created_at.strftime('%d %b %Y') if it.created_at else "-" }}
+                  </td>
+
+                  <td>
+                    {% if it.interest_status == "requested" %}
+                      <span class="badge bg-warning text-dark">Requested</span>
+                    {% elif it.interest_status == "approved" %}
+                      <span class="badge bg-success">Approved</span>
+                    {% else %}
+                      <span class="badge bg-danger">Declined</span>
+                    {% endif %}
+                  </td>
+
+                  <td class="text-end">
+                    {% if it.property %}
+                      <a class="btn btn-sm btn-outline-light"
+                         href="{{ url_for('property.public_property_detail', property_id=it.property.property_id) }}">
+                        View
+                      </a>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="7" class="text-center text-white-50 py-4">
+                  You have no interest requests yet.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

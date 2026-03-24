@@ -1,0 +1,89 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}Agents | PEA-bridge{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <h3 class="text-white mb-3">Agent Verification</h3>
+
+  <div class="card shadow-lg" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-dark table-striped align-middle">
+          <thead>
+            <tr>
+              <th>Agent ID</th>
+              <th>User ID</th>
+              <th>License Number</th>
+              <th>Agency Name</th>
+              <th>Status</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% if agents and agents|length > 0 %}
+              {% for a in agents %}
+                <tr>
+                  <td>{{ a.agent_id }}</td>
+                  <td>{{ a.user_id }}</td>
+                  <td>{{ a.license_number }}</td>
+                  <td>{{ a.agency_name or "Independent" }}</td>
+
+                  <td>
+                    {% if a.agency_status == "active" %}
+                      <span class="badge bg-success">Active</span>
+                    {% elif a.agency_status == "pending" %}
+                      <span class="badge bg-warning text-dark">Pending</span>
+                    {% elif a.agency_status == "suspended" %}
+                      <span class="badge bg-danger">Suspended</span>
+                    {% else %}
+                      <span class="badge bg-secondary">{{ a.agency_status }}</span>
+                    {% endif %}
+                  </td>
+
+                  <td class="text-end">
+                    <div class="d-flex justify-content-end gap-2 flex-wrap">
+
+                      {% if a.agency_status == "pending" %}
+                        <form action="{{ url_for('admin.activate_agent', agent_id=a.agent_id) }}" method="post">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <button class="btn btn-success btn-sm fw-bold">Verify</button>
+                        </form>
+
+                        <form action="{{ url_for('admin.suspend_agent', agent_id=a.agent_id) }}" method="post">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <button class="btn btn-danger btn-sm fw-bold">Reject</button>
+                        </form>
+
+                      {% elif a.agency_status == "active" %}
+                        <form action="{{ url_for('admin.suspend_agent', agent_id=a.agent_id) }}" method="post">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <button class="btn btn-danger btn-sm fw-bold">Suspend</button>
+                        </form>
+
+                      {% elif a.agency_status == "suspended" %}
+                        <form action="{{ url_for('admin.activate_agent', agent_id=a.agent_id) }}" method="post">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <button class="btn btn-success btn-sm fw-bold">Activate</button>
+                        </form>
+                      {% endif %}
+
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="6" class="text-center text-white-50 py-4">
+                  No agent applications found.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

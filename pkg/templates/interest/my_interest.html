@@ -1,0 +1,95 @@
+{% extends "app_base.html" %}
+{% block title %}My Interest | PEA-bridge{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <h3 class="text-white mb-3">My Interest</h3>
+
+         <div class="card shadow-lg mb-4" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+        <div class="card-body">
+          <h4>My Interest</h4>
+          <div class="table-responsive">
+               <table class="table table-dark table-striped text-break">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Property</th>
+                    <th>Owner</th>
+                    <th>Agent</th>
+                    <th>Date Requested</th>
+                    <th>Status</th>
+                    <th class="text-end">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                    {% if my_interest and my_interest|length > 0 %}
+                      {% for it in my_interest %}
+                        <tr>
+
+                          <td>{{ it.interest_id }}</td>
+
+                          <td>
+                            {{ it.property.property_title if it.property else "Property" }}
+                          </td>
+
+                          <td>
+                            {% if it.property and it.property.owner %}
+                              {{ it.property.owner.user_fname }} {{ it.property.owner.users_lname }}
+                            {% else %}
+                              -
+                            {% endif %}
+                          </td>
+
+                          <td>
+                            {% if it.property and it.property.agent and it.property.agent.user %}
+                              {{ it.property.agent.user.user_fname }} {{ it.property.agent.user.users_lname }}
+                            {% else %}
+                              No Agent
+                            {% endif %}
+                          </td>
+
+                          <td>
+                            {{ it.created_at.strftime('%d %b %Y') if it.created_at else "-" }}
+                          </td>
+
+                          <td>
+                            {% if it.interest_status == "requested" %}
+                              <span class="badge bg-warning text-dark">Requested</span>
+
+                            {% elif it.interest_status == "approved" %}
+                              <span class="badge bg-success">Approved</span>
+
+                            {% else %}
+                              <span class="badge bg-danger">Declined</span>
+                            {% endif %}
+                          </td>
+
+                          <td class="text-end">
+                            {% if it.property %}
+                            <a class="btn btn-sm btn-outline-light"
+                              href="{{ url_for('property.public_property_detail', property_id=it.property.property_id) }}">
+                              View
+                            </a>
+                            {% endif %}
+                          </td>
+
+                        </tr>
+                      {% endfor %}
+
+                    {% else %}
+
+                    <tr>
+                      <td colspan="7" class="text-center text-white-50 py-4">
+                        You have no interest requests yet.
+                      </td>
+                    </tr>
+
+                    {% endif %}
+                  </tbody>
+          </table>
+          </div>
+        </div>
+</div>
+</div>
+{% endblock %}

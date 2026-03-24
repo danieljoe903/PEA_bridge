@@ -1,0 +1,45 @@
+
+<ul class="nav flex-column pt-3">
+  <li class="nav-item">
+    <a class="nav-link text-white {% if active=='dashboard' %}active{% endif %}"
+       href="{{ url_for('user.dashboard') }}">
+      Dashboard
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link text-white {% if active=='properties' %}active{% endif %}"
+       href="{{ url_for('property.list_properties') }}">
+      Properties
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link text-white {% if active=='add_property' %}active{% endif %}"
+       href="{{ url_for('property.add_property') }}">
+      Add Property
+    </a>
+  </li>
+
+  <li class="nav-item">
+  <a class="nav-link text-white {% if active=='explore' %}active{% endif %}"
+     href="{{ url_for('property.explore_properties') }}">
+    Explore Properties
+  </a>
+</li>
+
+
+  <li class="nav-item">
+    <a class="nav-link text-white {% if active=='interest' %}active{% endif %}"
+       href="{{ url_for('interest.my_interest') }}">
+      My Interest
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link text-white {% if active=='agent' %}active{% endif %}"
+       href="{{ url_for('agent.apply') }}">
+      Become an Agent
+    </a>
+  </li>
+</ul>

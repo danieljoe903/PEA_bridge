@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PEA-bridge | Secure Property Exchange</title>
+  <link href="/static/https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  <link rel="stylesheet" href="/static/animate.min.css">
+  <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+  <link href="/static/https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+   
+  </style>
+</head>
+<body>
+  
+        <!-- section1 -->
+    <section class="container-fluid">
+    <div class="row mara justify-content-center">
+        <div class="col-md-5 cara">
+            <h4 class="text-bold pea ps-3 pt-5 animate__animated animate__fadeInLeft">PEA-bridge</h4>
+            <h2 class="fw-bolder text-white ps-3 pt-4 animate__animated animate__fadeInLeft ">Secured Property<br>Transaction Made Easy</h2>
+            <p class="ps-3 text-secondary animate__animated animate__fadeInLeft">A trusted and bridge between property owners,buyers,and verified agents. 
+                Transparency.verification and security first
+            </p>
+            <div class="features animate__animated animate__fadeInLeft">
+                <span>✓</span><div>Verified Property Listing</div>
+            </div>
+            <div class="features animate__animated animate__fadeInLeft">
+                <span>✓</span><div>Trusted Estate Agents</div>
+            </div>
+            <div class="features animate__animated animate__fadeInLeft">
+                <span>✓</span><div>Secured Transaction</div>
+            </div>
+        </div>
+        <div class="col-md-5 cara">
+            <h3 class="text-white para mt-5 ps-4 animate__animated animate__fadeInDown ">Sign in</h3>
+            <p class="text-secondary ps-4 s animate__animated animate__fadeInDown">Access your PEA-bridge account</p>
+            
+            <form action="{{ url_for('auth.login') }}" method="post" class="email ps-4 animate__animated animate__fadeInUpBig">
+                {{form.csrf_token}}
+
+                {% with message=get_flashed_messages(with_categories=True) %}
+                {% for cat,msg in message %}
+                    <p class="alert alert-{{cat}}">{{msg}}</p>
+                 {% endfor %}
+                {% endwith %}
+                     <div>
+                        {{ form.username(class_="form-control", placeholder="Enter your username") }}
+                        {% if form.username.errors %}
+                        {% for error in form.username.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="my-3">
+                        {{ form.password(class_="form-control", placeholder="Enter Your Password") }}
+                        {% if form.password.errors %}
+                        {% for error in form.password.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class=" col-12 mt-3 ">
+                        {{ form.login(class_="login main w-100") }}
+                    </div>
+            </form>
+                
+                <div class="mt-4 animate__animated animate__fadeInUpBig">
+                    <span class="text-white mum">Dont have an account <a href="{{url_for('auth.register')}}" class="create">Create one</a></span>
+                </div>
+        </div>
+    </div>
+</section>
+
+   
+ <script src="/static/jquery-4.0.0.min.js"></script>
+ <script>
+           $(function(){
+       
+        
+          
+      })
+ </script>
+</body>
+</html>

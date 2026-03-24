@@ -1,0 +1,99 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}Property Details{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+  <h3 class="text-white mb-3">Property Details</h3>
+
+  <div class="card shadow-lg p-4"
+       style="background:#0f172a;border:none;border-radius:14px;color:white;">
+
+    <!-- PROPERTY INFO -->
+    <h4 class="mb-2">{{ prop.property_title or "Untitled Property" }}</h4>
+
+    <p class="mb-1 text-white-50">
+      {{ prop.adress }}
+    </p>
+
+    <p class="mb-2">
+      State:
+      {{ prop.state.state_name if prop.state else "No State" }}
+    </p>
+
+    <p class="mb-2">
+      Type: {{ prop.property_type|title }}
+    </p>
+
+    <p class="mb-2">
+      Price: ₦ {{ "{:,.0f}".format(prop.price or 0) }}
+    </p>
+
+    <p class="mb-3">
+      Status:
+      <span class="badge bg-success text-light">
+        {{ prop.property_status|replace("_"," ")|title }}
+      </span>
+    </p>
+
+    <hr>
+
+    <!-- IMAGES -->
+    <h5 class="mb-3">Property Images</h5>
+
+    {% if prop.images and prop.images|length > 0 %}
+      <div class="row g-3">
+        {% for img in prop.images %}
+          <div class="col-md-4">
+            <img src="{{ url_for('static', filename=img.image_url) }}"
+                 class="img-fluid rounded"
+                 style="height:220px;width:100%;object-fit:cover;">
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-white-50">No images uploaded for this property.</p>
+    {% endif %}
+
+    <hr>
+
+    <!-- OWNER -->
+    <h5>Owner</h5>
+    <p>
+      {{ prop.owner.user_fname }} {{ prop.owner.users_lname }}
+      <br>
+      {{ prop.owner.email }}
+    </p>
+
+    <!-- AGENT -->
+    <h5>Agent</h5>
+    <p>
+      {% if prop.agent and prop.agent.user %}
+        {{ prop.agent.user.user_fname }} {{ prop.agent.user.users_lname }}
+      {% else %}
+        No Agent Assigned
+      {% endif %}
+    </p>
+    <div class="row">
+        <div class="col-12 col-lg-6">
+               <div class="">
+                <a href="{{url_for('admin.view_interests')}}" class="text-decoration-none fw-bold
+                border border-2px p-2 mt-2 btn btn-outline-light "
+                >View Interest</a>
+              </div>
+        
+        </div>
+        <div class="col-12 col-lg-6">
+                    <div class="text-end">
+                        <a href="{{url_for('admin.verify_properties')}}" class="text-decoration-none fw-bold
+                        border border-2px p-2 mt-2 btn btn-outline-light"
+                        >View Properties</a>
+                    </div> 
+        </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

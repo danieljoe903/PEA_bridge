@@ -1,0 +1,124 @@
+{% extends "admin/admin_base.html" %}
+{% block title %}Property Verification | PEA-bridge{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <h3 class="text-white mb-0">Property Verification</h3>
+
+    <a href="{{ url_for('property.explore_properties') }}"
+       class="btn btn-outline-light btn-sm">
+      View Explore Properties
+    </a>
+  </div>
+
+  <div class="card shadow-lg" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-dark table-striped align-middle text-break">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Owner</th>
+              <th>Type</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% if properties and properties|length > 0 %}
+              {% for p in properties %}
+                <tr>
+                  <td>{{ p.property_id }}</td>
+                  <td>{{ p.property_title or "Untitled" }}</td>
+                  <td>
+                    {% if p.owner %}
+                      {{ p.owner.user_fname }} {{ p.owner.users_lname }}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
+                  <td>{{ p.property_type|title if p.property_type else "-" }}</td>
+                  <td>₦ {{ "{:,.0f}".format(p.price or 0) }}</td>
+
+                  <td>
+                    {% if p.property_status == "available" %}
+                      <span class="badge bg-success">Available</span>
+                    {% elif p.property_status == "under_verification" %}
+                      <span class="badge bg-warning text-dark">Under Verification</span>
+                    {% elif p.property_status == "sold" %}
+                      <span class="badge bg-primary">Sold</span>
+                    {% elif p.property_status == "rejected" %}
+                      <span class="badge bg-danger">Disabled</span>
+                    {% elif p.property_status == "rented" %}
+                      <span class="badge bg-info text-dark">Rented</span>
+                    {% else %}
+                      <span class="badge bg-secondary">{{ p.property_status }}</span>
+                    {% endif %}
+                  </td>
+
+                  <td class="text-end">
+                    <div class="d-flex justify-content-end gap-2 flex-wrap">
+
+                      <a href="{{ url_for('admin.view_property', property_id=p.property_id) }}"
+                         class="btn btn-outline-light btn-sm">
+                        View
+                      </a>
+
+                      {% if p.property_status == "under_verification" %}
+                        <form action="{{ url_for('admin.approve_property', property_id=p.property_id) }}" method="post">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <button class="btn btn-success btn-sm fw-bold">Approve</button>
+                        </form>
+
+                        <form action="{{ url_for('admin.disable_property', property_id=p.property_id) }}" method="post">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <button class="btn btn-danger btn-sm fw-bold">Disable</button>
+                        </form>
+
+                      {% elif p.property_status == "available" %}
+                        <form action="{{ url_for('admin.mark_property_sold', property_id=p.property_id) }}" method="post">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <button class="btn btn-primary btn-sm fw-bold">Mark Sold</button>
+                        </form>
+
+                        <form action="{{ url_for('admin.disable_property', property_id=p.property_id) }}" method="post">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <button class="btn btn-danger btn-sm fw-bold">Disable</button>
+                        </form>
+
+                      {% elif p.property_status == "rejected" %}
+                        <form action="{{ url_for('admin.approve_property', property_id=p.property_id) }}" method="post">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <button class="btn btn-success btn-sm fw-bold">Re-Approve</button>
+                        </form>
+
+                      {% elif p.property_status == "sold" %}
+                        <form action="{{ url_for('admin.approve_property', property_id=p.property_id) }}" method="post">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <button class="btn btn-success btn-sm fw-bold">Re-List</button>
+                        </form>
+                      {% endif %}
+
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="7" class="text-center text-white-50 py-4">
+                  No properties found.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

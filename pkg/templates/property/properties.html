@@ -1,0 +1,72 @@
+{% extends "app_base.html" %}
+{% block title %}My Properties | PEA-bridge{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+    <h3 class="text-white mb-0">My Properties</h3>
+    <a href="{{ url_for('property.add_property') }}" class="btn btn-success btn-sm fw-bold">+ Add Property</a>
+  </div>
+
+  <div class="row g-3">
+    {% if my_properties and my_properties|length > 0 %}
+      {% for p in my_properties %}
+        <div class="col-12 col-md-6 col-xl-4">
+          <div class="card h-100 shadow" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+            <img
+              src="{{ url_for('static', filename=covers[p.property_id]) }}"
+              alt="property"
+              style="height:200px;object-fit:cover;border-top-left-radius:14px;border-top-right-radius:14px;"
+            >
+            <div class="card-body">
+              <h5 class="mb-1">{{ p.property_title or "Untitled" }}</h5>
+              <div class="text-white-50 small mb-2">
+                Type: {{ p.property_type }} • Status: {{ p.property_status }}
+              </div>
+
+              <div class="fw-bold mb-3">
+                ₦ {{ "{:,.0f}".format(p.price or 0) }}
+              </div>
+
+              <div class="d-flex gap-2 flex-wrap">
+                <a href="{{ url_for('property.view_property', property_id=p.property_id) }}"
+                   class="btn btn-outline-light btn-sm">View</a>
+
+                <a href="{{ url_for('property.edit_property', property_id=p.property_id) }}"
+                   class="btn btn-warning btn-sm fw-bold">Edit</a>
+
+                        <form action="{{ url_for('property.delete_property', property_id=p.property_id) }}"
+                                method="post"
+                                onsubmit="return confirm('Delete this property?');">
+
+                              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                              <button class="btn btn-danger btn-sm fw-bold">
+                                  Delete
+                              </button>
+
+                          </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="col-12">
+        <div class="card shadow p-4 text-center" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+          <h5 class="mb-2">No properties yet</h5>
+          <p class="text-white-50 mb-3">Click “Add Property” to create your first listing.</p>
+          {% if agent_profile and agent_profile.agency_status=="active"%}
+          <a href="{{ url_for('property.add_property') }}" class="btn btn-success btn-sm fw-bold">+ Add Property</a>
+          {% else %}
+            <button class="btn btn-secondary" disabled>Add property</button>
+            {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

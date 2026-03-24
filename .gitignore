@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
+VPEA_APP/
+venv/
+
+# Environment variables
+.env
+
+# Uploads
+pkg/static/uploads/
+pkg/static/property_images/
+
+# Database (if local)
+*.db
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db

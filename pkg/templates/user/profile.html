@@ -1,0 +1,85 @@
+{% extends "app_base.html" %}
+{% block title %}Profile | PEA-bridge{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <div class="row g-4">
+
+    <!-- PROFILE PICTURE CARD -->
+    <div class="col-12 col-lg-5">
+      <div class="card p-4" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+        <div class="text-center">
+          <h3 class="fw-bold mb-4 text-info">Profile Settings</h3>
+
+          <div class="rounded-circle overflow-hidden bg-white bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-3"
+               style="width: 120px; height: 120px;">
+            <img src="{{ url_for('static', filename=user.image_url or 'uploads/default.png') }}"
+                 class="w-100 h-100 object-fit-cover"
+                 alt="Profile">
+          </div>
+
+          <p class="mb-3 text-white-50">
+            {{ user.user_fname }} {{ user.users_lname }}
+          </p>
+
+          <form action="{{ url_for('user.profile_pics') }}"
+                method="post"
+                enctype="multipart/form-data"
+                class="mt-2">
+            {{ photoform.hidden_tag() }}
+
+            <div class="mb-3">
+              {{ photoform.photo(class_='form-control', accept='image/*') }}
+              {% for error in photoform.photo.errors %}
+                <small class="text-danger">{{ error }}</small>
+              {% endfor %}
+            </div>
+
+            {{ photoform.submit(class_="btn btn-outline-success w-100") }}
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASSWORD CARD -->
+    <div class="col-12 col-lg-7">
+      <div class="card p-4" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+        <h3 class="mb-3 text-info">Update Password</h3>
+
+        <form action="{{ url_for('user.update_password') }}" method="POST">
+          {{ resetform.hidden_tag() }}
+
+          <div class="mb-3">
+            {{ resetform.current_password.label(class_='form-label') }}
+            {{ resetform.current_password(class_='form-control') }}
+            {% for error in resetform.current_password.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+
+          <div class="mb-3">
+            {{ resetform.new_password.label(class_='form-label') }}
+            {{ resetform.new_password(class_='form-control') }}
+            {% for error in resetform.new_password.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+
+          <div class="mb-3">
+            {{ resetform.confirm_password.label(class_='form-label') }}
+            {{ resetform.confirm_password(class_='form-control') }}
+            {% for error in resetform.confirm_password.errors %}
+              <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+          </div>
+
+          {{ resetform.submit(class_='btn btn-outline-success w-100') }}
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock content %}

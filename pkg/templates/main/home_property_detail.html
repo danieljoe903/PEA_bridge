@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+{% block title %}{{ prop.property_title or "Property Details" }} | PEA-Bridge{% endblock %}
+
+{% block content %}
+<section class="detail-hero">
+  <div class="container">
+    <div class="row g-4 align-items-center">
+      <div class="col-12 col-lg-7 text-white">
+        <span class="hero-badge text-success fw-bold">
+          {% if prop.property_status == "available" %}
+            Available
+          {% elif prop.property_status == "under_verification" %}
+            Under Verification
+          {% elif prop.property_status == "rejected" %}
+            Rejected
+          {% else %}
+            {{ prop.property_status|replace("_", " ")|title }}
+          {% endif %}
+        </span>
+
+        <h1 class="display-6 fw-bold mt-3 section-title text-info">
+          {{ prop.property_title or "Untitled Property" }}
+        </h1>
+
+        <p class="lead muted mt-3 mb-2 fw-bold">
+          {{ prop.adress }}
+        </p>
+
+        <div class="d-flex gap-3 flex-wrap mt-3">
+          <div class="mini-stat">
+            <div class="small muted fw-bold">State</div>
+            <div class="fw-bold text-warning">
+              {{ prop.states.state_name if prop.states else "No State" }}
+            </div>
+          </div>
+
+          <div class="mini-stat">
+            <div class="small muted fw-bold">Type</div>
+            <div class="fw-bold text-warning">
+              {{ prop.property_type|title if prop.property_type else "N/A" }}
+            </div>
+          </div>
+
+          <div class="mini-stat">
+            <div class="small muted fw-bold">Price</div>
+            <div class="fw-bold text-warning">
+              ₦ {{ "{:,.0f}".format(prop.price or 0) }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-5">
+        <div class="glass p-3 p-md-4">
+          <h5 class="fw-bold mb-3 text-info">Quick Property Summary</h5>
+
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="summary-box">
+                <div class="fw-bold  text-info">Listing</div>
+                <div class="fw-bold text-warning">{{ prop.property_listing or "SALE" }}</div>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="summary-box">
+                <div class="fw-bold text-info">Status</div>
+                <div class="fw-bold text-warning">
+                  {{ prop.property_status|replace("_", " ")|title }}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="summary-box">
+                <div class="fw-bold text-info">Address</div>
+                <div class="fw-bold text-warning">{{ prop.adress }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-grid mt-4">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg" target="_blank">
+              Login to Request Interest
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="row align-items-end g-3 mb-4">
+      <div class="col-12 col-lg-7">
+        <h2 class="section-title text-warning">Property Gallery</h2>
+        <p class="text-secondary mb-0">Preview the uploaded images for this listing.</p>
+      </div>
+    </div>
+
+    {% if images and images|length > 0 %}
+      <div class="row g-3 ">
+        {% for img in images %}
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="gallery-card">
+              <img
+                src="{{ url_for('static', filename=img.image_url) }}"
+                alt="Property Image"
+                class="img-fluid w-100 gallery-img" style="height:250px;"
+              >
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="card card-soft">
+        <div class="card-body p-4">
+          <p class="text-muted mb-0">No images uploaded for this property yet.</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="">
+  <div class="container">
+    <div class="row g-4">
+
+      <div class="col-12 col-lg-7 ">
+        <div class="card card-soft h-100 ">
+          <div class="card-body p-4 p-md-5">
+            <h3 class="fw-bold mb-3 ">Property Details</h3>
+
+            <div class="detail-list">
+              <div class="detail-row">
+                <span class="label fw-bold">Title : </span>
+                <span class="value text-primary fw-bold">{{ prop.property_title or "Untitled Property" }}</span>
+              </div>
+
+              <div class="detail-row">
+                <span class="label fw-bold ">State : </span>
+                <span class="value text-primary fw-bold">{{ prop.states.state_name if prop.state else "No State" }}</span>
+              </div>
+
+              <div class="detail-row">
+                <span class="label fw-bold">Type : </span>
+                <span class="value text-primary fw-bold">{{ prop.property_type|title if prop.property_type else "N/A" }}</span>
+              </div>
+
+              <div class="detail-row">
+                <span class="label fw-bold">Price : </span>
+                <span class="value text-primary fw-bold">₦ {{ "{:,.0f}".format(prop.price or 0) }}</span>
+              </div>
+
+              <div class="detail-row">
+                <span class="label fw-bold">Status : </span>
+                <span class="value text-primary fw-bold">{{ prop.property_status|replace("_", " ")|title }}</span>
+              </div>
+
+              <div class="detail-row align-items-start">
+                <span class="label fw-bold">Address</span>
+                <span class="value text-primary fw-bold">{{ prop.adress }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-5 ">
+        <div class="card card-soft h-100 ">
+          <div class="card-body p-4 p-md-5  ">
+            <h3 class="fw-bold mb-3  ">Owner Details</h3>
+
+            {% if prop.owner %}
+              <div class="owner-box">
+                <div class="owner-avatar">
+                  <img
+                    src="{{ url_for('static', filename=prop.owner.image_url or 'uploads/default.png') }}"
+                    alt="Owner"
+                    class="w-100 h-100 object-fit-cover rounded-circle"
+                  >
+                </div>
+
+                <div>
+                  <h5 class="fw-bold mt-3 text-info">
+                    {{ prop.owner.user_fname }} {{ prop.owner.users_lname }}
+                  </h5>
+                  <div class="text-muted small mb-2">Property Owner</div>
+
+                  <p class="mb-1"><strong>Email:</strong> {{ prop.owner.email }}</p>
+                  <p class="mb-0"><strong>Phone:</strong> {{ prop.owner.phone }}</p>
+                </div>
+              </div>
+            {% else %}
+              <p class="text-muted mb-0">No owner details available.</p>
+            {% endif %}
+
+            <hr class="my-4">
+
+            <h5 class="fw-bold mb-2 text-info">Assigned Agent</h5>
+            {% if prop.agent and prop.agent.user %}
+              <p class="mb-1">
+                {{ prop.agent.user.user_fname }} {{ prop.agent.user.users_lname }}
+              </p>
+              <p class="text-muted small mb-0 btn btn-success fw-bold rounded-4">
+                {{ prop.agent.agency_status|title }} Agent
+              </p>
+            {% else %}
+              <p class="text-muted mb-0">No agent assigned.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="cta d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+      <div>
+        <h5 class="fw-bold text-secondary mb-1">Interested in this property?</h5>
+        <p class="text-secondary mb-0">
+          Create an account or login to request interest and connect securely.
+        </p>
+      </div>
+
+      <div class="d-flex gap-2 flex-wrap ">
+        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-success text-info px-4" target="_blank">Register</a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary text-info px-4" target="_blank">Login</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

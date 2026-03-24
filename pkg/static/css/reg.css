@@ -1,0 +1,66 @@
+ body{
+      background: linear-gradient(120deg,#0f172a,#020611);
+      font-family: 'Inter', system-ui, sans-serif;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+    }
+
+    .register-box{
+      background:#0f172a;
+      padding:40px;
+      border-radius:16px;
+      width:100%;
+      max-width:500px;
+      color:white;
+      box-shadow:0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    .brand{
+      color:#7acc16;
+      font-weight:700;
+    }
+
+    .form-control{
+      background:#111827;
+      border:none;
+      color:white;
+    }
+
+    .form-control:focus{
+      background:#111827;
+      color:white;
+      box-shadow:0 0 0 2px #7acc16;
+    }
+
+    .btn-green{
+      background:#7acc16;
+      color:#020611;
+      font-weight:600;
+    }
+
+    .btn-green:hover{
+      background:#6fb813;
+      color:white;
+    }
+
+    .small-link{
+      color:#7acc16;
+      text-decoration:none;
+    }
+
+    .small-link:hover{
+      text-decoration:underline;
+    }
+
+    
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 1000px #020617 inset !important;
+        -webkit-text-fill-color: white !important;
+        transition: background-color 9999s ease-in-out 0s;
+    }
+

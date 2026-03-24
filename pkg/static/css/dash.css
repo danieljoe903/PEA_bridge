@@ -1,0 +1,116 @@
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:'Inter', sans-serif;
+}
+
+
+body{
+  background: linear-gradient(120deg, #0f172a, #020611);
+  padding-top:70px;
+  overflow-x:hidden;
+  font-family:'Inter',system-ui,sans-serif;
+}
+
+.mara{
+  min-height:20vh;
+  background:linear-gradient(180deg,#020617,#0f172a);
+}
+
+.dan{ color:white; }
+.yellowgreen{ color:white; }
+
+#sidebar{
+  background:#020617;
+}
+
+/* MOBILE */
+
+/* MOBILE */
+:root{
+  --sidebar-width: 250px;
+  --navbar-height: 56px;
+}
+
+/* fixed navbar spacing */
+
+
+@media (min-width:768px){
+  #sidebar{
+    position: fixed;
+    top: var(--navbar-height);
+    left: 0;
+    width: var(--sidebar-width);
+    height: calc(100vh - var(--navbar-height));
+    transform: none !important;
+    visibility: visible !important;
+    z-index: 1020;
+  }
+
+  /* push page content once */
+  .page-wrap{
+    margin-left: var(--sidebar-width);
+  }
+
+  /* IMPORTANT: remove any shifting from main */
+  main{
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+}
+
+ #sidebar .nav-link {
+  color: white;
+  transition: 0.3s ease;
+}
+
+#sidebar .nav-link:hover {
+  color: #84cc16 !important;
+}
+
+.navbar-brand{ color:yellowgreen; }
+
+.profile img{
+  min-height:100px;
+  object-fit:cover;
+  border:2px solid #84cc16;
+}
+
+.badge{
+  background:#7acc16;
+  color:#020617;
+}
+.badge:hover{
+  background:#7acc16;
+  color:white;
+}
+
+.card{
+  background:#0f172a;
+  border:none;
+  border-radius:10px;
+  color:white;
+}
+
+.pending{
+  color:#020617;
+  background:#ccc916;
+}
+.pending:hover{
+  background:#ccc916;
+  color:white;
+}
+
+.image{
+  min-width:35px;
+  min-height:35px;
+}
+
+.form-box{
+  background:#111827;
+  padding:30px;
+  border-radius:12px;
+}
+
+

@@ -1,0 +1,35 @@
+{% extends "app_base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+<h3 class="text-white mb-4">Apply to Become an Agent</h3>
+
+<div class="card p-4" style="background:#0f172a;border:none;color:white">
+
+<form method="POST">
+
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+<div class="mb-3">
+<label class="form-label">License Number</label>
+<input type="text" name="license_number" class="form-control" required>
+</div>
+
+<div class="mb-3">
+<label class="form-label">Agency Name (Optional)</label>
+<input type="text" name="agency_name" class="form-control">
+</div>
+
+<button class="btn btn-success">
+Submit Application
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+{% endblock %}

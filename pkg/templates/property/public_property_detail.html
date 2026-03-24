@@ -1,0 +1,92 @@
+{% extends "app_base.html" %}
+{% block title %}Property Details | PEA-bridge{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <h3 class="text-white mb-0">{{ prop.property_title or "Property" }}</h3>
+    <a href="{{ url_for('property.explore_properties') }}" class="btn btn-outline-light btn-sm">
+      Back
+    </a>
+  </div>
+
+  <div class="card shadow mb-4" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+    <div class="card-body">
+      {% if images and images|length > 0 %}
+        <div class="row g-2">
+          {% for img in images %}
+            <div class="col-12 col-md-6 col-lg-4">
+              <img src="{{ url_for('static', filename=img.image_url) }}"
+                   class="img-fluid rounded"
+                   style="height:220px;width:100%;object-fit:cover;">
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-white-50 mb-0">No images uploaded for this property.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card shadow" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <div class="text-white-50 small">Type</div>
+          <div class="fw-bold">{{ prop.property_type|title }}</div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="text-white-50 small">Status</div>
+          <div class="fw-bold">{{ prop.property_status|replace("_"," ")|title }}</div>
+        </div>
+
+        <div class="col-12 col-md-4">
+          <div class="text-white-50 small">Price</div>
+          <div class="fw-bold">₦ {{ "{:,.0f}".format(prop.price or 0) }}</div>
+        </div>
+          <div class="col-12 col-md-4">
+          <div class="text-white-50 small">State</div>
+          <div class="fw-bold">{{ state.state_name if state else "no state"}}</div>
+        </div>
+         <div class="col-12 col-md-4">
+          <div class="text-white-50 small">Owner Name </div>
+          <div class="fw-bold text-info">{{ user.user_fname }} {{ user.users_lname  }}</div>
+        </div>
+          <div class="col-12 col-md-4">
+                 {% if agent_profile %}
+                {% if agent_profile.agency_status == "active" %}
+                  <span class="badge bg-info text-dark">Verified Agent</span>
+                {% elif agent_profile.agency_status == "pending" %}
+                  <span class="badge bg-warning text-dark">Agent Pending</span>
+                {% elif agent_profile.agency_status == "suspended" %}
+                  <span class="badge bg-danger">Agent Suspended</span>
+                {% else %}
+                  <span class="badge bg-secondary">Not an Agent</span>
+                {% endif %}
+              {% else %}
+                <span class="badge bg-secondary">Not an Agent</span>
+              {% endif %}
+          </div>
+        <div class="col-12">
+          <div class="text-white-50 small">Address</div>
+          <div class="fw-bold">{{ prop.adress }}</div>
+        </div>
+
+
+        <div class="col-12 mt-3">
+          <form action="{{ url_for('interest.request_interest', property_id=prop.property_id) }}"
+                method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-success fw-bold">
+              Request Interest
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

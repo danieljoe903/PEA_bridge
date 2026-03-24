@@ -1,0 +1,15 @@
+<ul class="nav flex-column gap-1">
+  <li class="nav-item"><a class="nav-link {% if active=='overview' %}active{% endif %}" href="{{url_for('admin.admin_dashboard')}}">Dashboard</a></li>
+  <li class="nav-item"><a class="nav-link {% if active=='users' %}active{% endif %}" href="{{url_for('admin.view_users')}}">Users</a></li>
+  <li class="nav-item"><a class="nav-link {% if active=='properties' %}active{% endif %}" href="/manage/properties/">Properties</a></li>
+
+  <li class="nav-item mt-2 text-white-50 small px-2">Verification Center</li>
+  <li class="nav-item"><a class="nav-link {% if active=='ver_prop' %}active{% endif %}" href="/manage/verifications/properties/">Property Verification</a></li>
+  <li class="nav-item"><a class="nav-link {% if active=='ver_agents' %}active{% endif %}" href="{{url_for('admin.view_agents')}}">Agent Verification</a></li>
+  <li class="nav-item"><a class="nav-link {% if active=='ver_id' %}active{% endif %}" href="/manage/verifications/identity/">Identity Verification</a></li>
+
+  <li class="nav-item"><a class="nav-link {% if active=='interests' %}active{% endif %}" href="{{url_for('admin.view_interests')}}">Interests</a></li>
+  <li class="nav-item"><a class="nav-link {% if active=='states' %}active{% endif %}" href="/manage/states/">Locations (States)</a></li>
+  <li class="nav-item"><a class="nav-link {% if active=='logs' %}active{% endif %}" href="/manage/logs/">Activity Logs</a></li>
+  <li class="nav-item"><a class="nav-link {% if active=='settings' %}active{% endif %}" href="/manage/settings/">Settings</a></li>
+</ul>

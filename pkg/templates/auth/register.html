@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register | PEA_bridge</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/reg.css')}}">
+
+  <style>
+   
+  </style>
+</head>
+
+<body>
+
+<div class="register-box">
+
+  <div class="text-center mb-4">
+    <h3 class="brand">PEA_bridge</h3>
+    <p class="text-muted small">Create your account</p>
+  </div>
+
+  <form action="{{ url_for('auth.register') }}" method="post" enctype="multipart/form-data">
+       {{userform.csrf_token}}
+    <!-- FIRST & LAST NAME -->
+
+     {% with message=get_flashed_messages(with_categories=True)%}
+                            {% for cat,msg in message %}
+                                <p class="alert alert-{{cat}}">{{msg}}</p>
+                            {% endfor %}
+                            {% endwith %}
+    <div class="row mb-3">
+      <div class="col-md-6 mb-3 mb-md-0">
+         {{userform.firstname.label(class_='form-label')}}<br>
+         {{userform.firstname(class_='form-control')}}
+         {% if userform.firstname.errors%}
+         {% for error in userform.firstname.errors%}
+         <small class="text-danger">{{error}}</small>
+         {% endfor %}
+         {% endif %}
+
+      </div>
+      <div class="col-md-6">
+        {{userform.lastname.label(class_='form-label')}}<br>
+         {{userform.lastname(class_='form-control')}}
+         {% if userform.lastname.errors%}
+         {% for error in userform.lastname.errors%}
+         <small class="text-danger">{{error}}</small>
+         {% endfor %}
+         {% endif %}
+      </div>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="mb-3">
+        {{userform.email.label(class_='form-label')}}
+        {{userform.email(class_='form-control')}}
+        {% if userform.email.errors %}
+        {% for error in userform.email.errors %}
+          <small class="text-danger">{{error}}</small>
+        {% endfor %}
+        {% endif %}
+
+    </div>
+          
+    <!-- PHONE -->
+    <div class="mb-3">
+       {{userform.phone.label(class_='form-label')}}
+        {{userform.phone(class_='form-control')}}
+        {% if userform.phone.errors %}
+        {% for error in userform.phone.errors %}
+          <small class="text-danger">{{error}}</small>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- PROFILE IMAGE -->
+    <div class="mb-3">
+      {{userform.image.label(class_='form-label')}}
+      {{userform.image(class_='form-control',accept="image/*")}}
+      {% if userform.image.errors %}
+      {% for error in userform.image.errors %}
+      <small class="text-danger">{{error}}</small>
+      {% endfor %}
+      {% endif %}
+    </div>
+    <div class="mb-3">
+        {{userform.username.label(class_='form-label')}}
+        {{userform.username(class_='form-control')}}
+        {% if userform.username.errors %}
+        {% for error in userform.username.errors %}
+          <small class="text-danger">{{error}}</small>
+        {% endfor %}
+        {% endif %}
+
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="mb-3">
+     {{userform.user_password.label(class_='form-label')}}
+      {{userform.user_password(class_='form-control')}}
+      {% if userform.user_password.errors %}
+      {% for error in userform.user_password.errors %}
+      <small class="text-danger">{{error}}</small>
+      {% endfor %}
+      {% endif %}
+    </div>
+
+    <!-- CONFIRM PASSWORD -->
+    <div class="mb-4">
+      {{userform.repeat.label(class_='form-label')}}
+      {{userform.repeat(class_='form-control')}}
+      {% if userform.repeat.errors %}
+      {% for error in userform.repeat.errors %}
+      <small class="text-danger">{{error}}</small>
+      {% endfor %}
+      {% endif %}
+    </div>
+      <div class="my-3">
+        <input type="checkbox" name="checkbox" class="form-check-input" id="check">
+        Agreed to our<a href="{{url_for('main.privacy')}}" class="text-decoration-none text-primary">
+          terms and condition</a> before registration
+        
+      </div>
+    
+     {{userform.submit(class_="btn btn-green w-100", id="submit", disabled=True)}}
+   
+  </form>
+
+  <div class="text-center mt-3">
+    <small>Already have an account?
+      <a href="{{url_for('auth.login')}}" class="small-link">Login</a>
+    </small>
+  </div>
+
+</div>
+      <script src="/static/jquery-4.0.0.min.js"></script>
+ <script>
+           $(function(){
+            $("#submit").prop("disabled",true)
+
+            $("#check").on("change", function(){
+             if($(this).is(":checked")){
+              $("#submit").prop("disabled", false)
+             }else{
+              $("#submit").prop("disabled",true)
+             }
+            })
+        
+          
+      })
+</script>
+</body>
+</html>
