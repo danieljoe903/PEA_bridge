@@ -4,8 +4,8 @@ from wtforms.validators import Email,DataRequired,Length,EqualTo
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 class Loginform(FlaskForm):
-    username= StringField('username',validators=[DataRequired(),Length(min=3,max=15)])
-    password=PasswordField('password',validators=[DataRequired(),Length(min=3,max=20)])
+    username= StringField('username',validators=[DataRequired(message="username is invaild"),Length(min=3,max=15)])
+    password=PasswordField('password',validators=[DataRequired(message="password is invaild"),Length(min=3,max=20)])
     login= SubmitField('login')
 
 

@@ -27,6 +27,11 @@ def create_app():
     csrf.init_app(app)
     migrate.init_app(app,db)
 
+    
+
+    property_images_folder = os.path.join(app.root_path, 'static', 'uploads')
+    os.makedirs(property_images_folder, exist_ok=True)
+
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
     app.register_blueprint(auth_bp)
@@ -46,7 +51,7 @@ def create_app():
             
     @app.errorhandler(500)
     def internal_server_error(e):
-        return render_template("errors/404.html"),500
+        return render_template("errors/500.html"),500
 
     setup_inactivity_check(app)
 
