@@ -52,9 +52,6 @@ class Admin(db.Model):
     admin_email=db.Column(db.String(100),nullable=False,unique=True)
     admin_password=db.Column(db.String(255),nullable=False)
 
-
-   
-
     # FK -> users.user_id (you said it's FK)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=True, index=True)
 
@@ -224,14 +221,14 @@ class IdentityVerification(db.Model):
     id_number = db.Column(db.String(100), nullable=False)
 
     # spelling in your DB: "verificaticon_status" (must match)
-    verificaticon_status = db.Column(
+    verification_status = db.Column(
         db.Enum("pending", "approved", "rejected"),
         nullable=False,
         default="pending"
     )
 
     # DB says CURRENT_TIMESTAMP and ON UPDATE CURRENT_TIMESTAMP
-    verifid_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    verified_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     user = db.relationship("User", back_populates="identity_verifications")
 

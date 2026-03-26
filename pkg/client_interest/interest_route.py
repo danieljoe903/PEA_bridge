@@ -42,25 +42,9 @@ def request_interest(property_id):
 @interest_bp.route("/my_interest/")
 def my_interest():
     if "user_id" not in session:
-        return redirect(url_for("auth.login"))
-
-    user = db.session.get(User, session["user_id"])
-
-    rows = (
-        ClientInterest.query
-        .filter_by(client_user_id=user.user_id)
-        .order_by(desc(ClientInterest.created_at))
-        .all()
-    )
-
-    # optional: preload properties
-    property_map = {}
-    for r in rows:
-        property_map[r.interest_id] = Property.query.get(r.property_id)
-
-    return render_template(
-        "interest/my_interest.html",
-        active="interest",
-        interests=rows,
-        property_map=property_map
-    )
+        return redirect(url_for('auth.login'))
+    user= User.query.get(session['user_id'])
+    
+    my_clientinterest=ClientInterest.query.filter_by(client_user_id=user.user_id)\
+    .order_by(desc(ClientInterest.created_at)).all()
+    return render_template('interest/my_interest.html',my_clientinterest=my_clientinterest, active="my_interest")

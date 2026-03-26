@@ -23,8 +23,8 @@
                 </thead>
                 <tbody>
 
-                    {% if my_interest and my_interest|length > 0 %}
-                      {% for it in my_interest %}
+                    {% if my_clientinterest and my_clientinterest|length > 0 %}
+                      {% for it in my_clientinterest %}
                         <tr>
 
                           <td>{{ it.interest_id }}</td>
@@ -68,7 +68,7 @@
                           <td class="text-end">
                             {% if it.property %}
                             <a class="btn btn-sm btn-outline-light"
-                              href="{{ url_for('property.public_property_detail', property_id=it.property.property_id) }}">
+                             href="{{ url_for('property.public_property_detail', property_id=it.property.property_id, next='my_interest') }}">
                               View
                             </a>
                             {% endif %}

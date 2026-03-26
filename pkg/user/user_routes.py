@@ -74,16 +74,6 @@ def profile():
 
     return render_template("user/profile.html", user=user,photoform=photoform,resetform=resetform,active="profile")
 
-@user_bp.route('/my_interest/')
-def my_interest():
-    if "user_id" not in session:
-        return redirect(url_for('auth.login'))
-    user= User.query.get(session['user_id'])
-    
-    my_interest=ClientInterest.query.filter_by(client_user_id=user.user_id)\
-    .order_by(desc(ClientInterest.created_at)).limit(5).all()
-    return render_template('interest/my_interest.html',my_interest=my_interest, active=my_interest)
-
 
 
 
@@ -95,7 +85,7 @@ def profile_pics():
 
     photoform = forms.Photoform()
 
-    if not photoform.validate_on_submit:
+    if not photoform.validate_on_submit():
         flash('Picture not uploaded. Please choose a valid image.', 'danger')
         return redirect(url_for('user.profile'))
 
@@ -125,6 +115,7 @@ def get_current_user():
     if "user_id" not in session:
         return None
     return db.session.get(User, session['user_id'])
+
 
 @user_bp.route('/update_password/',methods=['GET','POST'])
 def update_password():

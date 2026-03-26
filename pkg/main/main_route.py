@@ -54,7 +54,7 @@ def homepage():
         cover = (
             PropertyImage.query
             .filter_by(property_id=prop.property_id)
-            .order_by(PropertyImage.image_id.asc())
+            .order_by(asc(PropertyImage.image_id))
             .first()
         )
         covers[prop.property_id] = (
@@ -73,24 +73,22 @@ def privacy():
     return render_template('main/privacy.html')
 
 
-@main_bp.route('/property/<int:property_id>/')
+@main_bp.route("/listing/<int:property_id>/")
 def home_property_detail(property_id):
+    prop = Property.query.get_or_404(property_id)
 
-    prop=Property.query.get_or_404(property_id)
-
-    images=(
-        PropertyImage.query.filter_by(property_id=property_id)
-        .order_by(asc(PropertyImage.image_id)).all()
+    images = (
+        PropertyImage.query
+        .filter_by(property_id=property_id)
+        .order_by(asc(PropertyImage.image_id))
+        .all()
     )
 
     return render_template(
-        'main/home_property_detail.html',
+        "main/home_property_detail.html",
         prop=prop,
-        images=images,
-        
+        images=images
     )
-
-
 
 
 @main_bp.route("/search_view/")
@@ -152,7 +150,7 @@ def search_view():
         html += f"""
         <div class="col-12 col-md-6 col-lg-4">
           <div class="city">
-            <a href="/property/{prop.property_id}/" class="city-link">
+            <a href="/listing/{prop.property_id}/" class="city-link">
               <img src="/static/{image_url}" alt="{prop.property_title}">
             </a>
             <div class="label">

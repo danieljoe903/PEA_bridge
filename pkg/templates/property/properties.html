@@ -30,7 +30,7 @@
               </div>
 
               <div class="d-flex gap-2 flex-wrap">
-                <a href="{{ url_for('property.view_property', property_id=p.property_id) }}"
+                <a href="{{ url_for('property.view_property', property_id=p.property_id, back_page='list_properties') }}"
                    class="btn btn-outline-light btn-sm">View</a>
 
                 <a href="{{ url_for('property.edit_property', property_id=p.property_id) }}"

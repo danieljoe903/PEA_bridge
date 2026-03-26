@@ -60,3 +60,7 @@ body{
   color: #84cc16 !important;
 }
 .navbar-brand{ color:yellowgreen; }
+
+.rounded-circle{
+    border: 2px soild #7acc16;
+  }

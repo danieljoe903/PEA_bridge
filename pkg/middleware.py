@@ -12,6 +12,13 @@ def setup_inactivity_check(app):
         user_id = session.get("user_id")
         if user_id:
             g.user = db.session.get(User, user_id)
+        if "user_id" in session:
+            user =db.session.get(User, session['user_id'])
+
+            if user and user.suspended:
+                session.clear()
+                flash("Your account has been suspended contact us at homepage", "danger")
+                return redirect(url_for("auth.login"))
 
     @app.before_request
     def check_activity():

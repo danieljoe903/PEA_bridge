@@ -168,7 +168,7 @@ def reject_property(property_id):
 @admin_bp.route('/properties/<int:property_id>/sold/',methods=['POST'])
 def mark_property_sold(property_id):
     if not admin_required():
-        return redirect(url_for("admin.login"))
+        return redirect(url_for("admin.admin_login"))
     prop=Property.query.get_or_404(property_id)
 
     prop.property_status="sold"
@@ -248,6 +248,7 @@ def suspend_user(user_id):
     user = User.query.get_or_404(user_id)
 
     user.suspended = True
+        
     db.session.commit()
 
     flash("User suspended successfully.", "warning")
@@ -262,6 +263,7 @@ def activate_user(user_id):
     user = User.query.get_or_404(user_id)
 
     user.suspended = False
+       
     db.session.commit()
 
     flash("User activated successfully.", "success")

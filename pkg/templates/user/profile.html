@@ -12,12 +12,18 @@
         <div class="text-center">
           <h3 class="fw-bold mb-4 text-info">Profile Settings</h3>
 
-          <div class="rounded-circle overflow-hidden bg-white bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-3"
-               style="width: 120px; height: 120px;">
-            <img src="{{ url_for('static', filename=user.image_url or 'uploads/default.png') }}"
-                 class="w-100 h-100 object-fit-cover"
-                 alt="Profile">
-          </div>
+                    <div class="rounded-circle overflow-hidden bg-white bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-3"
+                        style="width: 120px; height: 120px;">
+
+                      {% if user.image_url and user.image_url != 'uploads/default.png' %}
+                        <img src="{{ url_for('static', filename=user.image_url) }}"
+                            class="w-100 h-100 object-fit-cover"
+                            alt="Profile">
+                      {% else %}
+                        <i class="bi bi-person-fill text-light" style="font-size: 75px;"></i>
+                      {% endif %}
+
+                    </div>
 
           <p class="mb-3 text-white-50">
             {{ user.user_fname }} {{ user.users_lname }}

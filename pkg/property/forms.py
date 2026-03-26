@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, TextAreaField, DecimalField, MultipleFileField, SubmitField
-from wtforms.validators import DataRequired, Optional
+from wtforms.validators import DataRequired, Optional,NumberRange
 
 class PropertyForm(FlaskForm):
 
@@ -28,7 +28,7 @@ class PropertyForm(FlaskForm):
 
     price = DecimalField(
         "Price",
-        validators=[Optional()]
+        validators=[Optional(),NumberRange(min=0, message="Price must be a positive number")]
     )
 
     images = MultipleFileField("Property Images")

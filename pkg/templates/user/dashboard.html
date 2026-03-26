@@ -221,7 +221,7 @@
                   <td class="text-end">
                     {% if it.property %}
                       <a class="btn btn-sm btn-outline-light"
-                         href="{{ url_for('property.public_property_detail', property_id=it.property.property_id) }}">
+                         href="{{ url_for('property.public_property_detail', property_id=it.property.property_id, next='dashboard') }}">
                         View
                       </a>
                     {% endif %}

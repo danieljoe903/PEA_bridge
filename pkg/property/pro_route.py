@@ -4,9 +4,9 @@ from flask import render_template, request, redirect, url_for, session, current_
 from werkzeug.utils import secure_filename
 from pkg.property import property_bp
 from pkg.property import forms
-from sqlalchemy import desc,or_,and_,asc,or_
+from sqlalchemy import desc,or_,and_,asc
 from pkg.extension import db
-from pkg.model import Property, PropertyImage,User,PropertyAgent,State
+from pkg.model import Property, PropertyImage,User,PropertyAgent,State,ClientInterest
 
 ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "webp"}
 
@@ -163,13 +163,16 @@ def view_property(property_id):
         .all()
     )
 
+    back_page=request.args.get('back_page',"dashboard")
+
     return render_template(
         "property/property_detail.html",
         user=user,
         active="properties",
         prop=prop,
         images=images,
-        state=state
+        state=state,
+        back_page=back_page
     )
 
 @property_bp.route("/<int:property_id>/edit/", methods=["GET", "POST"])
@@ -233,37 +236,38 @@ def delete_property(property_id):
     flash("Property deleted.", "success")
     return redirect(url_for("property.list_properties"))
 
-@property_bp.route("/explore/view/<int:property_id>/")
+@property_bp.route("/property/<int:property_id>/")
 def public_property_detail(property_id):
+
     user = get_current_user()
     if not user:
         return redirect(url_for("auth.login"))
-    
+
     prop = Property.query.get_or_404(property_id)
-    state=State.query.filter_by(state_id=prop.state_id).first()
-    user=User.query.filter_by(user_id=prop.owner_id).first()
-    agent_profile=PropertyAgent.query.filter_by(agent_id=prop.agent_id).first()
 
+    # ✅ check if user already requested this property
+    existing_request = ClientInterest.query.filter_by(
+        client_user_id=user.user_id,
+        property_id=prop.property_id
+    ).first()
 
-    
+    images = PropertyImage.query.filter_by(
+        property_id=property_id
+    ).all()
 
-    images = (
-        PropertyImage.query
-        .filter_by(property_id=property_id)
-        .order_by(asc(PropertyImage.image_id))
-        .all()
-    )
+    state = State.query.filter_by(state_id=prop.state_id).first()
+
+    next_page=request.args.get("next","explore")
 
     return render_template(
         "property/public_property_detail.html",
-        user=user,
-        active="explore",
         prop=prop,
         images=images,
         state=state,
-        agent_profile=agent_profile
+        user=user,
+        has_requested=True if existing_request else False,
+        next_page=next_page
     )
-
     
 @property_bp.route("/explore/")
 def explore_properties():

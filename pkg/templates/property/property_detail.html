@@ -8,7 +8,11 @@
     <h3 class="text-white mb-0">{{ prop.property_title or "Property" }}</h3>
     <div class="d-flex gap-2">
       <a href="{{ url_for('property.edit_property', property_id=prop.property_id) }}" class="btn btn-warning btn-sm fw-bold">Edit</a>
-      <a href="{{ url_for('property.list_properties') }}" class="btn btn-outline-light btn-sm">Back</a>
+      {% if back_page == "list_properties" %}
+        <a href="{{ url_for('property.list_properties') }}" class="btn btn-outline-light btn-sm">Back</a>
+      {% else %}
+        <a href="{{ url_for('user.dashboard') }}" class="btn btn-outline-light btn-sm">Back</a>
+      {% endif %}
     </div>
   </div>
 

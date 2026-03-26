@@ -1,7 +1,7 @@
 from flask import render_template, request, session, redirect, url_for, flash
 from pkg.agent import agent_bp
 from pkg.extension import db
-from pkg.model import PropertyAgent
+from pkg.model import PropertyAgent,User
 
 
 @agent_bp.route("/apply/", methods=["GET","POST"])
@@ -9,6 +9,8 @@ def apply():
 
     if "user_id" not in session:
         return redirect(url_for("auth.login"))
+    
+    user=User.query.get(session["user_id"])
 
     if request.method == "POST":
 
@@ -35,5 +37,6 @@ def apply():
 
         flash("Agent application submitted. Await admin verification.", "success")
         return redirect(url_for("user.dashboard"))
+    agent_pro=db.session.query(PropertyAgent).filter(PropertyAgent.user_id==user.user_id).first()
 
-    return render_template("agent/apply_agent.html")
+    return render_template("agent/apply_agent.html",agent_pro=agent_pro,active="agent")

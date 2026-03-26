@@ -72,16 +72,15 @@ def register():
 
     return render_template("auth/register.html", userform=userform)
 
-
 @auth_bp.route("/login/", methods=["GET", "POST"])
 def login():
 
     if "admin_id" in session:
-        return redirect(url_for('admin.admin_dashboard'))
-    
+        return redirect(url_for("admin.admin_dashboard"))
+
     if "user_id" in session:
-        return redirect(url_for('user.dashboard'))
-    session.pop('_flashes',None)
+        return redirect(url_for("user.dashboard"))
+
     form = forms.Loginform()
 
     if form.validate_on_submit():
@@ -91,12 +90,18 @@ def login():
         ).first()
 
         if not user or not user.check_password(form.password.data):
-            flash("Invalid username or password", category="danger")
+            flash("Invalid username or password", "danger")
             return redirect(url_for("auth.login"))
-        
-        session["user_id"] = user.user_id
-        session['useronline']=user.username
 
+        if user.suspended:
+            flash("Your account has been suspended. visit homepage to contact us", "danger")
+            return redirect(url_for("auth.login"))
+
+        session.clear()
+        session["user_id"] = user.user_id
+        session["useronline"] = user.username
+
+        flash("Login successful", "success")
         return redirect(url_for("user.dashboard"))
 
     return render_template("auth/login.html", form=form)
