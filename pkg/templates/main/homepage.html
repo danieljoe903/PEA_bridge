@@ -1,121 +1,193 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PEA-Bridge | Verified Property Marketplace</title>
+{% extends "base.html"%}
+{% block title %} PEA-Bridge | Verified Property Marketplace {% endblock %}
 
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/static/css/home.css" rel="stylesheet">
-
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    
-  </style>
-</head>
-
-<body>
-  <!-- NAV -->
-  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="#top">
-        <span class="text-warning">&lt;/&gt;</span> PEA-Bridge
-      </a>
-
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="nav">
-        <ul class="navbar-nav ms-auto gap-lg-3 align-items-lg-center">
-          <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
-          <li class="nav-item"><a class="nav-link" href="#cities">Cities</a></li>
-          <li class="nav-item"><a class="nav-link" href="#why">Why Us</a></li>
-          <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
-          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-          <li class="nav-item ms-lg-2">
-            <a class="nav-link" href="{{url_for('auth.login')}}" target="_blank">Login</a>
-          </li>
-          <li class="nav-item ms-lg-2">
-            <a class="nav-link" href="{{url_for('auth.register')}}" target="_blank">Register</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
+{% block content %}
   <!-- HERO -->
   <header id="top" class="hero">
     <div class="container">
       <div class="row align-items-center g-4">
         <div class="col-12 col-lg-6 text-white">
-          <span class="hero-badge">✅ Verified listings • Trusted agents • Secure process</span>
-          <h1 class="display-5 fw-bold mt-3 section-title">
-            Find verified properties faster with <span class="brand">PEA-Bridge</span>.
-          </h1>
-          <p class="lead muted mt-3">
-            Search homes, apartments, and land across Nigeria. Every listing is reviewed to reduce duplicates,
-            scams, and wasted inspections.
-          </p>
+          {% if current_user %}
+            <span class="hero-badge">
+              👋 Welcome back, {{ current_user.user_fname }} • Continue exploring verified properties
+            </span>
 
-          <div class="d-flex gap-3 flex-wrap mt-4">
-            <a href="#contact" class="btn btn-brand btn-lg">Talk to an Agent</a>
-            <a href="#features" class="btn btn-outline-light btn-lg">Explore Features</a>
-          </div>
+            <h1 class="display-5 fw-bold mt-3 section-title">
+              Welcome back to <span class="brand">PEA-Bridge</span>.
+            </h1>
 
-          <div class="row g-3 mt-4">
-            <div class="col-6">
-              <div class="p-3 rounded-4 border border-white border-opacity-25">
-                <div class="fw-bold">Verified Listings</div>
-                <div class="muted small">Less fake posts & duplicates</div>
+            <p class="lead muted mt-3">
+              Explore verified properties, manage your interests, and track your account from one trusted marketplace.
+            </p>
+
+            <div class="d-flex gap-3 flex-wrap mt-4">
+              <a href="{{ url_for('user.dashboard') }}" class="btn btn-brand btn-lg">Go to Dashboard</a>
+              <a href="{{ url_for('property.explore_properties') }}" class="btn btn-outline-light btn-lg">Explore Properties</a>
+            </div>
+
+            <div class="row g-3 mt-4">
+              <div class="col-6">
+                <div class="p-3 rounded-4 border border-white border-opacity-25">
+                  <div class="fw-bold">Account Ready</div>
+                  <div class="muted small">Manage profile, interests, and listings</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="p-3 rounded-4 border border-white border-opacity-25 ">
+                  <div class="fw-bold features">
+                    {% if agent_profile and agent_profile.agency_status == "active" %}
+                      Verified Agent<span> ✓</span>
+                    {% elif agent_profile and agent_profile.agency_status == "pending" %}
+                      Agent Pending
+                    {% elif agent_profile and agent_profile.agency_status == "suspended" %}
+                      Agent Suspended
+                    {% else %}
+                      Buyer Account
+                    {% endif %}
+                    
+                  </div>
+                  <div class="muted small">Your account status on PEA-Bridge</div>
+                </div>
               </div>
             </div>
-            <div class="col-6">
-              <div class="p-3 rounded-4 border border-white border-opacity-25">
-                <div class="fw-bold">Secure Communication</div>
-                <div class="muted small">Safer buyer–agent flow</div>
+          {% else %}
+            <span class="hero-badge">✅ Verified listings • Trusted agents • Secure process</span>
+
+            <h1 class="display-5 fw-bold mt-3 section-title">
+              Find verified properties faster with <span class="brand">PEA-Bridge</span>.
+            </h1>
+
+            <p class="lead muted mt-3">
+              Search homes, apartments, and land across Nigeria. Every listing is reviewed to reduce duplicates,
+              scams, and wasted inspections.
+            </p>
+
+            <div class="d-flex gap-3 flex-wrap mt-4">
+              <a href="#contact" class="btn btn-brand btn-lg">Talk to an Agent</a>
+              <a href="#features" class="btn btn-outline-light btn-lg">Explore Features</a>
+            </div>
+
+            <div class="row g-3 mt-4">
+              <div class="col-6">
+                <div class="p-3 rounded-4 border border-white border-opacity-25">
+                  <div class="fw-bold">Verified Listings</div>
+                  <div class="muted small">Less fake posts & duplicates</div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="p-3 rounded-4 border border-white border-opacity-25">
+                  <div class="fw-bold">Secure Communication</div>
+                  <div class="muted small">Safer buyer–agent flow</div>
+                </div>
               </div>
             </div>
-          </div>
+          {% endif %}
         </div>
 
         <div class="col-12 col-lg-6">
           <div class="glass p-3 p-md-4">
-            <h5 class="fw-bold mb-3">Search Properties</h5>
-                   <form id="homeSearchForm" class="row g-2">
-                        <div class="col-12 col-md-6">
-                          <label class="form-label small mb-1">Property Type</label>
-                          {{ form.type(class_="form-select", id="type") }}
-                        </div>
+            {% if current_user %}
+              <h5 class="fw-bold mb-3">Quick Actions</h5>
 
-                        <div class="col-12 col-md-6">
-                          <label class="form-label small mb-1">State / City</label>
-                          {{ form.location(class_="form-control", id="location", placeholder="e.g. Lagos") }}
-                        </div>
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <a href="{{ url_for('user.dashboard') }}" class="text-decoration-none text-dark">
+                    <div class="card card-soft h-100">
+                      <div class="card-body p-3">
+                        <div class="fw-bold mb-1">Dashboard</div>
+                        <div class="small text-muted">View your account overview</div>
+                      </div>
+                    </div>
+                  </a>
+                </div>
 
-                        <div class="col-12 col-md-6">
-                          <label class="form-label small mb-1">Budget (₦)</label>
-                          {{ form.budget(class_="form-select", id="budget") }}
-                        </div>
+                <div class="col-12 col-md-6">
+                  <a href="{{ url_for('interest.my_interest') }}" class="text-decoration-none text-dark">
+                    <div class="card card-soft h-100">
+                      <div class="card-body p-3">
+                        <div class="fw-bold mb-1">My Interest</div>
+                        <div class="small text-muted">Track requested properties</div>
+                      </div>
+                    </div>
+                  </a>
+                </div>
 
-                        <div class="col-12">
-                          <button type="button" id="searchBtn" class="btn btn-brand w-100 py-2">Search Now</button>
-                          <p class="text-muted small mt-2 mb-0">
-                            Tip: Search by type, state, or budget.
-                          </p>
-                        </div>
-                      </form>
+                <div class="col-12 col-md-6">
+                  <a href="{{ url_for('user.profile') }}" class="text-decoration-none text-dark">
+                    <div class="card card-soft h-100">
+                      <div class="card-body p-3">
+                        <div class="fw-bold mb-1">Profile</div>
+                        <div class="small text-muted">Update your account details</div>
+                      </div>
+                    </div>
+                  </a>
+                </div>
 
-                      <div id="search_result" class="mt-4"></div>
-                  <div id="search_result" class="mt-4"></div>
+                <div class="col-12 col-md-6">
+                  {% if agent_profile and agent_profile.agency_status == "active" %}
+                    <a href="{{ url_for('property.add_property') }}" class="text-decoration-none text-dark">
+                      <div class="card card-soft h-100">
+                        <div class="card-body p-3">
+                          <div class="fw-bold mb-1">Add Property</div>
+                          <div class="small text-muted">Create a new listing</div>
+                        </div>
+                      </div>
+                    </a>
+                  {% else %}
+                    <div class="card card-soft h-100">
+                      <div class="card-body p-3">
+                        <div class="fw-bold mb-1">Agent Access</div>
+                        <div class="small text-muted">
+                          {% if agent_profile and agent_profile.agency_status == "pending" %}
+                            Your agent application is pending
+                          {% elif agent_profile and agent_profile.agency_status == "suspended" %}
+                            Your agent access is suspended
+                          {% else %}
+                            Apply as an agent to add properties
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="mt-4">
+                <a href="{{ url_for('property.explore_properties') }}" class="btn btn-brand w-100 py-2">
+                  Continue Exploring Properties
+                </a>
+              </div>
+              {% else %}
+              <h5 class="fw-bold mb-3">Search Properties</h5>
+
+              <form id="homeSearchForm" class="row g-2">
+                <div class="col-12 col-md-6">
+                  <label class="form-label small mb-1">Property Type</label>
+                  {{ form.type(class_="form-select", id="type") }}
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label class="form-label small mb-1">State / City</label>
+                  {{ form.location(class_="form-control", id="location", placeholder="e.g. Lagos") }}
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label class="form-label small mb-1">Budget (₦)</label>
+                  {{ form.budget(class_="form-select", id="budget") }}
+                </div>
+
+                <div class="col-12">
+                  <button type="button" id="searchBtn" class="btn btn-brand w-100 py-2">Search Now</button>
+                  <p class="text-muted small mt-2 mb-0">
+                    Tip: Search by type, state, or budget.
+                  </p>
+                </div>
+              </form>
+
+              <div id="search_result" class="mt-4"></div>
+            {% endif %}
           </div>
         </div>
-
       </div>
     </div>
   </header>
@@ -214,8 +286,17 @@
             </div>
           </div>
         </div>
-
       </div>
+
+      {% if current_user %}
+        <div class="mt-4 cta d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+          <div>
+            <h5 class="fw-bold mb-1">You are signed in</h5>
+            <p class="text-muted mb-0">Use your account menu to access dashboard, profile, and logout anytime.</p>
+          </div>
+          <a class="btn btn-brand px-4" href="{{ url_for('user.dashboard') }}">Open Dashboard</a>
+        </div>
+      {% endif %}
     </div>
   </section>
 
@@ -229,43 +310,60 @@
         </div>
       </div>
 
-        <div class="row g-3">
-            {% if featured_properties and featured_properties|length > 0 %}
-              {% for p in featured_properties %}
-                <div class="col-12 col-md-4">
-                  <div class="city">
-                    <a href="{{ url_for('main.home_property_detail', property_id=p.property_id) }}"
-                      class="city-link">
-                      <img src="{{ url_for('static', filename=covers[p.property_id]) }}"
-                          alt="{{ p.property_title }}"
-                          class="img-fluid w-100"
-                          style="height:250px; object-fit:cover;">
-                    </a>
+      <div class="row g-3">
+        {% if featured_properties and featured_properties|length > 0 %}
+          {% for p in featured_properties %}
+            <div class="col-12 col-md-4">
+              <div class="city">
+                <a href="{{ url_for('main.home_property_detail', property_id=p.property_id) }}"
+                   class="city-link">
+                  <img src="{{ url_for('static', filename=covers[p.property_id]) }}"
+                       alt="{{ p.property_title }}"
+                       class="img-fluid w-100"
+                       style="height:250px; object-fit:cover;">
+                </a>
 
-                    <div class="label">
-                      <h5 class="fw-bold mb-1">
-                        {{ p.states.state_name if p.states else "No State" }}
-                      </h5>
-                      <div class="small">
-                        {{ p.property_title or "Property" }}
-                      </div>
-                    </div>
+                <div class="label">
+                  <h5 class="fw-bold mb-1">
+                    {{ p.states.state_name if p.states else "No State" }}
+                  </h5>
+                  <div class="small">
+                    {{ p.property_title or "Property" }}
                   </div>
                 </div>
-              {% endfor %}
-            {% else %}
-              <div class="col-12">
-                <p class="text-center">No properties available yet.</p>
               </div>
-            {% endif %}
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="col-12">
+            <p class="text-center">No properties available yet.</p>
           </div>
+        {% endif %}
+      </div>
 
       <div class="mt-4 cta d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
         <div>
-          <h5 class="fw-bold mb-1">Want your listing featured?</h5>
-          <p class="text-muted mb-0">Get verified and reach serious buyers faster.</p>
+          <h5 class="fw-bold mb-1">
+            {% if current_user %}
+              Continue discovering verified listings
+            {% else %}
+              Want your listing featured?
+            {% endif %}
+          </h5>
+          <p class="text-muted mb-0">
+            {% if current_user %}
+              Explore more verified properties and track your interests from your account.
+            {% else %}
+              Get verified and reach serious buyers faster.
+            {% endif %}
+          </p>
         </div>
-        <a class="btn btn-brand px-4" href="#contact">Get Started</a>
+
+        {% if current_user %}
+          <a class="btn btn-brand px-4" href="{{ url_for('property.explore_properties') }}">Explore Properties</a>
+        {% else %}
+          <a class="btn btn-brand px-4" href="#contact">Get Started</a>
+        {% endif %}
       </div>
     </div>
   </section>
@@ -313,7 +411,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </section>
 
@@ -358,7 +455,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </section>
 
@@ -405,105 +501,82 @@
           <div class="card card-soft">
             <div class="card-body p-4 p-md-5">
               <h5 class="fw-bold mb-3">Send a message</h5>
+                  <form method="POST" action="{{ url_for('main.send_contact_message') }}" class="row g-3">
+                    {{ userform.csrf_token }}
 
-              <form class="row g-3">
-                <div class="col-12 col-md-6">
-                  <label class="form-label">Full name</label>
-                  <input class="form-control" placeholder="Your name" required>
-                </div>
-                <div class="col-12 col-md-6">
-                  <label class="form-label">Email</label>
-                  <input type="email" class="form-control" placeholder="your@email.com" required>
-                </div>
-                <div class="col-12">
-                  <label class="form-label">Subject</label>
-                  <input class="form-control" placeholder="How can we help?">
-                </div>
-                <div class="col-12">
-                  <label class="form-label">Message</label>
-                  <textarea class="form-control" rows="5" placeholder="Write your message..."></textarea>
-                </div>
-                <div class="col-12 d-flex gap-2 flex-wrap">
-                  <button type="button" class="btn btn-brand px-4">Send</button>
-                  <button type="reset" class="btn btn-outline-secondary px-4">Clear</button>
-                </div>
-                <p class="text-muted small mb-0">We will be in touch.</p>
-              </form>
+                    <div class="col-12 col-md-6">
+                      {{ userform.fullname.label(class_="form-label") }}
+                      {{ userform.fullname(class_="form-control", placeholder="Your name") }}
+                      {% for error in userform.fullname.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                      {% endfor %}
+                    </div>
 
+                    <div class="col-12 col-md-6">
+                      {{ userform.email.label(class_="form-label") }}
+                      {{ userform.email(class_="form-control", placeholder="your@email.com") }}
+                      {% for error in userform.email.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                      {% endfor %}
+                    </div>
+
+                    <div class="col-12">
+                      {{ userform.subject.label(class_="form-label") }}
+                      {{ userform.subject(class_="form-control", placeholder="How can we help?") }}
+                      {% for error in userform.subject.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                      {% endfor %}
+                    </div>
+
+                    <div class="col-12">
+                      {{ userform.message.label(class_="form-label") }}
+                      {{ userform.message(class_="form-control", rows="5", placeholder="Write your message...") }}
+                      {% for error in userform.message.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                      {% endfor %}
+                    </div>
+
+                    <div class="col-12 d-flex gap-2 flex-wrap">
+                      {{ userform.submit(class_="btn btn-brand px-4") }}
+                      <button type="reset" class="btn btn-outline-secondary px-4">Clear</button>
+                    </div>
+
+                    <p class="text-muted small mb-0">We will be in touch.</p>
+                  </form>
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
+  {% endblock %}
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="container">
-      <div class="row g-4 align-items-start">
-        <div class="col-12 col-lg-5">
-          <div class="fw-bold mb-2">
-            <span class="text-warning">&lt;/&gt;</span> PEA-Bridge
-          </div>
-          <div class="small">
-            A verified marketplace for homes, land, and apartments — built to reduce scams and speed up discovery.
-          </div>
-        </div>
-        <div class="col-6 col-lg-3">
-          <div class="fw-bold mb-2">Links</div>
-          <div class="small d-grid gap-1">
-            <a class="text-decoration-none text-light opacity-75" href="#features">Features</a>
-            <a class="text-decoration-none text-light opacity-75" href="#cities">Cities</a>
-            <a class="text-decoration-none text-light opacity-75" href="#contact">Contact</a>
-          </div>
-        </div>
-        <div class="col-6 col-lg-4">
-          <div class="fw-bold mb-2">Get updates</div>
-          <div class="small opacity-75 mb-2">Join us on our (catelogs only).</div>
-          <form class="d-flex gap-2">
-            <input class="form-control form-control-sm" placeholder="Email address">
-            <button type="button" class="btn btn-sm btn-brand">Join</button>
-          </form>
-        </div>
-      </div>
+  
+  
 
-      <hr class="border-light border-opacity-10 my-4">
+{% block scripts %} 
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
 
-      <div class="d-flex flex-column flex-md-row justify-content-between gap-2 small opacity-75">
-        <div>© <span id="year"></span> PEA-Bridge. All rights reserved.</div>
-        <div>
-          <a href="{{url_for('main.privacy')}}" class="text-decoration-none">Privacy • Terms</a>
-        </div>
-      </div>
-    </div>
-  </footer>
+    $(document).ready(function () {
+      $("#search_result").hide();
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-      <script>
-      document.getElementById("year").textContent = new Date().getFullYear();
+      $("#searchBtn").on("click", function (e) {
+        e.preventDefault();
 
-      $(document).ready(function () {
-          $("#search_result").hide();
-
-          $("#searchBtn").on("click", function (e) {
-              e.preventDefault();
-
-              $.ajax({
-                  url: "{{ url_for('main.search_view') }}",
-                  type: "GET",
-                  data: {
-                      type: $("#type").val(),
-                      location: $("#location").val(),
-                      budget: $("#budget").val()
-                  },
-                  success: function (resp) {
-                      $("#search_result").show().html(resp);
-                  }
-              });
-          });
+        $.ajax({
+          url: "{{ url_for('main.search_view') }}",
+          type: "GET",
+          data: {
+            type: $("#type").val(),
+            location: $("#location").val(),
+            budget: $("#budget").val()
+          },
+          success: function (resp) {
+            $("#search_result").show().html(resp);
+          }
+        });
       });
-      </script>
-
-</body>
-</html>
+    });
+  </script>
+  {% endblock %}

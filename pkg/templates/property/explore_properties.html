@@ -5,8 +5,8 @@
 <div class="container-fluid">
   <div class="row mb-5 justify-content-center">
     <div class="col-12 col-md-6 ">
-        <form class=" w-100 bg-light p-2 rounded-2 ">
-            <input type="search" class="form-control" id="search" placeholder="search for more properties">
+        <form class=" w-100 bg-light p-2 rounded-2 " onsubmit="return false">
+            <input type="search" class="form-control" id="search" autocomplete="off" placeholder="search for more properties">
         </form>
         <div id="search_result" class="mt-2"></div>
     </div>
@@ -41,20 +41,34 @@
                   <div class="fw-bold mb-3">
                       {{ p.states.state_name if p.states else "No State" }}
                     </div>
-              <div class="d-flex gap-2 flex-wrap">
-                <a href="{{ url_for('property.public_property_detail', property_id=p.property_id , next='explore') }}"
-                   class="btn btn-outline-light btn-sm">
-                  View
-                </a>
+                    <div class="d-flex gap-2 flex-wrap align-items-center">
+                        <a href="{{ url_for('property.public_property_detail', property_id=p.property_id, next='explore') }}"
+                          class="btn btn-outline-light btn-sm">
+                          View
+                        </a>
 
-                <form action="{{ url_for('interest.request_interest', property_id=p.property_id) }}"
-                      method="post">
-                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                  <button class="btn btn-success btn-sm fw-bold">
-                    Request
-                  </button>
-                </form>
-              </div>
+                            {% set req = request_status_map[p.property_id] %}
+
+                          {% if req.has_requested %}
+                            <button class="btn btn-secondary btn-sm fw-bold" disabled>
+                              Already Requested
+                            </button>
+
+                          {% elif not req.can_request_again %}
+                            <button class="btn btn-secondary btn-sm fw-bold" disabled>
+                              Retry in {{ req.days_left }} day(s)
+                            </button>
+
+                          {% else %}
+                            <form action="{{ url_for('interest.request_interest', property_id=p.property_id) }}"
+                                  method="post" class="m-0">
+                              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                              <button class="btn btn-success btn-sm fw-bold">
+                                Request Interest
+                              </button>
+                            </form>
+                          {% endif %}
+                      </div>
             </div>
 
           </div>
@@ -72,37 +86,54 @@
 
 </div>
 {% endblock %}
-
 {% block scripts %}
-
 <script>
-  $(document).ready(function(){
+$(document).ready(function () {
+    $('#search_result').hide();
 
-$('#search_result').hide()
-$('#search').keyup(function(){
-  var searchData= $(this).val()
-  if(searchData < 2){
-    $("#search_result").hide();
-    return;
-  }
+    $('#search').on('keyup', function () {
+        let searchData = $(this).val().trim();
 
-  $.ajax({
+        if (searchData.length < 2) {
+            $('#search_result').hide().html('');
+            return;
+        }
 
-    url:'{{ url_for("property.search_view") }}',
-    type:'GET',
-    dataType:'text',
-    data:'search='+searchData,
-    success:function(resp){
-      $('#search_result').show().html(resp)
+        $.ajax({
+            url: "{{ url_for('property.search_view') }}",
+            type: "GET",
+            data: { search: searchData },
+            success: function (resp) {
+                if (resp.trim() === "") {
+                    $('#search_result').hide().html('');
+                } else {
+                    $('#search_result').show().html(resp);
+                    
+                }
+            },
+            // ajax erro handler show error if this fails
+            error: function () {
+                $('#search_result').show().html(
+                    '<div class="list-group-item text-danger">Search failed</div>'
+                );
+            }
+        });
+    });
 
-    }
-  });
-})
+    $(document).on('click', function (e) {
+      
+      // check if this click is inside the search or search_result if true return 1 if false return 0
+        if ($(e.target).closest('#search, #search_result').length) {
+            $('#search_result').hide();
+        }
+    });
+});
 
-
-  })
+setTimeout(function () {
+    document.querySelectorAll('.auto-dismiss').forEach(function (alert) {
+        let dsAlert = new bootstrap.Alert(alert);
+        dsAlert.close();
+    });
+}, 2000);
 </script>
-
-
-
 {% endblock %}

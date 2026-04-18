@@ -36,28 +36,39 @@
     </a>
   </li>
   
-  <li class="nav-item">
-         {% if agent_profile %}
-                {% if agent_profile.agency_status == "active" %}
-                  <span class="badge bg-info text-dark fw-bold">Verified Agent</span>
-                {% elif agent_profile.agency_status == "pending" %}
-                  <span class="badge bg-warning text-dark fw-bold">Agent Pending</span>
-                {% elif agent_profile.agency_status == "suspended" %}
-                  <span class="badge bg-danger fw-bold">Agent Suspended</span>
-                {% else %}
-                  <a class="nav-link text-white {% if active=='agent' %}active{% endif %}"
-                    href="{{ url_for('agent.apply') }}">
-                    Become an Agent
-                  </a>
-                {% endif %}
-              {% else %}
-                <a class="nav-link text-white {% if active=='agent' %}active{% endif %}"
-                      href="{{ url_for('agent.apply') }}">
-                      Become an Agent
-                    </a>
-              {% endif %}
-    
-    
-  </li>
+      <li class="nav-item">
+
+  {% if agent_profile %}
+
+      {% if agent_profile.agency_status == "active" %}
+         <span class="nav-link text-success fw-bold">
+          Agent active
+        </span>
+
+      {% elif agent_profile.agency_status == "pending" %}
+        <span class="nav-link text-warning fw-bold">
+          Agent Pending
+        </span>
+
+      {% elif agent_profile.agency_status == "suspended" %}
+        <span class="nav-link text-danger fw-bold">
+          Agent Suspended
+        </span>
+
+      {% else %}
+        <a class="nav-link text-white {% if active=='agent' %}active{% endif %}"
+           href="{{ url_for('agent.apply') }}">
+          Become an Agent
+        </a>
+      {% endif %}
+
+  {% else %}
+    <a class="nav-link text-white {% if active=='agent' %}active{% endif %}"
+       href="{{ url_for('agent.apply') }}">
+      Become an Agent
+    </a>
+  {% endif %}
+
+</li>
  
 </ul>

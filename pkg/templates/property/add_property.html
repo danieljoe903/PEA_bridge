@@ -49,3 +49,18 @@
 </div>
 
 {% endblock %}
+
+
+{% block scripts %}
+      <script>
+            setTimeout(function(){
+        document.querySelectorAll('.auto-dismiss').forEach(function(alert){
+          let bsAlert =new bootstrap.Alert(alert);
+          bsAlert.close();
+        });
+      }, 3000);
+
+      
+ </script>
+
+ {% endblock %}

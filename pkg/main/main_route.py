@@ -1,7 +1,9 @@
-from flask import redirect,render_template,request,session,url_for,flash
+from flask import redirect,render_template,request,session,url_for,flash,current_app
 from sqlalchemy import desc,asc
 from pkg.main import forms
 from pkg.main import main_bp
+from flask_mail import Message
+from pkg.extension import mail
 from pkg.model import User,Property,PropertyImage,State
 from pkg.extension import db
 from collections import defaultdict
@@ -11,7 +13,7 @@ import random
 def homepage():
 
     form= forms.HomeSearchForm()
-
+    userform = forms.ContactForm()
     properties = (
         Property.query
         .filter_by(property_status="available")
@@ -60,13 +62,75 @@ def homepage():
         covers[prop.property_id] = (
             cover.image_url if cover else "property_images/default_property.png"
         )
-
+    # print("MAIL_DEFAULT_SENDER:", current_app.config.get("MAIL_DEFAULT_SENDER"))
+    # print("PEA_BRIDGE_EMAIL:", current_app.config.get("PEA_BRIDGE_EMAIL"))
     return render_template(
         "main/homepage.html",
         form=form,
         featured_properties=featured_properties,
-        covers=covers
+        covers=covers,
+        userform=userform,
+        active="homepage"
     )
+
+
+@main_bp.route("/contact/send/", methods=["POST"])
+def send_contact_message():
+    userform = forms.ContactForm()
+
+    if userform.validate_on_submit():
+        try:
+            msg = Message(
+                subject=f"PEA-Bridge Contact: {userform.subject.data}",
+                recipients=[current_app.config["PEA_BRIDGE_EMAIL"]],
+                sender=userform.email.data,
+                reply_to=userform.email.data.strip()
+            )
+           
+            msg.body = f"""
+                New message from PEA-Bridge contact form
+
+                Full Name: {userform.fullname.data}
+                Email: {userform.email.data}
+                Subject: {userform.subject.data}
+
+                Message:
+                {userform.message.data}
+                """
+
+            msg.html = f"""
+            <div style="font-family:Arial, sans-serif; background:#f4f6f9; padding:20px;">
+              <div style="max-width:600px; margin:auto; background:#ffffff; border:1px solid #e5e7eb; border-radius:10px; overflow:hidden;">
+                
+                <div style="background:#0b1320; padding:20px; text-align:center;">
+                  <h2 style="margin:0; color:#7acc16;">PEA-Bridge Contact Message</h2>
+                </div>
+
+                <div style="padding:24px;">
+                  <p style="margin:0 0 12px;"><strong>Full Name:</strong> {userform.fullname.data}</p>
+                  <p style="margin:0 0 12px;"><strong>Email:</strong> {userform.email.data}</p>
+                  <p style="margin:0 0 12px;"><strong>Subject:</strong> {userform.subject.data}</p>
+                  <p style="margin:0 0 8px;"><strong>Message:</strong></p>
+                  <div style="background:#f9fafb; border:1px solid #e5e7eb; padding:15px; border-radius:8px; white-space:pre-wrap;">
+                    {userform.message.data}
+                  </div>
+                </div>
+              </div>
+            </div>
+            """
+
+            mail.send(msg)
+            flash("Your message has been sent successfully.", "success")
+
+        except Exception as e:
+            # print("PEA_BRIDGE_EMAIL:",e)
+            # print("CONTACT FORM MAIL ERROR:", e)
+            flash("Message could not be sent right now. Please try again later.", "danger")
+
+    else:
+        flash("Please fill the form correctly before sending.", "warning")
+
+    return redirect(url_for("main.homepage"))
 
 @main_bp.route('/privacy/')
 def privacy():
@@ -99,7 +163,7 @@ def search_view():
 
     # if everything is empty, return nothing
     if not property_type and not location and not budget:
-        return ""
+        return '<div class="alert alert-danger mt-3">please fill in the space.</div>'
 
     # if location is provided, check state first
     state = None

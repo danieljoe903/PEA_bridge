@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Check Your Inbox | PEA-Bridge{% endblock %}
+
+{% block content %}
+<section class="hero" style="min-height:100vh;">
+  <div class="container">
+    <div class="row justify-content-center align-items-center" style="min-height:100vh;">
+      <div class="col-12 col-md-8 col-lg-5">
+        <div class="glass p-4 p-md-5 text-center">
+          <div class="mb-3" style="font-size:52px;">📩</div>
+
+          <h2 class="fw-bold mb-2">Check Your Inbox</h2>
+
+          <p class="text-muted mb-4">
+            If the email you entered exists in our system, a password reset link has been sent.
+            Please check your inbox and spam folder.
+          </p>
+
+          <div class="d-grid gap-2">
+            <a href="{{ url_for('auth.resend_reset_link') }}" class="btn btn-brand py-2">
+              Resend Reset Link
+            </a>
+
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary py-2">
+              Back to Login
+            </a>
+          </div>
+
+          <div class="mt-4">
+            <small class="text-muted">
+              Reset links expire after 30 minutes.
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

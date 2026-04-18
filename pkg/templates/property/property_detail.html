@@ -46,7 +46,17 @@
 
         <div class="col-12 col-md-4">
           <div class="text-white-50 small">Status</div>
-          <div class="fw-bold">{{ prop.property_status }}</div>
+          {% if prop.Property_status == "available"%}
+          <span class="badge bg-success">available</span>
+          {% elif prop.property_status == "under_verification" %}
+          <span class="badge bg-warning">Pending</span>
+          {% elif prop.property_status == "sold" %}
+          <span class="badge bg-primary">Sold</span>
+          {% elif prop.property_status == "archived" %}
+          <span class="badge bg-secondary">Archived</span>
+          {% else %}
+          <div class="fw-bold badge bg-danger">{{ prop.property_status}}</div>
+          {% endif %}
         </div>
 
         <div class="col-12 col-md-4">
@@ -70,3 +80,18 @@
 
 </div>
 {% endblock %}
+
+
+{% block scripts %}
+      <script>
+            setTimeout(function(){
+        document.querySelectorAll('.auto-dismiss').forEach(function(alert){
+          let bsAlert =new bootstrap.Alert(alert);
+          bsAlert.close();
+        });
+      }, 3000);
+
+      
+ </script>
+
+ {% endblock %}

@@ -2,36 +2,37 @@
 {% block title %}Admin Dashboard | PEA_bridge{% endblock %}
 
 {% block content %}
-<h3 class="text-white fw-bold mb-3">Overview</h3>
+<h3 class="text-dark-50 fw-bold mb-3">Overview</h3>
 
 <div class="row g-3">
   <div class="col-12 col-md-3">
     <div class="card p-3">
-      <div class="text-white-50 small">Total Users</div>
+      <div class="text-dark-50 fw-bold">Total Users</div>
       <div class="fs-3 fw-bold">{{ total_users }}</div>
     </div>
   </div>
 
   <div class="col-12 col-md-3">
     <div class="card p-3">
-      <div class="text-white-50 small">Total Properties</div>
+      <div class="text-dark-50 fw-bold">Total Properties</div>
       <div class="fs-3 fw-bold">{{ total_properties }}</div>
     </div>
   </div>
 
   <div class="col-12 col-md-3">
     <div class="card p-3">
-      <div class="text-white-50 small">Pending Properties</div>
+      <div class="text-dark-50 fw-bold">Pending Properties</div>
       <div class="fs-3 fw-bold">{{ pending_properties }}</div>
     </div>
   </div>
 
   <div class="col-12 col-md-3">
     <div class="card p-3">
-      <div class="text-white-50 small">Pending Agents</div>
+      <div class="text-dark-50 fw-bold">Pending Agents</div>
       <div class="fs-3 fw-bold">{{ pending_agents or 0 }}</div>
     </div>
   </div>
 </div>
 
 {% endblock %}
+

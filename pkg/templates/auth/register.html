@@ -26,10 +26,15 @@
        {{userform.csrf_token}}
     <!-- FIRST & LAST NAME -->
 
-     {% with message=get_flashed_messages(with_categories=True)%}
-                            {% for cat,msg in message %}
-                                <p class="alert alert-{{cat}}">{{msg}}</p>
+     {% with messages=get_flashed_messages(with_categories=True)%}
+     {% if messages %}
+                            {% for cat,msg in messages %}
+                                <div class="alert alert-{{cat}} alert-dismissible fade show auto-dismiss" role="alert">
+                                  {{msg}}
+                                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                  </div>
                             {% endfor %}
+                            {% endif %}
                             {% endwith %}
     <div class="row mb-3">
       <div class="col-md-6 mb-3 mb-md-0">
@@ -136,7 +141,9 @@
   </div>
 
 </div>
-      <script src="/static/jquery-4.0.0.min.js"></script>
+  <script src="/static/jquery-4.0.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
  <script>
            $(function(){
             $("#submit").prop("disabled",true)
@@ -151,6 +158,13 @@
         
           
       })
+
+      setTimeout(function(){
+        document.querySelectorAll('.auto-dismiss').forEach(function(alert){
+          let bsAlert =new bootstrap.Alert(alert);
+          bsAlert.close();
+        });
+      }, 3000);
 </script>
 </body>
 </html>

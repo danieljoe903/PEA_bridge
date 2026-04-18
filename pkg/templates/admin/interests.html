@@ -74,7 +74,7 @@
                     {% elif it.interest_status == "approved" %}
                       <span class="badge bg-success">Approved</span>
                     {% else %}
-                      <span class="badge bg-danger">Declined</span>
+                      <span class="badge bg-danger">{{ it.property_status }}</span>
                     {% endif %}
                   </td>
 

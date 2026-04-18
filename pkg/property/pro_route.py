@@ -1,12 +1,13 @@
 import os
 import uuid
+from datetime import datetime, timedelta
 from flask import render_template, request, redirect, url_for, session, current_app, flash
 from werkzeug.utils import secure_filename
 from pkg.property import property_bp
 from pkg.property import forms
 from sqlalchemy import desc,or_,and_,asc
 from pkg.extension import db
-from pkg.model import Property, PropertyImage,User,PropertyAgent,State,ClientInterest
+from pkg.model import Property, PropertyImage,User,PropertyAgent,State,ClientInterest,PropertyDocument
 
 ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "webp"}
 
@@ -56,7 +57,8 @@ def add_property():
             price=form.price.data,
             property_listing="SALE",
             property_status="under_verification",
-            agent_id=agent_profile.agent_id
+            agent_id=agent_profile.agent_id if agent_profile else None,
+            expires_at=datetime.utcnow() + timedelta(days=14)
         )
 
         db.session.add(property)
@@ -103,7 +105,7 @@ def add_property():
 # # list_properties
 # ==================
 
-def get_current_user():
+def get_current_user(): 
     if "user_id" not in session:
         return None
     return db.session.get(User, session["user_id"])
@@ -113,11 +115,14 @@ def list_properties():
     user = get_current_user()
     if not user:
         return redirect(url_for("auth.login"))
+    
+   
 
     my_properties = (
         Property.query
-        .filter_by(owner_id=session['user_id'])
-        .order_by(desc(Property.created_at)).all()
+        .filter(Property.owner_id == user.user_id,
+                Property.property_status != "archived")
+                .order_by(desc(Property.created_at)).all()
         
     )
 
@@ -217,71 +222,122 @@ def edit_property(property_id):
         prop=prop
     )
 
-@property_bp.route("/<int:property_id>/delete/", methods=["GET","POST"])
+@property_bp.route("/delete/<int:property_id>/", methods=["POST"])
 def delete_property(property_id):
     user = get_current_user()
     if not user:
         return redirect(url_for("auth.login"))
 
     prop = Property.query.get_or_404(property_id)
+
     if prop.owner_id != user.user_id:
         flash("You are not allowed to delete that property.", "danger")
         return redirect(url_for("property.list_properties"))
 
-    # delete images first (FK-safe)
-    PropertyImage.query.filter_by(property_id=property_id).delete()
-    db.session.delete(prop)
+    prop.property_status = "archived"
     db.session.commit()
 
-    flash("Property deleted.", "success")
+    flash("Property removed successfully.", "success")
     return redirect(url_for("property.list_properties"))
+
+from datetime import datetime, timedelta
 
 @property_bp.route("/property/<int:property_id>/")
 def public_property_detail(property_id):
-
     user = get_current_user()
     if not user:
         return redirect(url_for("auth.login"))
 
     prop = Property.query.get_or_404(property_id)
 
-    # ✅ check if user already requested this property
-    existing_request = ClientInterest.query.filter_by(
-        client_user_id=user.user_id,
-        property_id=prop.property_id
-    ).first()
-
-    images = PropertyImage.query.filter_by(
-        property_id=property_id
-    ).all()
+    images = (
+        PropertyImage.query
+        .filter_by(property_id=property_id)
+        .order_by(asc(PropertyImage.image_id))
+        .all()
+    )
 
     state = State.query.filter_by(state_id=prop.state_id).first()
+    
 
-    next_page=request.args.get("next","explore")
+    RE_REQUEST_DAYS = 3
+    has_requested = False
+    can_request_again = True
+    days_left = 0
+
+    existing_requests = (
+        ClientInterest.query
+        .filter(
+            ClientInterest.client_user_id == user.user_id,
+            ClientInterest.property_id == prop.property_id
+        )
+        .order_by(ClientInterest.created_at.desc())
+        .all()
+    )
+
+    active_request = next(
+        (r for r in existing_requests if r.interest_status in ["requested", "approved"]),
+        None
+    )
+
+    if active_request:
+        has_requested = True
+        can_request_again = False
+
+    latest_declined = next(
+        (r for r in existing_requests if r.interest_status == "declined"),
+        None
+    )
+
+    if not active_request and latest_declined:
+        next_allowed_date = latest_declined.created_at + timedelta(days=RE_REQUEST_DAYS)
+
+        if datetime.utcnow() < next_allowed_date:
+            can_request_again = False
+            days_left = (next_allowed_date - datetime.utcnow()).days + 1
+
+    next_page = request.args.get("next", "explore")
 
     return render_template(
         "property/public_property_detail.html",
+        user=user,
         prop=prop,
         images=images,
         state=state,
-        user=user,
-        has_requested=True if existing_request else False,
-        next_page=next_page
+        next_page=next_page,
+        has_requested=has_requested,
+        can_request_again=can_request_again,
+        days_left=days_left
     )
-    
+
+
 @property_bp.route("/explore/")
 def explore_properties():
     user = get_current_user()
     if not user:
         return redirect(url_for("auth.login"))
     
+
+         # expire old available properties
+    explore_properties = Property.query.filter(
+        Property.property_status == "available",
+        Property.expires_at != None,
+        Property.expires_at < datetime.utcnow()
+    ).all()
+
+    for prop in explore_properties:
+        prop.property_status = "expired"
+
+    if explore_properties:
+        db.session.commit()
+
     properties = (
         Property.query
         .filter(Property.property_status == "available")
-        .order_by(desc(Property.created_at)).all()
-        
+        .order_by(desc(Property.created_at))
+        .all()
     )
-   
+
     covers = {}
     for p in properties:
         cover = (
@@ -290,10 +346,45 @@ def explore_properties():
             .order_by(asc(PropertyImage.image_id))
             .first()
         )
-        
         covers[p.property_id] = cover.image_url if cover else "property_images/default_property.png"
 
-        
+    RE_REQUEST_DAYS = 3
+    request_status_map = {}
+
+    all_requests = ClientInterest.query.filter_by(client_user_id=user.user_id).all()
+
+    for p in properties:
+        property_requests = [r for r in all_requests if r.property_id == p.property_id]
+
+        active_request = next(
+            (r for r in sorted(property_requests, key=lambda x: x.created_at, reverse=True)
+             if r.interest_status in ["requested", "approved"]),
+            None
+        )
+
+        latest_declined = next(
+            (r for r in sorted(property_requests, key=lambda x: x.created_at, reverse=True)
+             if r.interest_status == "declined"),
+            None
+        )
+
+        request_status_map[p.property_id] = {
+            "has_requested": False,
+            "can_request_again": True,
+            "days_left": 0
+        }
+
+        if active_request:
+            request_status_map[p.property_id]["has_requested"] = True
+            request_status_map[p.property_id]["can_request_again"] = False
+
+        elif latest_declined:
+            next_allowed_date = latest_declined.created_at + timedelta(days=RE_REQUEST_DAYS)
+            if datetime.utcnow() < next_allowed_date:
+                request_status_map[p.property_id]["can_request_again"] = False
+                request_status_map[p.property_id]["days_left"] = (
+                    next_allowed_date - datetime.utcnow()
+                ).days + 1
 
     return render_template(
         "property/explore_properties.html",
@@ -301,34 +392,66 @@ def explore_properties():
         active="explore",
         properties=properties,
         covers=covers,
-        
-       
+        request_status_map=request_status_map
     )
+
+@property_bp.route("/reactivate/<int:property_id>/", methods=["POST"])
+def reactivate_property(property_id):
+    user = get_current_user()
+    if not user:
+        return redirect(url_for("auth.login"))
+
+    prop = Property.query.get_or_404(property_id)
+
+    if prop.owner_id != user.user_id:
+        flash("You are not allowed to reactivate this property","danger")
+        return redirect(url_for("property.list_properties"))
+    
+    if prop.property_status != "expired":
+        flash("only expired properties can be reactivated","warning")
+        return redirect(url_for("property.list_properties"))
+    
+    prop.property_status = "available"
+    prop.expires_at = datetime.utcnow() + timedelta(days=14)
+    db.session.commit()
+    
+    flash("property reactivated successfully","success")
+    return redirect(url_for("property.list_properties"))
+
 
 @property_bp.route('/search_view')
 def search_view():
-
     search = request.args.get('search', '').strip()
 
     if not search:
         return ''
 
-    pro = Property.query.outerjoin(State, Property.state_id==State.state_id).filter(or_
-       (Property.adress.ilike(f'%{search}%'),
-        Property. property_title.ilike(f'%{search}%'),
-        State.state_name.ilike(f'%{search}%')
+    pro = (
+        Property.query
+        .outerjoin(State, Property.state_id == State.state_id)
+        .filter(
+            Property.property_status == "available",
+            or_(
+                Property.adress.ilike(f'%{search}%'),
+                Property.property_title.ilike(f'%{search}%'),
+                State.state_name.ilike(f'%{search}%')
+            )
         )
-    ).all()
+        .order_by(Property.created_at.desc())
+        .limit(8)
+        .all()
+    )
    
     result = '<div class="list-group">'
 
     if pro:
         for p in pro:
-            state_name=p.state.state_name if hasattr(p, 'state') and p.state else 'no'
+            state_name = p.states.state_name if hasattr(p, 'states') and p.states else 'No State'
             result += f'''
-            <a href="/explore/view/{p.property_id}"
+            <a href="/property/{p.property_id}/?next=explore"
                class="list-group-item list-group-item-action">
-               {p.property_title} - {p.adress} - {state_name}
+               <strong>{p.property_title or "Property"}</strong><br>
+               <small>{p.adress} - {state_name}</small>
             </a>
             '''
     else:
@@ -336,4 +459,5 @@ def search_view():
 
     result += '</div>'
 
+    
     return result

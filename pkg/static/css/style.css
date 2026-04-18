@@ -22,6 +22,10 @@ body{
 
 .pea{
     color:greenyellow;
+    
+}
+.pea:hover{
+    color:blue;
 }
 .features{
   display:flex;

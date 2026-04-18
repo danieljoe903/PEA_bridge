@@ -59,19 +59,32 @@
 
                             {% elif it.interest_status == "approved" %}
                               <span class="badge bg-success">Approved</span>
-
-                            {% else %}
+                              
+                            {% elif it.interest_status == "declined" %}
                               <span class="badge bg-danger">Declined</span>
+                            {% else %}
+                              <span class="badge bg-danger">{{ it.interest_status }}</span>
                             {% endif %}
                           </td>
 
-                          <td class="text-end">
-                            {% if it.property %}
-                            <a class="btn btn-sm btn-outline-light"
-                             href="{{ url_for('property.public_property_detail', property_id=it.property.property_id, next='my_interest') }}">
-                              View
-                            </a>
-                            {% endif %}
+                            <td class="text-end">
+                            <div class="d-flex gap-2 justify-content-end flex-wrap">
+                              {% if it.property %}
+                                <a class="btn btn-sm btn-outline-light"
+                                  href="{{ url_for('property.public_property_detail', property_id=it.property.property_id, next='my_interest') }}">
+                                  View
+                                </a>
+                              {% endif %}
+
+                              <form action="{{ url_for('interest.cancel_request', interest_id=it.interest_id) }}"
+                                    method="post"
+                                    onsubmit="return confirm('Are you sure you want to cancel this request?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-sm btn-danger fw-bold">
+                                  Cancel
+                                </button>
+                              </form>
+                            </div>
                           </td>
 
                         </tr>
@@ -93,3 +106,17 @@
 </div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+      <script>
+            setTimeout(function(){
+        document.querySelectorAll('.auto-dismiss').forEach(function(alert){
+          let bsAlert =new bootstrap.Alert(alert);
+          bsAlert.close();
+        });
+      }, 3000);
+
+      
+ </script>
+
+ {% endblock %}

@@ -6,7 +6,7 @@
 
   <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
     <h3 class="text-white mb-0">{{ prop.property_title or "Property" }}</h3>
-
+      
     {% if next_page == "my_interest" %}
       <a href="{{ url_for('interest.my_interest') }}" class="btn btn-outline-light btn-sm">
         Back
@@ -20,10 +20,11 @@
         Back
       </a>
       {% else %}
-      <a href="{{ url_for('user.dashboard') }}" class="btn btn-outline-light btn-sm">
+      <a href="{{ url_for('interest.owner_requests') }}" class="btn btn-outline-light btn-sm">
         Back
       </a>
     {% endif %}
+    
   </div>
 
   <div class="card shadow mb-4" style="background:#0f172a;border:none;border-radius:14px;color:white;">
@@ -67,6 +68,18 @@
         <div class="col-12 col-md-4">
           <div class="text-white-50 small">State</div>
           <div class="fw-bold">{{ state.state_name if state else "No State" }}</div>
+
+            <div class="mt-2">
+                      <h4 class="fw-bold ">For Buyers Safety</h4>
+              <ul class="text-info">
+                  <li>Always meet in public places or well known locations</li>
+                  <li>Dont go alone</li>
+                  <li>Confirm property and verify all ducuments</li>
+                  <li>Do not pay advanced money</li>
+                  <li>comfirm the owner or agent identity</li>
+                  <li>Leave immediately if something happens</li>
+              </ul>
+              </div>
         </div>
 
         <div class="col-12 col-md-4">
@@ -77,6 +90,8 @@
             {% else %}
               No Owner
             {% endif %}
+            <div class="text-white-50 small">Address</div>
+            <div class="fw-bold">{{ prop.adress }}</div>
           </div>
         </div>
         <div class="col-12 col-md-4">
@@ -88,11 +103,7 @@
                   No phone: NO
                 {% endif %}
               </div>
-          </div>
-      
-
-        <div class="col-12 col-md-4">
-          <div class="text-white-50 small">Agent</div>
+              <div class="text-white-50 small">Agent</div>
           <div class="fw-bold">
             {% if prop.agent and prop.agent.user %}
               {% if prop.agent.agency_status == "active" %}
@@ -108,32 +119,48 @@
               <span class="badge bg-secondary">No Agent</span>
             {% endif %}
           </div>
-        </div>
+          </div>
+      
 
-        <div class="col-12">
-          <div class="text-white-50 small">Address</div>
-          <div class="fw-bold">{{ prop.adress }}</div>
-        </div>
+              <div class="col-12 mt-3">
+              {% if has_requested %}
+                <button class="btn btn-secondary fw-bold w-100" disabled>
+                  Already Requested
+                </button>
 
-        <div class="col-12 mt-3">
-          {% if has_requested %}
-            <button class="btn btn-secondary fw-bold w-100" disabled>
-              Already Requested
-            </button>
-          {% else %}
-            <form action="{{ url_for('interest.request_interest', property_id=prop.property_id) }}"
-                  method="post">
-              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-              <button class="btn btn-success fw-bold w-100">
-                Request Interest
-              </button>
-            </form>
-          {% endif %}
-        </div>
+              {% elif not can_request_again %}
+                <button class="btn btn-secondary fw-bold w-100" disabled>
+                  Request Again in {{ days_left }} day(s)
+                </button>
 
+              {% else %}
+                <form action="{{ url_for('interest.request_interest', property_id=prop.property_id) }}"
+                      method="post">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button class="btn btn-success fw-bold w-100">
+                    Request Interest
+                  </button>
+                </form>
+              {% endif %}
+            </div>
       </div>
     </div>
   </div>
 
 </div>
 {% endblock %}
+
+
+{% block scripts %}
+      <script>
+            setTimeout(function(){
+        document.querySelectorAll('.auto-dismiss').forEach(function(alert){
+          let bsAlert =new bootstrap.Alert(alert);
+          bsAlert.close();
+        });
+      }, 3000);
+
+      
+ </script>
+
+ {% endblock %}

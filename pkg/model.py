@@ -1,3 +1,4 @@
+import secrets
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from pkg.extension import db
@@ -25,6 +26,8 @@ class User(db.Model):
 
     user_password = db.Column(db.String(255), nullable=False)
     username = db.Column(db.String(200), nullable=False, index=True)
+
+    reset_nonce = db.Column(db.String(64),nullable=False, default=lambda: secrets.token_hex(16))
 
     def set_password(self, password):
         self.user_password = generate_password_hash(password)
@@ -103,12 +106,13 @@ class Property(db.Model):
     price = db.Column(db.Numeric(12, 2), nullable=True)
 
     property_status = db.Column(
-        db.Enum("available", "under_verification", "sold", "rented", "rejected"),
+        db.Enum("available", "under_verification", "sold", "rented", "rejected","archived","expired"),
         nullable=True,
         default="under_verification"
     )
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    expires_at = db.Column(db.DateTime, nullable=True)
 
     property_listing = db.Column(
         db.Enum("SALE"),
@@ -125,9 +129,9 @@ class Property(db.Model):
     owner = db.relationship("User", back_populates="properties_owned")
     agent = db.relationship("PropertyAgent", back_populates="properties")
 
-    images = db.relationship("PropertyImage", back_populates="property")
-    documents = db.relationship("PropertyDocument", back_populates="property")
-    requests = db.relationship("ClientInterest", back_populates="property")
+    images = db.relationship("PropertyImage", back_populates="property",cascade="all, delete-orphan")
+    documents = db.relationship("PropertyDocument", back_populates="property",cascade="all, delete-orphan")
+    requests = db.relationship("ClientInterest", back_populates="property",cascade="all, delete-orphan")
 
 
 # -------------------------

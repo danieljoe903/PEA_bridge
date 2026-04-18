@@ -89,6 +89,12 @@
         <p class="fs-3 mb-0">{{ approved_property or 0 }}</p>
       </div>
     </div>
+        <div class="col-12 col-md-3 mb-3">
+          <div class="card shadow text-center p-3" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+            <h6 class="mb-1">Requests On My Properties</h6>
+            <p class="fs-3 mb-0">{{ total_owner_requests or 0 }}</p>
+          </div>
+        </div>
   </div>
 
   <!-- MY PROPERTIES -->
@@ -213,8 +219,10 @@
                       <span class="badge bg-warning text-dark">Requested</span>
                     {% elif it.interest_status == "approved" %}
                       <span class="badge bg-success">Approved</span>
+                      {% elif it.interest_status == "declined" %}
+                      <span class="badge bg-danger">declined</span>
                     {% else %}
-                      <span class="badge bg-danger">Declined</span>
+                      <span class="badge bg-danger">{{ it.interest_status }}</span>
                     {% endif %}
                   </td>
 
@@ -240,6 +248,86 @@
       </div>
     </div>
   </div>
+    <div class="card shadow-lg mb-4" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+  <div class="card-body">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <h4 class="mb-0">People Interested In My Properties</h4>
+    </div>
+        <!-- requested interest -->
+    <div class="table-responsive mt-3">
+      <table class="table table-dark table-striped align-middle text-break mb-0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Buyer</th>
+            <th>Property</th>
+            <th>Date Requested</th>
+            <th>Status</th>
+          </tr>
+        </thead>
 
+        <tbody>
+          {% if owner_request and owner_request|length > 0 %}
+            {% for req in owner_request %}
+              <tr>
+                <td>{{ req.interest_id }}</td>
+
+                <td>
+                  {% if req.client %}
+                    {{ req.client.user_fname }} {{ req.client.users_lname }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+
+                <td>
+                  {% if req.property %}
+                    {{ req.property.property_title or "Property" }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+
+                <td>{{ req.created_at.strftime('%d %b %Y') if req.created_at else '-' }}</td>
+
+                <td>
+                  {% if req.interest_status == "requested" %}
+                    <span class="badge bg-warning text-dark">Requested</span>
+                  {% elif req.interest_status == "approved" %}
+                    <span class="badge bg-success">Approved</span>
+                  {% elif req.interest_status == "declined" %}
+                    <span class="badge bg-danger">Declined</span>
+                  {% else %}
+                    <span class="badge bg-danger">Declined</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="5" class="text-center text-white-50 py-4">
+                No one has requested your properties yet.
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+      <script>
+            setTimeout(function(){
+        document.querySelectorAll('.auto-dismiss').forEach(function(alert){
+          let bsAlert =new bootstrap.Alert(alert);
+          bsAlert.close();
+        });
+      }, 1000);
+
+      
+ </script>
+
+ {% endblock %}

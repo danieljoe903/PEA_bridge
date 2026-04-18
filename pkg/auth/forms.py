@@ -21,6 +21,18 @@ class Register(FlaskForm):
     repeat=PasswordField('Confirm Password',validators=[DataRequired(message="Please confirm your password"),EqualTo('user_password',message='passwords must match')])
     submit=SubmitField('Create Account')
 
+class ForgotPasswordEmailForm(FlaskForm):
+    email = StringField("Email Address", validators=[DataRequired(), Email()])
+    submit = SubmitField("Send Reset Link")
+
+
+class ResetPasswordForm(FlaskForm):
+    new_password = PasswordField("New Password", validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField(
+        "Confirm New Password",
+        validators=[DataRequired(), EqualTo("new_password", message="Passwords must match")]
+    )
+    submit = SubmitField("Reset Password")
 
     class Meta:
               

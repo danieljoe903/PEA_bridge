@@ -21,33 +21,63 @@
             >
             <div class="card-body">
               <h5 class="mb-1">{{ p.property_title or "Untitled" }}</h5>
-              <div class="text-white-50 small mb-2">
-                Type: {{ p.property_type }} • Status: {{ p.property_status }}
-              </div>
+                
+                <div class="text-white-50 small mb-2">
+                    Type: {{ p.property_type }} •
 
+                    {% if p.property_status == "available" %}
+                      <span class="badge bg-success">Available</span>
+
+                    {% elif p.property_status == "under_verification" %}
+                      <span class="badge bg-warning text-dark">Pending</span>
+                    {% elif p.property_status == "expired" %}
+                      <span class="badge bg-warning text-dark">expired</span>
+
+                    {% elif p.property_status == "archived" %}
+                      <span class="badge bg-secondary">Archived</span>
+
+                    {% else %}
+                      <span class="badge bg-info text-dark">
+                        {{ p.property_status|replace("_"," ")|title }}
+                      </span>
+                    {% endif %}
+                  </div>
               <div class="fw-bold mb-3">
                 ₦ {{ "{:,.0f}".format(p.price or 0) }}
               </div>
 
-              <div class="d-flex gap-2 flex-wrap">
-                <a href="{{ url_for('property.view_property', property_id=p.property_id, back_page='list_properties') }}"
-                   class="btn btn-outline-light btn-sm">View</a>
+                <div class="d-flex gap-2 flex-wrap">
 
-                <a href="{{ url_for('property.edit_property', property_id=p.property_id) }}"
-                   class="btn btn-warning btn-sm fw-bold">Edit</a>
+                  <a href="{{ url_for('property.view_property', property_id=p.property_id, back_page='list_properties') }}"
+                    class="btn btn-outline-light btn-sm">
+                    View
+                  </a>
 
-                        <form action="{{ url_for('property.delete_property', property_id=p.property_id) }}"
-                                method="post"
-                                onsubmit="return confirm('Delete this property?');">
+                  {% if p.property_status == "expired" %}
+                    <form action="{{ url_for('property.reactivate_property', property_id=p.property_id) }}"
+                          method="post">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <button class="btn btn-success btn-sm fw-bold">
+                        Activate Again
+                      </button>
+                    </form>
 
-                              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  {% else %}
+                    <a href="{{ url_for('property.edit_property', property_id=p.property_id) }}"
+                      class="btn btn-warning btn-sm fw-bold">
+                      Edit
+                    </a>
 
-                              <button class="btn btn-danger btn-sm fw-bold">
-                                  Delete
-                              </button>
-
-                          </form>
-              </div>
+                    <form action="{{ url_for('property.delete_property', property_id=p.property_id) }}"
+                          method="post"
+                          onsubmit="return confirm('Are you sure you want to remove this property?');">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <button class="btn btn-danger btn-sm fw-bold">
+                        Delete
+                      </button>
+                    </form>
+                  {% endif %}
+                </div>
 
             </div>
           </div>
@@ -70,3 +100,18 @@
 
 </div>
 {% endblock %}
+
+
+{% block scripts %}
+      <script>
+            setTimeout(function(){
+        document.querySelectorAll('.auto-dismiss').forEach(function(alert){
+          let bsAlert =new bootstrap.Alert(alert);
+          bsAlert.close();
+        });
+      }, 3000);
+
+      
+ </script>
+
+ {% endblock %}

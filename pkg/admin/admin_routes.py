@@ -2,6 +2,8 @@
 from flask import render_template, session, redirect, url_for, flash
 from werkzeug.security import check_password_hash,generate_password_hash
 from sqlalchemy import desc,asc
+from datetime import datetime,timedelta
+from sqlalchemy.orm import joinedload
 from pkg.admin import admin_bp
 from pkg.admin.forms import AdminLoginForm
 from pkg.extension import db
@@ -129,9 +131,10 @@ def approve_property(property_id):
 
     prop = Property.query.get_or_404(property_id)
     prop.property_status = "available"
+    prop.expires_at = datetime.utcnow() + timedelta(days=14)
     db.session.commit()
 
-   
+    flash("property approve successfully", "success")
     return redirect(url_for("admin.verify_properties"))
 
 @admin_bp.route("/properties/<int:property_id>/disable/", methods=["POST"])
@@ -228,7 +231,10 @@ def view_interests():
     admin=get_current_admin()
 
     interests = (
-        ClientInterest.query.order_by(desc(ClientInterest.created_at)).all()
+        ClientInterest.query.join(Property).filter(
+            Property.property_status !="archived"
+        )
+        .order_by(desc(ClientInterest.created_at)).all()
     )
     
 

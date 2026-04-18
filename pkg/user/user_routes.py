@@ -1,10 +1,14 @@
 import os,secrets
 from flask import render_template, session, redirect, url_for,request,flash,current_app
 from pkg.model import User,Property,ClientInterest,PropertyAgent
+from sqlalchemy.orm import joinedload
 from sqlalchemy import desc,or_,and_,asc
 from pkg.user import user_bp,forms
 from pkg.model import db
 
+@user_bp.route("/index/")
+def index():
+    return render_template("user/index.html")
 
 @user_bp.route("/dashboard/")
 def dashboard():
@@ -18,7 +22,9 @@ def dashboard():
         session.clear()
         return redirect(url_for("auth.login"))
 
-    total_properties = Property.query.filter_by(owner_id=user.user_id).count()
+    total_properties = Property.query.filter(
+        Property.owner_id == user.user_id,
+        Property.property_status != "archived").count()
 
     pending_verification = Property.query.filter_by(
         owner_id=user.user_id,
@@ -36,13 +42,24 @@ def dashboard():
         client_user_id=user.user_id
     ).count()
 
-    my_properties = Property.query.filter_by(
-        owner_id=user.user_id
+    my_properties = Property.query.filter(
+        Property.owner_id == user.user_id,
+        Property.property_status !="archived"
     ).order_by(desc(Property.created_at)).limit(5).all()
 
-    my_interest = ClientInterest.query.filter_by(
-        client_user_id=user.user_id
-    ).order_by(desc(ClientInterest.created_at)).limit(5).all()
+    my_interest =(
+        ClientInterest.query.join(Property,ClientInterest.property_id == Property.property_id)
+        .filter(ClientInterest.client_user_id == user.user_id,
+                Property.property_status != "archived")
+                .options(joinedload(ClientInterest.property))
+                .order_by(desc(ClientInterest.created_at)).limit(5).all()
+    )
+
+    owner_request = ClientInterest.query.join(Property).filter(
+        Property.owner_id == user.user_id,
+        Property.property_status != "archived"
+    ).order_by(desc(Property.created_at)).limit(5).all()
+    
 
     image_url = user.image_url or "uploads/default.png"
 
@@ -58,7 +75,8 @@ def dashboard():
         total_interest=total_interest,
         my_properties=my_properties,
         my_interest=my_interest,
-        agent_profile=agent_profile   )
+        agent_profile=agent_profile,
+        owner_request=owner_request   )
 
 @user_bp.route("/profile/")
 def profile():
@@ -145,3 +163,5 @@ def update_password():
        return redirect(url_for("user.profile"))
         
     return render_template('user/profile.html',resetform=resetform,user=user)
+
+

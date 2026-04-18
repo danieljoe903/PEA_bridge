@@ -64,3 +64,12 @@ body{
 .rounded-circle{
     border: 2px soild #7acc16;
   }
+
+.nav-link:hover{ 
+    color:#7acc16;
+  }
+
+.nav-link{
+    color:white;
+  }
+
