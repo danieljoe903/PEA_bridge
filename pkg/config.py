@@ -22,7 +22,7 @@ class Config:
         "/home/danieljoe903/PEA_bridge",
         "pkg",
         "static",
-        "upload"
+        "uploads"
     )
 
     MAIL_SERVER = os.getenv("MAIL_SERVER")
