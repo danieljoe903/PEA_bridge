@@ -251,7 +251,7 @@ def send_reset_email(user):
     msg = Message(
         subject="PEA-Bridge Password Reset",
         recipients=[user.email],
-        sender="danieljoe903@gmail.com"
+        sender="chukwuemekadaniel963@gmail.com"
     )
 
     msg.body = f"""

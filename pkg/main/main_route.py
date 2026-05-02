@@ -123,8 +123,8 @@ def send_contact_message():
             flash("Your message has been sent successfully.", "success")
 
         except Exception as e:
-            # print("PEA_BRIDGE_EMAIL:",e)
-            # print("CONTACT FORM MAIL ERROR:", e)
+            print("PEA_BRIDGE_EMAIL:",e)
+            print("CONTACT FORM MAIL ERROR:", e)
             flash("Message could not be sent right now. Please try again later.", "danger")
 
     else:
