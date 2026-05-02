@@ -13,7 +13,7 @@ class Loginform(FlaskForm):
 class Register(FlaskForm):
     firstname=StringField('First Name',validators=[DataRequired()])
     lastname=StringField('Last Name',validators=[DataRequired()])
-    email=EmailField('Email Address',validators=[DataRequired(),Email('invaild email address')])
+    email=EmailField('Email Address',validators=[DataRequired(),Email(message='invaild email address')])
     phone=StringField('Phone Number',validators=[DataRequired(),Length(min=7, message="Phone must be at least 6 characters")])
     image=FileField('Profile Image (Optional)',validators=[ FileAllowed(["jpg", "jpeg", "png", "webp"],message="Images only!")])
     username=StringField('Username',validators=[DataRequired(message='Username Requried'),Length(min=6,message="Username must be at least 6 characters")])

@@ -78,12 +78,15 @@
               </div>
             </div>
           </div>
-
+            {% if current_user %}
+            <small></small>
+            {% else %}
           <div class="d-grid mt-4">
             <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg" target="_blank">
               Login to Request Interest
             </a>
           </div>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -238,11 +241,14 @@
           Create an account or login to request interest and connect securely.
         </p>
       </div>
-
+        {% if current_user %}
+        <p></p>
+        {% else %}
       <div class="d-flex gap-2 flex-wrap ">
         <a href="{{ url_for('auth.register') }}" class="btn btn-outline-success text-info px-4" target="_blank">Register</a>
         <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary text-info px-4" target="_blank">Login</a>
       </div>
+      {% endif %}
     </div>
   </div>
 </section>
