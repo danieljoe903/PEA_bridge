@@ -2,14 +2,67 @@
 {% block title %}Dashboard | PEA-bridge{% endblock %}
 
 {% block content %}
+<style>
+  .dash-card {
+    background:#0f172a;
+    border:none;
+    border-radius:14px;
+    color:white;
+  }
+
+  .mobile-card {
+    background:#111827;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:12px;
+  }
+
+  .mobile-row {
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    padding:6px 0;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+
+  .mobile-row:last-child {
+    border-bottom:0;
+  }
+
+  .mobile-label {
+    color:rgba(255,255,255,0.55);
+    font-size:13px;
+  }
+
+  .mobile-value {
+    color:white;
+    font-size:14px;
+    font-weight:600;
+    text-align:right;
+    word-break:break-word;
+  }
+
+  @media (max-width: 767px) {
+    .desktop-table {
+      display:none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .mobile-list {
+      display:none;
+    }
+  }
+</style>
+
 <div class="container-fluid">
 
   <!-- PROFILE -->
   <div class="row mb-4">
     <div class="col-12">
-      <div class="card shadow-sm p-3 text-white" style="background:#0f172a;border:none;border-radius:14px;">
+      <div class="card shadow-sm p-3 dash-card">
         <div class="d-flex align-items-center gap-3 flex-wrap">
-
           <img src="{{ url_for('static', filename=user.image_url or 'uploads/default.png') }}"
                class="rounded-circle"
                alt="user"
@@ -21,9 +74,8 @@
             <h4 class="mb-1">{{ user.user_fname }} {{ user.users_lname }}</h4>
 
             <div class="text-white-50 small">
-              <span>Email: {{ user.email }}</span>
-              <span class="mx-2">|</span>
-              <span>Phone: {{ user.phone }}</span>
+              <div>Email: {{ user.email }}</div>
+              <div>Phone: {{ user.phone }}</div>
             </div>
 
             <div class="mt-2 d-flex gap-2 flex-wrap">
@@ -54,7 +106,6 @@
               + Add Property
             </a>
           </div>
-
         </div>
       </div>
     </div>
@@ -63,50 +114,52 @@
   <!-- STATS -->
   <div class="row mb-4">
     <div class="col-12 col-md-3 mb-3">
-      <div class="card shadow text-center p-3" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+      <div class="card shadow text-center p-3 dash-card">
         <h6 class="mb-1">Total Properties</h6>
         <p class="fs-3 mb-0">{{ total_properties or 0 }}</p>
       </div>
     </div>
 
     <div class="col-12 col-md-3 mb-3">
-      <div class="card shadow text-center p-3" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+      <div class="card shadow text-center p-3 dash-card">
         <h6 class="mb-1">Transactions</h6>
         <p class="fs-3 mb-0">{{ total_transactions or 0 }}</p>
       </div>
     </div>
 
     <div class="col-12 col-md-3 mb-3">
-      <div class="card shadow text-center p-3" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+      <div class="card shadow text-center p-3 dash-card">
         <h6 class="mb-1">Pending Verifications</h6>
         <p class="fs-3 mb-0">{{ pending_verification or 0 }}</p>
       </div>
     </div>
 
     <div class="col-12 col-md-3 mb-3">
-      <div class="card shadow text-center p-3" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+      <div class="card shadow text-center p-3 dash-card">
         <h6 class="mb-1">Approved Properties</h6>
         <p class="fs-3 mb-0">{{ approved_property or 0 }}</p>
       </div>
     </div>
-        <div class="col-12 col-md-3 mb-3">
-          <div class="card shadow text-center p-3" style="background:#0f172a;border:none;border-radius:14px;color:white;">
-            <h6 class="mb-1">Requests On My Properties</h6>
-            <p class="fs-3 mb-0">{{ total_owner_requests or 0 }}</p>
-          </div>
-        </div>
+
+    <div class="col-12 col-md-3 mb-3">
+      <div class="card shadow text-center p-3 dash-card">
+        <h6 class="mb-1">Requests On My Properties</h6>
+        <p class="fs-3 mb-0">{{ total_owner_requests or 0 }}</p>
+      </div>
+    </div>
   </div>
 
   <!-- MY PROPERTIES -->
-  <div class="card shadow-lg mb-4" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+  <div class="card shadow-lg mb-4 dash-card">
     <div class="card-body">
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
         <h4 class="mb-0">My Properties</h4>
         <a href="{{ url_for('property.list_properties') }}" class="btn btn-sm btn-outline-light">View all</a>
       </div>
 
-      <div class="table-responsive mt-3">
-        <table class="table table-dark table-striped align-middle text-break mb-0">
+      <!-- DESKTOP TABLE -->
+      <div class="table-responsive mt-3 desktop-table">
+        <table class="table table-dark table-striped align-middle mb-0">
           <thead>
             <tr>
               <th>ID</th>
@@ -152,19 +205,63 @@
           </tbody>
         </table>
       </div>
+
+      <!-- MOBILE CARDS -->
+      <div class="mobile-list mt-3">
+        {% if my_properties and my_properties|length > 0 %}
+          {% for p in my_properties %}
+            <div class="mobile-card">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="mb-0">{{ p.property_title or "Untitled" }}</h6>
+                {% if p.property_status == "available" %}
+                  <span class="badge bg-success">Available</span>
+                {% elif p.property_status == "under_verification" %}
+                  <span class="badge bg-warning text-dark">Pending</span>
+                {% elif p.property_status == "rejected" %}
+                  <span class="badge bg-secondary">Rejected</span>
+                {% else %}
+                  <span class="badge bg-info text-dark">{{ p.property_status|title }}</span>
+                {% endif %}
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">ID</span>
+                <span class="mobile-value">{{ p.property_id }}</span>
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">Type</span>
+                <span class="mobile-value">{{ p.property_type }}</span>
+              </div>
+
+              <div class="mt-3">
+                <a class="btn btn-sm btn-outline-light w-100"
+                   href="{{ url_for('property.view_property', property_id=p.property_id) }}">
+                  View Property
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-center text-white-50 py-4">
+            No properties yet. Click “Add Property” to create your first listing.
+          </div>
+        {% endif %}
+      </div>
     </div>
   </div>
 
   <!-- MY INTEREST -->
-  <div class="card shadow-lg mb-4" style="background:#0f172a;border:none;border-radius:14px;color:white;">
+  <div class="card shadow-lg mb-4 dash-card">
     <div class="card-body">
       <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
         <h4 class="mb-0">My Interest</h4>
         <a href="{{ url_for('interest.my_interest') }}" class="btn btn-sm btn-outline-light">View all</a>
       </div>
 
-      <div class="table-responsive mt-3">
-        <table class="table table-dark table-striped align-middle text-break mb-0">
+      <!-- DESKTOP TABLE -->
+      <div class="table-responsive mt-3 desktop-table">
+        <table class="table table-dark table-striped align-middle mb-0">
           <thead>
             <tr>
               <th>ID</th>
@@ -181,11 +278,7 @@
               {% for it in my_interest %}
                 <tr>
                   <td>{{ it.interest_id }}</td>
-
-                  <td>
-                    {{ it.property.property_title if it.property else "Property" }}
-                  </td>
-
+                  <td>{{ it.property.property_title if it.property else "Property" }}</td>
                   <td>
                     {% if it.property and it.property.owner %}
                       {{ it.property.owner.user_fname }} {{ it.property.owner.users_lname }}
@@ -193,7 +286,6 @@
                       -
                     {% endif %}
                   </td>
-
                   <td>
                     {% if it.property and it.property.agent and it.property.agent.user %}
                       {% if it.property.agent.agency_status == "active" %}
@@ -209,23 +301,18 @@
                       No Agent
                     {% endif %}
                   </td>
-
-                  <td>
-                    {{ it.created_at.strftime('%d %b %Y') if it.created_at else "-" }}
-                  </td>
-
+                  <td>{{ it.created_at.strftime('%d %b %Y') if it.created_at else "-" }}</td>
                   <td>
                     {% if it.interest_status == "requested" %}
                       <span class="badge bg-warning text-dark">Requested</span>
                     {% elif it.interest_status == "approved" %}
                       <span class="badge bg-success">Approved</span>
-                      {% elif it.interest_status == "declined" %}
-                      <span class="badge bg-danger">declined</span>
+                    {% elif it.interest_status == "declined" %}
+                      <span class="badge bg-danger">Declined</span>
                     {% else %}
                       <span class="badge bg-danger">{{ it.interest_status }}</span>
                     {% endif %}
                   </td>
-
                   <td class="text-end">
                     {% if it.property %}
                       <a class="btn btn-sm btn-outline-light"
@@ -246,88 +333,217 @@
           </tbody>
         </table>
       </div>
+
+      <!-- MOBILE CARDS -->
+      <div class="mobile-list mt-3">
+        {% if my_interest and my_interest|length > 0 %}
+          {% for it in my_interest %}
+            <div class="mobile-card">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="mb-0">
+                  {{ it.property.property_title if it.property else "Property" }}
+                </h6>
+
+                {% if it.interest_status == "requested" %}
+                  <span class="badge bg-warning text-dark">Requested</span>
+                {% elif it.interest_status == "approved" %}
+                  <span class="badge bg-success">Approved</span>
+                {% elif it.interest_status == "declined" %}
+                  <span class="badge bg-danger">Declined</span>
+                {% else %}
+                  <span class="badge bg-danger">{{ it.interest_status }}</span>
+                {% endif %}
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">ID</span>
+                <span class="mobile-value">{{ it.interest_id }}</span>
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">Owner</span>
+                <span class="mobile-value">
+                  {% if it.property and it.property.owner %}
+                    {{ it.property.owner.user_fname }} {{ it.property.owner.users_lname }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </span>
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">Agent</span>
+                <span class="mobile-value">
+                  {% if it.property and it.property.agent and it.property.agent.user %}
+                    {% if it.property.agent.agency_status == "active" %}
+                      {{ it.property.agent.user.user_fname }} {{ it.property.agent.user.users_lname }}
+                    {% elif it.property.agent.agency_status == "pending" %}
+                      Pending Agent
+                    {% elif it.property.agent.agency_status == "suspended" %}
+                      Suspended Agent
+                    {% else %}
+                      No Agent
+                    {% endif %}
+                  {% else %}
+                    No Agent
+                  {% endif %}
+                </span>
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">Date</span>
+                <span class="mobile-value">{{ it.created_at.strftime('%d %b %Y') if it.created_at else "-" }}</span>
+              </div>
+
+              {% if it.property %}
+                <div class="mt-3">
+                  <a class="btn btn-sm btn-outline-light w-100"
+                     href="{{ url_for('property.public_property_detail', property_id=it.property.property_id, next='dashboard') }}">
+                    View Property
+                  </a>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-center text-white-50 py-4">
+            You have no interest requests yet.
+          </div>
+        {% endif %}
+      </div>
     </div>
   </div>
-    <div class="card shadow-lg mb-4" style="background:#0f172a;border:none;border-radius:14px;color:white;">
-  <div class="card-body">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-      <h4 class="mb-0">People Interested In My Properties</h4>
-    </div>
-        <!-- requested interest -->
-    <div class="table-responsive mt-3">
-      <table class="table table-dark table-striped align-middle text-break mb-0">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Buyer</th>
-            <th>Property</th>
-            <th>Date Requested</th>
-            <th>Status</th>
-          </tr>
-        </thead>
 
-        <tbody>
-          {% if owner_request and owner_request|length > 0 %}
-            {% for req in owner_request %}
+  <!-- OWNER REQUESTS -->
+  <div class="card shadow-lg mb-4 dash-card">
+    <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <h4 class="mb-0">People Interested In My Properties</h4>
+      </div>
+
+      <!-- DESKTOP TABLE -->
+      <div class="table-responsive mt-3 desktop-table">
+        <table class="table table-dark table-striped align-middle mb-0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Buyer</th>
+              <th>Property</th>
+              <th>Date Requested</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if owner_request and owner_request|length > 0 %}
+              {% for req in owner_request %}
+                <tr>
+                  <td>{{ req.interest_id }}</td>
+                  <td>
+                    {% if req.client %}
+                      {{ req.client.user_fname }} {{ req.client.users_lname }}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if req.property %}
+                      {{ req.property.property_title or "Property" }}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
+                  <td>{{ req.created_at.strftime('%d %b %Y') if req.created_at else '-' }}</td>
+                  <td>
+                    {% if req.interest_status == "requested" %}
+                      <span class="badge bg-warning text-dark">Requested</span>
+                    {% elif req.interest_status == "approved" %}
+                      <span class="badge bg-success">Approved</span>
+                    {% elif req.interest_status == "declined" %}
+                      <span class="badge bg-danger">Declined</span>
+                    {% else %}
+                      <span class="badge bg-danger">Declined</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
               <tr>
-                <td>{{ req.interest_id }}</td>
+                <td colspan="5" class="text-center text-white-50 py-4">
+                  No one has requested your properties yet.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
 
-                <td>
+      <!-- MOBILE CARDS -->
+      <div class="mobile-list mt-3">
+        {% if owner_request and owner_request|length > 0 %}
+          {% for req in owner_request %}
+            <div class="mobile-card">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="mb-0">
+                  {% if req.property %}
+                    {{ req.property.property_title or "Property" }}
+                  {% else %}
+                    Property
+                  {% endif %}
+                </h6>
+
+                {% if req.interest_status == "requested" %}
+                  <span class="badge bg-warning text-dark">Requested</span>
+                {% elif req.interest_status == "approved" %}
+                  <span class="badge bg-success">Approved</span>
+                {% elif req.interest_status == "declined" %}
+                  <span class="badge bg-danger">Declined</span>
+                {% else %}
+                  <span class="badge bg-danger">Declined</span>
+                {% endif %}
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">ID</span>
+                <span class="mobile-value">{{ req.interest_id }}</span>
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">Buyer</span>
+                <span class="mobile-value">
                   {% if req.client %}
                     {{ req.client.user_fname }} {{ req.client.users_lname }}
                   {% else %}
                     -
                   {% endif %}
-                </td>
+                </span>
+              </div>
 
-                <td>
-                  {% if req.property %}
-                    {{ req.property.property_title or "Property" }}
-                  {% else %}
-                    -
-                  {% endif %}
-                </td>
+              <div class="mobile-row">
+                <span class="mobile-label">Date</span>
+                <span class="mobile-value">{{ req.created_at.strftime('%d %b %Y') if req.created_at else '-' }}</span>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-center text-white-50 py-4">
+            No one has requested your properties yet.
+          </div>
+        {% endif %}
+      </div>
 
-                <td>{{ req.created_at.strftime('%d %b %Y') if req.created_at else '-' }}</td>
-
-                <td>
-                  {% if req.interest_status == "requested" %}
-                    <span class="badge bg-warning text-dark">Requested</span>
-                  {% elif req.interest_status == "approved" %}
-                    <span class="badge bg-success">Approved</span>
-                  {% elif req.interest_status == "declined" %}
-                    <span class="badge bg-danger">Declined</span>
-                  {% else %}
-                    <span class="badge bg-danger">Declined</span>
-                  {% endif %}
-                </td>
-              </tr>
-            {% endfor %}
-          {% else %}
-            <tr>
-              <td colspan="5" class="text-center text-white-50 py-4">
-                No one has requested your properties yet.
-              </td>
-            </tr>
-          {% endif %}
-        </tbody>
-      </table>
     </div>
   </div>
-</div>
+
 </div>
 {% endblock %}
 
 {% block scripts %}
-      <script>
-            setTimeout(function(){
-        document.querySelectorAll('.auto-dismiss').forEach(function(alert){
-          let bsAlert =new bootstrap.Alert(alert);
-          bsAlert.close();
-        });
-      }, 1000);
-
-      
- </script>
-
- {% endblock %}
+<script>
+  setTimeout(function(){
+    document.querySelectorAll('.auto-dismiss').forEach(function(alert){
+      let bsAlert = new bootstrap.Alert(alert);
+      bsAlert.close();
+    });
+  }, 1000);
+</script>
+{% endblock %}

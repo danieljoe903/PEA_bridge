@@ -2,20 +2,67 @@
 {% block title %}Property Requests | PEA-bridge{% endblock %}
 
 {% block content %}
+<style>
+  .dash-card {
+    background:#0f172a;
+    border:none;
+    border-radius:14px;
+    color:white;
+  }
+
+  .mobile-card {
+    background:#111827;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:12px;
+  }
+
+  .mobile-row {
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:6px 0;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+
+  .mobile-label {
+    color:rgba(255,255,255,0.6);
+    font-size:13px;
+  }
+
+  .mobile-value {
+    font-size:14px;
+    font-weight:600;
+    text-align:right;
+    word-break:break-word;
+  }
+
+  @media (max-width: 767px) {
+    .desktop-table {
+      display:none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .mobile-list {
+      display:none;
+    }
+  }
+</style>
+
 <div class="container-fluid">
 
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
     <h3 class="text-white mb-0">Property Requests</h3>
   </div>
 
-  <div class="card shadow-lg mb-4"
-       style="background:#0f172a;border:none;border-radius:14px;color:white;">
-
+  <div class="card shadow-lg mb-4 dash-card">
     <div class="card-body">
 
-      <div class="table-responsive">
-        <table class="table table-dark table-striped align-middle text-break mb-0">
-
+      <!-- DESKTOP TABLE -->
+      <div class="table-responsive desktop-table">
+        <table class="table table-dark table-striped align-middle mb-0">
           <thead>
             <tr>
               <th>ID</th>
@@ -31,88 +78,80 @@
           <tbody>
             {% if requests_on_my_properties and requests_on_my_properties|length > 0 %}
               {% for req in requests_on_my_properties %}
-              <tr>
-                <td>{{ req.interest_id }}</td>
+                <tr>
+                  <td>{{ req.interest_id }}</td>
 
-                <td>
-                  {% if req.client %}
-                    <div class="fw-bold">
-                      {{ req.client.user_fname }} {{ req.client.users_lname }}
-                    </div>
-                    <small class="text-white-50">
-                      {{ req.client.email }}
-                    </small>
-                  {% else %}
-                    -
-                  {% endif %}
-                </td>
-
-                <td>
-                  {% if req.property %}
-                    {{ req.property.property_title or "Property" }}
-                  {% else %}
-                    -
-                  {% endif %}
-                </td>
-
-                <td>
-                  {% if req.property and req.property.states %}
-                    {{ req.property.states.state_name }}
-                  {% else %}
-                    No State
-                  {% endif %}
-                </td>
-
-                <td>
-                  {{ req.created_at.strftime('%d %b %Y') if req.created_at else '-' }}
-                </td>
-
-                <td>
-                  {% if req.interest_status == "requested" %}
-                    <span class="badge bg-warning text-dark">Requested</span>
-                  {% elif req.interest_status == "approved" %}
-                    <span class="badge bg-success">Approved</span>
-                  {% elif req.interest_status == "declined" %}
-                    <span class="badge bg-danger">Declined</span>
-                  {% else %}
-                    <span class="badge bg-secondary">{{ req.interest_status }}</span>
-                  {% endif %}
-                </td>
-
-                <td class="text-end">
-                  <div class="d-flex gap-2 justify-content-end flex-wrap">
-                    {% if req.property %}
-                      <a class="btn btn-sm btn-outline-light"
-                         href="{{ url_for('property.public_property_detail',
-                                          property_id=req.property.property_id,
-                                          next='owner_requests') }}">
-                        View
-                      </a>
+                  <td>
+                    {% if req.client %}
+                      <div class="fw-bold">
+                        {{ req.client.user_fname }} {{ req.client.users_lname }}
+                      </div>
+                      <small class="text-white-50">{{ req.client.email }}</small>
+                    {% else %}
+                      -
                     {% endif %}
+                  </td>
 
-                    {% if req.interest_status == "requested" and req.property and req.property.property_status != "sold" %}
-                      <form action="{{ url_for('interest.approve_request', interest_id=req.interest_id) }}"
-                            method="post">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button class="btn btn-sm btn-success fw-bold">
-                          Approve
-                        </button>
-                      </form>
+                  <td>
+                    {% if req.property %}
+                      {{ req.property.property_title or "Property" }}
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
 
-                      <form action="{{ url_for('interest.decline_request', interest_id=req.interest_id) }}"
-                            method="post">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button class="btn btn-sm btn-danger fw-bold">
-                          Decline
-                        </button>
-                      </form>
+                  <td>
+                    {% if req.property and req.property.states %}
+                      {{ req.property.states.state_name }}
+                    {% else %}
+                      No State
+                    {% endif %}
+                  </td>
+
+                  <td>
+                    {{ req.created_at.strftime('%d %b %Y') if req.created_at else '-' }}
+                  </td>
+
+                  <td>
+                    {% if req.interest_status == "requested" %}
+                      <span class="badge bg-warning text-dark">Requested</span>
+                    {% elif req.interest_status == "approved" %}
+                      <span class="badge bg-success">Approved</span>
+                    {% elif req.interest_status == "declined" %}
+                      <span class="badge bg-danger">Declined</span>
+                    {% else %}
+                      <span class="badge bg-secondary">{{ req.interest_status }}</span>
+                    {% endif %}
+                  </td>
+
+                  <td class="text-end">
+                    <div class="d-flex gap-2 justify-content-end flex-wrap">
+                      {% if req.property %}
+                        <a class="btn btn-sm btn-outline-light"
+                           href="{{ url_for('property.public_property_detail',
+                                            property_id=req.property.property_id,
+                                            next='owner_requests') }}">
+                          View
+                        </a>
+                      {% endif %}
+
+                      {% if req.interest_status == "requested" and req.property and req.property.property_status != "sold" %}
+                        <form action="{{ url_for('interest.approve_request', interest_id=req.interest_id) }}" method="post">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <button class="btn btn-sm btn-success fw-bold">Approve</button>
+                        </form>
+
+                        <form action="{{ url_for('interest.decline_request', interest_id=req.interest_id) }}" method="post">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <button class="btn btn-sm btn-danger fw-bold">Decline</button>
+                        </form>
+
                       {% elif req.property and req.property.property_status == "sold" %}
                         <span class="badge bg-success">Property Sold</span>
-
-                    {% endif %}
-                  </div>
-                </td>
-              </tr>
+                      {% endif %}
+                    </div>
+                  </td>
+                </tr>
               {% endfor %}
             {% else %}
               <tr>
@@ -122,12 +161,252 @@
               </tr>
             {% endif %}
           </tbody>
-
         </table>
+      </div>
+
+      <!-- MOBILE CARDS -->
+      <div class="mobile-list">
+        {% if requests_on_my_properties and requests_on_my_properties|length > 0 %}
+          {% for req in requests_on_my_properties %}
+
+               <div id="emptyState"
+                class="text-center text-white-50 py-4 d-none">
+              No matching requests found.
+            </div>
+
+            <nav class="mt-3 d-flex justify-content-center">
+              <ul class="pagination pagination-sm mb-0"
+                  id="ownerPagination">
+              </ul>
+            </nav>
+            <div class="mobile-card">
+
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="mb-0">
+                  {% if req.property %}
+                    {{ req.property.property_title or "Property" }}
+                  {% else %}
+                    Property
+                  {% endif %}
+                </h6>
+
+                {% if req.interest_status == "requested" %}
+                  <span class="badge bg-warning text-dark">Requested</span>
+                {% elif req.interest_status == "approved" %}
+                  <span class="badge bg-success">Approved</span>
+                {% elif req.interest_status == "declined" %}
+                  <span class="badge bg-danger">Declined</span>
+                {% else %}
+                  <span class="badge bg-secondary">{{ req.interest_status }}</span>
+                {% endif %}
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">Request ID</span>
+                <span class="mobile-value">{{ req.interest_id }}</span>
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">Buyer</span>
+                <span class="mobile-value">
+                  {% if req.client %}
+                    {{ req.client.user_fname }} {{ req.client.users_lname }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </span>
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">Email</span>
+                <span class="mobile-value">
+                  {% if req.client %}
+                    {{ req.client.email }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </span>
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">Location</span>
+                <span class="mobile-value">
+                  {% if req.property and req.property.states %}
+                    {{ req.property.states.state_name }}
+                  {% else %}
+                    No State
+                  {% endif %}
+                </span>
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">Date</span>
+                <span class="mobile-value">
+                  {{ req.created_at.strftime('%d %b %Y') if req.created_at else '-' }}
+                </span>
+              </div>
+
+              <div class="mt-3 d-flex gap-2 flex-wrap">
+                {% if req.property %}
+                  <a class="btn btn-sm btn-outline-light flex-fill"
+                     href="{{ url_for('property.public_property_detail',
+                                      property_id=req.property.property_id,
+                                      next='owner_requests') }}">
+                    View
+                  </a>
+                {% endif %}
+
+                {% if req.interest_status == "requested" and req.property and req.property.property_status != "sold" %}
+                  <form action="{{ url_for('interest.approve_request', interest_id=req.interest_id) }}"
+                        method="post"
+                        class="flex-fill">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-sm btn-success w-100 fw-bold">Approve</button>
+                  </form>
+
+                  <form action="{{ url_for('interest.decline_request', interest_id=req.interest_id) }}"
+                        method="post"
+                        class="flex-fill">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-sm btn-danger w-100 fw-bold">Decline</button>
+                  </form>
+
+                {% elif req.property and req.property.property_status == "sold" %}
+                  <span class="badge bg-success w-100 py-2">Property Sold</span>
+                {% endif %}
+              </div>
+
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-center text-white-50 py-4">
+            No requests on your properties yet.
+          </div>
+        {% endif %}
       </div>
 
     </div>
   </div>
 
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const pagination = document.getElementById("ownerPagination");
+  const emptyState = document.getElementById("emptyState");
+
+  const perPage = 40; // change to 40 if you want
+  let currentPage = 1;
+
+  function getItems() {
+    return Array.from(document.querySelectorAll(".mobile-card"));
+  }
+
+  function renderList() {
+
+    const items = getItems();
+
+    // hide all first
+    items.forEach(function(item) {
+      item.style.display = "none";
+    });
+
+    const totalPages = Math.ceil(items.length / perPage) || 1;
+
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+
+    const start = (currentPage - 1) * perPage;
+    const end = start + perPage;
+
+    items.slice(start, end).forEach(function(item) {
+      item.style.display = "";
+    });
+
+    emptyState.classList.toggle("d-none", items.length !== 0);
+
+    renderPagination(totalPages, items.length);
+  }
+
+  function renderPagination(totalPages, totalItems) {
+
+    pagination.innerHTML = "";
+
+    // Hide pagination if records are small
+    if (totalItems <= perPage || totalPages <= 1) {
+      pagination.style.display = "none";
+      return;
+    }
+
+    pagination.style.display = "flex";
+
+    // Previous button
+    const prevLi = document.createElement("li");
+
+    prevLi.className =
+      "page-item " + (currentPage === 1 ? "disabled" : "");
+
+    prevLi.innerHTML = `
+      <button class="page-link" type="button">
+        Previous
+      </button>
+    `;
+
+    prevLi.addEventListener("click", function () {
+      if (currentPage > 1) {
+        currentPage--;
+        renderList();
+      }
+    });
+
+    pagination.appendChild(prevLi);
+
+    // Page numbers
+    for (let i = 1; i <= totalPages; i++) {
+
+      const li = document.createElement("li");
+
+      li.className =
+        "page-item " + (i === currentPage ? "active" : "");
+
+      li.innerHTML = `
+        <button class="page-link" type="button">
+          ${i}
+        </button>
+      `;
+
+      li.addEventListener("click", function () {
+        currentPage = i;
+        renderList();
+      });
+
+      pagination.appendChild(li);
+    }
+
+    // Next button only if next page exists
+    if (currentPage < totalPages) {
+
+      const nextLi = document.createElement("li");
+
+      nextLi.className = "page-item";
+
+      nextLi.innerHTML = `
+        <button class="page-link" type="button">
+          Next
+        </button>
+      `;
+
+      nextLi.addEventListener("click", function () {
+        currentPage++;
+        renderList();
+      });
+
+      pagination.appendChild(nextLi);
+    }
+  }
+
+  renderList();
+</script>
 {% endblock %}

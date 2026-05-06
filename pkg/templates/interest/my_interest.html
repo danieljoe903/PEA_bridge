@@ -2,121 +2,495 @@
 {% block title %}My Interest | PEA-bridge{% endblock %}
 
 {% block content %}
+<style>
+  .dash-card {
+    background:#0f172a;
+    border:none;
+    border-radius:14px;
+    color:white;
+  }
+
+  .page-tools {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+  }
+
+  .page-tools .form-control,
+  .page-tools .form-select {
+    background:#111827;
+    color:white;
+    border:1px solid rgba(255,255,255,0.15);
+  }
+
+  .page-tools .form-control::placeholder {
+    color:rgba(255,255,255,0.45);
+  }
+
+  .mobile-card {
+    background:#111827;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:12px;
+    animation: fadeUp .35s ease both;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+
+  .mobile-card:hover {
+    transform:translateY(-3px);
+    box-shadow:0 10px 24px rgba(0,0,0,.25);
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity:0;
+      transform:translateY(14px);
+    }
+    to {
+      opacity:1;
+      transform:translateY(0);
+    }
+  }
+
+  .mobile-row {
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:6px 0;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+
+  .mobile-row:last-child {
+    border-bottom:0;
+  }
+
+  .mobile-label {
+    color:rgba(255,255,255,0.6);
+    font-size:13px;
+    flex:0 0 auto;
+  }
+
+  .mobile-value {
+    font-size:14px;
+    font-weight:600;
+    text-align:right;
+    word-break:break-word;
+  }
+
+  .pagination .page-link {
+    background:#111827;
+    color:white;
+    border-color:rgba(255,255,255,0.15);
+  }
+
+  .pagination .page-item.active .page-link {
+    background:#198754;
+    border-color:#198754;
+  }
+
+  .pagination .page-item.disabled .page-link {
+    background:#0b1220;
+    color:rgba(255,255,255,0.35);
+    border-color:rgba(255,255,255,0.08);
+  }
+
+  @media (max-width: 767px) {
+    .desktop-table {
+      display:none;
+    }
+
+    .page-tools {
+      display:block;
+    }
+
+    .page-tools .form-control,
+    .page-tools .form-select {
+      margin-bottom:10px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .mobile-list {
+      display:none;
+    }
+  }
+</style>
+
 <div class="container-fluid">
-  <h3 class="text-white mb-3">My Interest</h3>
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+    <h3 class="text-white mb-0">My Interest</h3>
+  </div>
 
-         <div class="card shadow-lg mb-4" style="background:#0f172a;border:none;border-radius:14px;color:white;">
-        <div class="card-body">
-          <h4>My Interest</h4>
-          <div class="table-responsive">
-               <table class="table table-dark table-striped text-break">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Property</th>
-                    <th>Owner</th>
-                    <th>Agent</th>
-                    <th>Date Requested</th>
-                    <th>Status</th>
-                    <th class="text-end">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
+  <div class="card shadow-lg mb-4 dash-card">
+    <div class="card-body">
 
-                    {% if my_clientinterest and my_clientinterest|length > 0 %}
-                      {% for it in my_clientinterest %}
-                        <tr>
+      <div class="page-tools">
+        <input type="search"
+               id="interestSearch"
+               class="form-control form-control-sm"
+               style="max-width:300px;"
+               placeholder="Search property, owner, agent...">
 
-                          <td>{{ it.interest_id }}</td>
+        <select id="statusFilter"
+                class="form-select form-select-sm"
+                style="max-width:220px;">
+          <option value="all">All Status</option>
+          <option value="requested">Requested</option>
+          <option value="approved">Approved</option>
+          <option value="declined">Declined</option>
+        </select>
+      </div>
 
-                          <td>
-                            {{ it.property.property_title if it.property else "Property" }}
-                          </td>
+      <!-- DESKTOP TABLE -->
+      <div class="table-responsive desktop-table">
+        <table class="table table-dark table-striped align-middle mb-0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Property</th>
+              <th>Owner</th>
+              <th>Agent</th>
+              <th>Date Requested</th>
+              <th>Status</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
 
-                          <td>
-                            {% if it.property and it.property.owner %}
-                              {{ it.property.owner.user_fname }} {{ it.property.owner.users_lname }}
-                            {% else %}
-                              -
-                            {% endif %}
-                          </td>
+          <tbody id="interestTableBody">
+            {% if my_clientinterest and my_clientinterest|length > 0 %}
+              {% for it in my_clientinterest %}
+                <tr class="interest-item"
+                    data-status="{{ it.interest_status }}"
+                    data-search="
+                      {{ it.property.property_title if it.property else 'Property' }}
+                      {% if it.property and it.property.owner %}
+                        {{ it.property.owner.user_fname }} {{ it.property.owner.users_lname }}
+                      {% endif %}
+                      {% if it.property and it.property.agent and it.property.agent.user %}
+                        {{ it.property.agent.user.user_fname }} {{ it.property.agent.user.users_lname }}
+                      {% endif %}
+                    ">
+                  <td>{{ it.interest_id }}</td>
 
-                          <td>
-                            {% if it.property and it.property.agent and it.property.agent.user %}
-                              {{ it.property.agent.user.user_fname }} {{ it.property.agent.user.users_lname }}
-                            {% else %}
-                              No Agent
-                            {% endif %}
-                          </td>
+                  <td>{{ it.property.property_title if it.property else "Property" }}</td>
 
-                          <td>
-                            {{ it.created_at.strftime('%d %b %Y') if it.created_at else "-" }}
-                          </td>
-
-                          <td>
-                            {% if it.interest_status == "requested" %}
-                              <span class="badge bg-warning text-dark">Requested</span>
-
-                            {% elif it.interest_status == "approved" %}
-                              <span class="badge bg-success">Approved</span>
-                              
-                            {% elif it.interest_status == "declined" %}
-                              <span class="badge bg-danger">Declined</span>
-                            {% else %}
-                              <span class="badge bg-danger">{{ it.interest_status }}</span>
-                            {% endif %}
-                          </td>
-
-                            <td class="text-end">
-                            <div class="d-flex gap-2 justify-content-end flex-wrap">
-                              {% if it.property %}
-                                <a class="btn btn-sm btn-outline-light"
-                                  href="{{ url_for('property.public_property_detail', property_id=it.property.property_id, next='my_interest') }}">
-                                  View
-                                </a>
-                              {% endif %}
-
-                              <form action="{{ url_for('interest.cancel_request', interest_id=it.interest_id) }}"
-                                    method="post"
-                                    onsubmit="return confirm('Are you sure you want to cancel this request?');">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button class="btn btn-sm btn-danger fw-bold">
-                                  Cancel
-                                </button>
-                              </form>
-                            </div>
-                          </td>
-
-                        </tr>
-                      {% endfor %}
-
+                  <td>
+                    {% if it.property and it.property.owner %}
+                      {{ it.property.owner.user_fname }} {{ it.property.owner.users_lname }}
                     {% else %}
-
-                    <tr>
-                      <td colspan="7" class="text-center text-white-50 py-4">
-                        You have no interest requests yet.
-                      </td>
-                    </tr>
-
+                      -
                     {% endif %}
-                  </tbody>
-          </table>
+                  </td>
+
+                  <td>
+                    {% if it.property and it.property.agent and it.property.agent.user %}
+                      {{ it.property.agent.user.user_fname }} {{ it.property.agent.user.users_lname }}
+                    {% else %}
+                      No Agent
+                    {% endif %}
+                  </td>
+
+                  <td>{{ it.created_at.strftime('%d %b %Y') if it.created_at else "-" }}</td>
+
+                  <td>
+                    {% if it.interest_status == "requested" %}
+                      <span class="badge bg-warning text-dark">Requested</span>
+                    {% elif it.interest_status == "approved" %}
+                      <span class="badge bg-success">Approved</span>
+                    {% elif it.interest_status == "declined" %}
+                      <span class="badge bg-danger">Declined</span>
+                    {% else %}
+                      <span class="badge bg-danger">{{ it.interest_status }}</span>
+                    {% endif %}
+                  </td>
+
+                  <td class="text-end">
+                    <div class="d-flex gap-2 justify-content-end flex-wrap">
+                      {% if it.property %}
+                        <a class="btn btn-sm btn-outline-light"
+                           href="{{ url_for('property.public_property_detail', property_id=it.property.property_id, next='my_interest') }}">
+                          View
+                        </a>
+                      {% endif %}
+
+                      {% if it.interest_status == "requested" %}
+                        <form action="{{ url_for('interest.cancel_request', interest_id=it.interest_id) }}"
+                              method="post"
+                              onsubmit="return confirm('Are you sure you want to cancel this request?');">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                          <button class="btn btn-sm btn-danger fw-bold">
+                            Cancel
+                          </button>
+                        </form>
+                      {% endif %}
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="7" class="text-center text-white-50 py-4">
+                  You have no interest requests yet.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- MOBILE CARDS -->
+      <div class="mobile-list" id="interestMobileList">
+        {% if my_clientinterest and my_clientinterest|length > 0 %}
+          {% for it in my_clientinterest %}
+            <div class="mobile-card interest-item"
+                 data-status="{{ it.interest_status }}"
+                 data-search="
+                   {{ it.property.property_title if it.property else 'Property' }}
+                   {% if it.property and it.property.owner %}
+                     {{ it.property.owner.user_fname }} {{ it.property.owner.users_lname }}
+                   {% endif %}
+                   {% if it.property and it.property.agent and it.property.agent.user %}
+                     {{ it.property.agent.user.user_fname }} {{ it.property.agent.user.users_lname }}
+                   {% endif %}
+                 ">
+
+              <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
+                <h6 class="mb-0">
+                  {{ it.property.property_title if it.property else "Property" }}
+                </h6>
+
+                {% if it.interest_status == "requested" %}
+                  <span class="badge bg-warning text-dark">Requested</span>
+                {% elif it.interest_status == "approved" %}
+                  <span class="badge bg-success">Approved</span>
+                {% elif it.interest_status == "declined" %}
+                  <span class="badge bg-danger">Declined</span>
+                {% else %}
+                  <span class="badge bg-danger">{{ it.interest_status }}</span>
+                {% endif %}
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">ID</span>
+                <span class="mobile-value">{{ it.interest_id }}</span>
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">Owner</span>
+                <span class="mobile-value">
+                  {% if it.property and it.property.owner %}
+                    {{ it.property.owner.user_fname }} {{ it.property.owner.users_lname }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </span>
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">Agent</span>
+                <span class="mobile-value">
+                  {% if it.property and it.property.agent and it.property.agent.user %}
+                    {{ it.property.agent.user.user_fname }} {{ it.property.agent.user.users_lname }}
+                  {% else %}
+                    No Agent
+                  {% endif %}
+                </span>
+              </div>
+
+              <div class="mobile-row">
+                <span class="mobile-label">Date</span>
+                <span class="mobile-value">
+                  {{ it.created_at.strftime('%d %b %Y') if it.created_at else "-" }}
+                </span>
+              </div>
+
+              <div class="mt-3 d-flex gap-2">
+                {% if it.property %}
+                  <a class="btn btn-sm btn-outline-light {% if it.interest_status == 'requested' %}w-50{% else %}w-100{% endif %}"
+                     href="{{ url_for('property.public_property_detail', property_id=it.property.property_id, next='my_interest') }}">
+                    View
+                  </a>
+                {% endif %}
+
+                {% if it.interest_status == "requested" %}
+                  <form action="{{ url_for('interest.cancel_request', interest_id=it.interest_id) }}"
+                        method="post"
+                        class="w-50"
+                        onsubmit="return confirm('Are you sure you want to cancel this request?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button class="btn btn-sm btn-danger w-100 fw-bold">
+                      Cancel
+                    </button>
+                  </form>
+                {% endif %}
+              </div>
+
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-center text-white-50 py-4">
+            You have no interest requests yet.
           </div>
-        </div>
-</div>
+        {% endif %}
+      </div>
+
+      <div id="emptyState" class="text-center text-white-50 py-4 d-none">
+        No matching interest request found.
+      </div>
+
+      <nav class="mt-3 d-flex justify-content-center">
+        <ul class="pagination pagination-sm mb-0" id="interestPagination"></ul>
+      </nav>
+
+    </div>
+  </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
-      <script>
-            setTimeout(function(){
-        document.querySelectorAll('.auto-dismiss').forEach(function(alert){
-          let bsAlert =new bootstrap.Alert(alert);
-          bsAlert.close();
-        });
-      }, 3000);
+<script>
+  const searchInput = document.getElementById("interestSearch");
+  const statusFilter = document.getElementById("statusFilter");
+  const pagination = document.getElementById("interestPagination");
+  const emptyState = document.getElementById("emptyState");
 
-      
- </script>
+  const perPage = 40;
+  let currentPage = 1;
 
- {% endblock %}
+  function getItems() {
+    return Array.from(document.querySelectorAll(".interest-item"));
+  }
+
+  function getFilteredItems() {
+    const keyword = (searchInput.value || "").toLowerCase().trim();
+    const status = statusFilter.value;
+
+    return getItems().filter(function(item) {
+      const text = (item.dataset.search || item.innerText || "").toLowerCase();
+      const itemStatus = item.dataset.status || "";
+
+      const matchesSearch = text.includes(keyword);
+      const matchesStatus = status === "all" || itemStatus === status;
+
+      return matchesSearch && matchesStatus;
+    });
+  }
+
+  function renderList() {
+    const items = getItems();
+    const filteredItems = getFilteredItems();
+
+    items.forEach(function(item) {
+      item.style.display = "none";
+    });
+
+    const totalPages = Math.ceil(filteredItems.length / perPage) || 1;
+
+      // Prevents going beyond available pages.
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
+
+    const start = (currentPage - 1) * perPage;
+    const end = start + perPage;
+
+    // Cuts only the records for current page.
+    filteredItems.slice(start, end).forEach(function(item) {
+      item.style.display = "";
+    });
+
+    emptyState.classList.toggle("d-none", filteredItems.length !== 0);
+
+    renderPagination(totalPages, filteredItems.length);
+  }
+    function renderPagination(totalPages, totalItems) {
+  pagination.innerHTML = "";
+
+  // Hide pagination completely if records are too few
+  if (totalItems <= perPage || totalPages <= 1) {
+    pagination.style.display = "none";
+    return;
+  }
+
+  // Show pagination only when needed
+  pagination.style.display = "flex";
+
+  // Previous button
+  const prevLi = document.createElement("li");
+  prevLi.className = "page-item " + (currentPage === 1 ? "disabled" : "");
+
+  prevLi.innerHTML = `
+    <button class="page-link" type="button">
+      Previous
+    </button>
+  `;
+
+  prevLi.addEventListener("click", function () {
+    if (currentPage > 1) {
+      currentPage--;
+      renderList();
+    }
+  });
+
+  pagination.appendChild(prevLi);
+
+  // Page numbers
+  for (let i = 1; i <= totalPages; i++) {
+
+    const li = document.createElement("li");
+
+    li.className =
+      "page-item " + (i === currentPage ? "active" : "");
+
+    li.innerHTML = `
+      <button class="page-link" type="button">
+        ${i}
+      </button>
+    `;
+
+    li.addEventListener("click", function () {
+      currentPage = i;
+      renderList();
+    });
+
+    pagination.appendChild(li);
+  }
+
+  // Next button
+  if (currentPage < totalPages) {
+
+    const nextLi = document.createElement("li");
+
+    nextLi.className = "page-item";
+
+    nextLi.innerHTML = `
+      <button class="page-link" type="button">
+        Next
+      </button>
+    `;
+
+    nextLi.addEventListener("click", function () {
+      currentPage++;
+      renderList();
+    });
+
+    pagination.appendChild(nextLi);
+  }
+}
+  searchInput.addEventListener("input", function() {
+    currentPage = 1;
+    renderList();
+  });
+
+  statusFilter.addEventListener("change", function() {
+    currentPage = 1;
+    renderList();
+  });
+
+  renderList();
+</script>
+{% endblock %}
