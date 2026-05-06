@@ -1,4 +1,4 @@
-from flask import redirect,render_template,request,session,url_for,flash,current_app
+from flask import redirect,render_template,request,session,url_for,flash,current_app,send_from_directory
 from sqlalchemy import desc,asc
 from pkg.main import forms
 from pkg.main import main_bp
@@ -72,6 +72,11 @@ def homepage():
         userform=userform,
         active="homepage"
     )
+
+@main_bp.route("/robots_txt")
+def robots_txt():
+    return send_from_directory(current_app.static_folder,"robots.txt")
+
 
 
 @main_bp.route("/contact/send/", methods=["POST"])
