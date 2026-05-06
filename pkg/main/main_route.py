@@ -73,7 +73,7 @@ def homepage():
         active="homepage"
     )
 
-@main_bp.route("/robots_txt")
+@main_bp.route("/robots.txt")
 def robots_txt():
     return send_from_directory(current_app.static_folder,"robots.txt")
 
