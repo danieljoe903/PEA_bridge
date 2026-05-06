@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, session
+from flask import Flask, render_template, session,request
 from flask_wtf import CSRFProtect
 from sqlalchemy import desc
 
@@ -89,6 +89,19 @@ def create_app():
 
     @app.after_request
     def add_no_cache_headers(response):
+        ua = request.headers.get("User-Agent", "").lower()
+
+        social_bots = [
+            "facebookexternalhit",
+            "facebot",
+            "twitterbot",
+            "linkedinbot",
+            "whatsapp",
+        ]
+
+        if any(bot in ua for bot in social_bots):
+            return response
+
         response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
         response.headers["Pragma"] = "no-cache"
         response.headers["Expires"] = "0"
