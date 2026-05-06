@@ -17,16 +17,16 @@ TIMEOUT = 300
 def setup_inactivity_check(app):
 
     # FORCE HTTPS
-    @app.before_request
-    def force_https():
+    # @app.before_request
+    # def force_https():
 
-        # Skip localhost during development
-        if request.host.startswith("127.0.0.1") or request.host.startswith("localhost"):
-            return
+    #     # Skip localhost during development
+    #     if request.host.startswith("127.0.0.1") or request.host.startswith("localhost"):
+    #         return
 
-        if not request.is_secure:
-            url = request.url.replace("http://", "https://", 1)
-            return redirect(url, code=301)
+    #     if not request.is_secure:
+    #         url = request.url.replace("http://", "https://", 1)
+    #         return redirect(url, code=301)
 
 
     @app.before_request
