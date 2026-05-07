@@ -11,6 +11,18 @@ import random
 
 @main_bp.route("/")
 def homepage():
+    ua = request.headers.get("User-Agent", "").lower()
+     
+    social_bots = [
+            "facebookexternalhit",
+            "facebot",
+            "twitterbot",
+            "linkedinbot",
+            "whatsapp",
+        ]
+    if any(bot in ua for bot in social_bots):
+        return render_template("main/social_preview.html")
+
 
     form= forms.HomeSearchForm()
     userform = forms.ContactForm()
