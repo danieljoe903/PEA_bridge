@@ -100,7 +100,7 @@ def send_contact_message():
             msg = Message(
                 subject=f"PEA-Bridge Contact: {userform.subject.data}",
                 recipients=[current_app.config["PEA_BRIDGE_EMAIL"]],
-                sender=userform.email.data,
+                sender=current_app.config["MAIL_DEFAULT_SENDER"],
                 reply_to=userform.email.data.strip()
             )
            
