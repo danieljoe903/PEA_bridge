@@ -112,7 +112,7 @@ class Property(db.Model):
     )
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    expires_at = db.Column(db.DateTime, nullable=True)
+    expires_at = db.Column(db.DateTime, nullable=False)
 
     property_listing = db.Column(
         db.Enum("SALE"),

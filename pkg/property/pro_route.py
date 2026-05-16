@@ -1,13 +1,29 @@
 import os
 import uuid
 from datetime import datetime, timedelta
+from flask_mail import Message
 from flask import render_template, request, redirect, url_for, session, current_app, flash
 from werkzeug.utils import secure_filename
 from pkg.property import property_bp
 from pkg.property import forms
 from sqlalchemy import desc,or_,and_,asc
-from pkg.extension import db
+from pkg.extension import db,mail
 from pkg.model import Property, PropertyImage,User,PropertyAgent,State,ClientInterest,PropertyDocument
+
+
+
+def expire_old_properties():
+    expired_properties = Property.query.filter(
+        Property.property_status == "available",
+        Property.expires_at.isnot(None),
+        Property.expires_at <= datetime.utcnow()
+    ).all()
+
+    for prop in expired_properties:
+        prop.property_status = "expired"
+
+    if expired_properties:
+        db.session.commit()
 
 ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "webp"}
 
@@ -116,7 +132,7 @@ def list_properties():
     if not user:
         return redirect(url_for("auth.login"))
     
-   
+    expire_old_properties()
 
     my_properties = (
         Property.query
@@ -319,18 +335,8 @@ def explore_properties():
     
 
          # expire old available properties
-    explore_properties = Property.query.filter(
-        Property.property_status == "available",
-        Property.expires_at != None,
-        Property.expires_at < datetime.utcnow()
-    ).all()
-
-    for prop in explore_properties:
-        prop.property_status = "expired"
-
-    if explore_properties:
-        db.session.commit()
-
+    
+    expire_old_properties()
     properties = (
         Property.query
         .filter(Property.property_status == "available")
@@ -412,11 +418,12 @@ def reactivate_property(property_id):
         return redirect(url_for("property.list_properties"))
     
     prop.property_status = "available"
-    prop.expires_at = datetime.utcnow() + timedelta(days=14)
+    prop.expires_at = datetime.utcnow() + timedelta(days=30)
     db.session.commit()
     
     flash("property reactivated successfully","success")
     return redirect(url_for("property.list_properties"))
+
 
 
 @property_bp.route('/search_view')

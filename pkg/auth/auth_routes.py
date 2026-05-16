@@ -1,4 +1,4 @@
-import os,secrets
+import os,secrets,threading
 import uuid
 from flask import render_template, request, session, redirect, url_for, flash,current_app,make_response
 from werkzeug.utils import secure_filename
@@ -50,6 +50,41 @@ def verify_reset_token(token, max_age=1800):
         return None, "used"
     
     return user
+
+def welcome_email_user(app, user_email, username):
+    with app.app_context():
+        try:
+            msg = Message(
+                subject="Welcome to PEA-Bridge",
+                recipients=[user_email],
+                # sender can be removed if MAIL_DEFAULT_SENDER is configured
+            )
+
+            msg.html = f"""
+            <div style="margin:0; padding:0; background-color:#f4f6f9; font-family:Arial, Helvetica, sans-serif;">
+                <div style="max-width:620px; margin:30px auto; background-color:#ffffff; border-radius:12px; overflow:hidden; border:1px solid #e5e7eb;">
+                    <div style="background:#0b1320; padding:24px 30px; text-align:center;">
+                        <h1 style="margin:0; font-size:28px; color:#7acc16; font-weight:700;">PEA-Bridge</h1>
+                        <p style="margin:8px 0 0; color:#d1d5db; font-size:14px;">Trusted, Reliable and Secure</p>
+                    </div>
+
+                    <div style="padding:32px 30px;">
+                        <h3 style="margin-bottom:5px;">Hello {username}</h3>
+                        <h4>Welcome to PEA-Bridge</h4>
+                        <p>Your account was created successfully. Thank you for joining us.</p>
+                    </div>
+                </div>
+            </div>
+            """
+
+            mail.send(msg)
+            print("WELCOME EMAIL SENT SUCCESSFULLY")
+
+        except Exception as e:
+            print("WELCOME EMAIL ERROR:", e)
+    
+
+
 ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "webp"}
 
 def allowed_file(name: str) -> bool:
@@ -105,6 +140,15 @@ def register():
             db.session.commit()
 
             session["user_id"] = user.user_id
+
+            app = current_app._get_current_object()
+            thread= threading.Thread(
+                target=welcome_email_user,
+                args=(app,user.email,user.username)
+            )
+
+            thread.start()
+
             return redirect(url_for("main.homepage"))
 
         except Exception as e:

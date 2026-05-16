@@ -380,14 +380,17 @@
     });
   }
 
+  // this update the page everytime user searches,change page or filter
   function renderList() {
     const items = getItems();
     const filteredItems = getFilteredItems();
 
+    // hide everything first
     items.forEach(function(item) {
       item.style.display = "none";
     });
 
+      // page calc
     const totalPages = Math.ceil(filteredItems.length / perPage) || 1;
 
       // Prevents going beyond available pages.
@@ -395,6 +398,7 @@
       currentPage = totalPages;
     }
 
+    // slice current page item
     const start = (currentPage - 1) * perPage;
     const end = start + perPage;
 
@@ -403,6 +407,7 @@
       item.style.display = "";
     });
 
+    // display none if no record found
     emptyState.classList.toggle("d-none", filteredItems.length !== 0);
 
     renderPagination(totalPages, filteredItems.length);
@@ -421,6 +426,8 @@
 
   // Previous button
   const prevLi = document.createElement("li");
+
+  // disabled previous if its still on first page
   prevLi.className = "page-item " + (currentPage === 1 ? "disabled" : "");
 
   prevLi.innerHTML = `

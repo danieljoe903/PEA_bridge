@@ -131,7 +131,7 @@ def approve_property(property_id):
 
     prop = Property.query.get_or_404(property_id)
     prop.property_status = "available"
-    prop.expires_at = datetime.utcnow() + timedelta(days=14)
+    prop.expires_at = datetime.utcnow() + timedelta(days=30)
     db.session.commit()
 
     flash("property approve successfully", "success")
