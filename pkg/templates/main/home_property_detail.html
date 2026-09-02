@@ -141,6 +141,7 @@
                 <span class="value text-primary fw-bold">{{ prop.property_title or "Untitled Property" }}</span>
               </div>
 
+
               <div class="detail-row">
                 <span class="label fw-bold ">State : </span>
                 <span class="value text-primary fw-bold">{{ prop.states.state_name if prop.state else "No State" }}</span>
@@ -164,6 +165,10 @@
               <div class="detail-row align-items-start">
                 <span class="label fw-bold">Address</span>
                 <span class="value text-primary fw-bold">{{ prop.adress }}</span>
+              </div>
+              <div class="detail-row align-items-start">
+                <span class="label fw-bold">Description</span>
+                <span class="value text-primary fw-bold">{{ prop.description }}</span>
               </div>
             </div>
           </div>

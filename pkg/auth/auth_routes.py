@@ -162,8 +162,6 @@ def register():
 @auth_bp.route("/login/", methods=["GET", "POST"])
 def login():
 
-    if "admin_id" in session:
-        return redirect(url_for("admin.admin_dashboard"))
 
     if "user_id" in session:
         return redirect(url_for("main.homepage"))

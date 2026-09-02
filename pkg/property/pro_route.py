@@ -71,6 +71,7 @@ def add_property():
             adress=form.address.data,
             state_id=state.state_id,
             price=form.price.data,
+            description=form.description.data.strip(),
             property_listing="SALE",
             property_status="under_verification",
             agent_id=agent_profile.agent_id if agent_profile else None,

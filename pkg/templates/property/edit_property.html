@@ -11,7 +11,10 @@
       <label class="form-label">Title</label>
       <input class="form-control" name="title" value="{{ prop.property_title or '' }}" required>
     </div>
-
+     <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" name="description" required>{{ prop.description }}</textarea>
+    </div>
       <div class="mb-3">
       <label class="form-label">Type</label>
       <select class="form-control" name="type">

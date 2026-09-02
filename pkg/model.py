@@ -101,6 +101,8 @@ class Property(db.Model):
         nullable=True
     )
 
+    description = db.Column(db.Text, nullable=True)
+
     adress = db.Column(db.Text, nullable=False)
 
     price = db.Column(db.Numeric(12, 2), nullable=True)
