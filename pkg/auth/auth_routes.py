@@ -39,17 +39,17 @@ def verify_reset_token(token, max_age=1800):
     nonce = data.get("nonce")
 
     if not email or not nonce:
-        return None,"invaild"
+        return None,"invalid"
     
     user = User.query.filter_by(email=email).first()
 
     if not user:
-        return None, "invaild"
+        return None, "invalid"
     
     if user.reset_nonce != nonce:
         return None, "used"
     
-    return user
+    return user,None
 
 def welcome_email_user(app, user_email, username):
     with app.app_context():

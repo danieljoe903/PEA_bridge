@@ -2,7 +2,7 @@ import schedule
 import time
 from dotenv import load_dotenv
 
-load_dotenv("/home/danieljoe903/PEA_bridge/.env")
+load_dotenv=("/home/danieljoe903/PEA_bridge/.env")
 
 from pkg import create_app
 from pkg.task import check_expired_properties
