@@ -267,6 +267,7 @@ def public_property_detail(property_id):
 
     prop = Property.query.get_or_404(property_id)
 
+   
     images = (
         PropertyImage.query
         .filter_by(property_id=property_id)
@@ -355,6 +356,7 @@ def explore_properties():
         )
         covers[p.property_id] = cover.image_url if cover else "property_images/default_property.png"
 
+        
     RE_REQUEST_DAYS = 3
     request_status_map = {}
 

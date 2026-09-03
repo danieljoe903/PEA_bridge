@@ -57,17 +57,17 @@
 
         <div class="col-12 col-md-4">
           <div class="text-white-50 small">Status</div>
-          <div class="fw-bold">{{ prop.property_status|replace("_"," ")|title }}</div>
+          <div class="fw-bold btn btn-sm btn-outline-success rounded fs-5">{{ prop.property_status|replace("_"," ")|title }}</div>
         </div>
 
         <div class="col-12 col-md-4">
-          <div class="text-white-50 small">Price</div>
-          <div class="fw-bold">₦ {{ "{:,.0f}".format(prop.price or 0) }}</div>
+          <div class="text-white fw-bold">Price</div>
+          <div class="fw-bold text-warning">₦ {{ "{:,.0f}".format(prop.price or 0) }}</div>
         </div>
 
         <div class="col-12 col-md-4">
           <div class="text-white-50 small">State</div>
-          <div class="fw-bold">{{ state.state_name if state else "No State" }}</div>
+          <div class="fw-bold">{{ state.state_name|title if state else "N/A" }}</div>
 
             <div class="mt-2">
                       <h4 class="fw-bold ">For Buyers Safety</h4>
@@ -83,22 +83,22 @@
         </div>
 
         <div class="col-12 col-md-4">
-          <div class="text-white-50 small">Owner Name</div>
-          <div class="fw-bold text-info">
+          <div class="fw-bold text-info">Owner Name</div>
+          <div class="fw-bold ">
             {% if prop.owner %}
               {{ prop.owner.user_fname }} {{ prop.owner.users_lname }}
             {% else %}
               No Owner
             {% endif %}
-            <div class="text-white-50 small">Address</div>
+            <div class="fw-bold text-info">Address</div>
             <div class="fw-bold">{{ prop.adress }}</div>
 
-            <div class="text-white-50 small">Descriptions</div>
+            <div class="fw-bold text-info">Descriptions</div>
             <div class="fw-bold">{{ prop.description }}</div>
           </div>
         </div>
         <div class="col-12 col-md-4">
-          <div class="text-white-50 small"> Phone: No</div>
+          <div class="text-white fw-bold"> Phone: No</div>
             <div class="fw-bold text-info">
                 {% if prop.owner %}
                   {{ prop.owner.phone }} 
@@ -106,11 +106,11 @@
                   No phone: NO
                 {% endif %}
               </div>
-              <div class="text-white-50 small">Agent</div>
+              <div class="text-white fw-bold">Agent</div>
           <div class="fw-bold">
             {% if prop.agent and prop.agent.user %}
               {% if prop.agent.agency_status == "active" %}
-                <span class="badge bg-info text-dark">Verified Agent</span>
+                <span class="badge bg-success text-white">Verified Agent</span>
               {% elif prop.agent.agency_status == "pending" %}
                 <span class="badge bg-warning text-dark">Agent Pending</span>
               {% elif prop.agent.agency_status == "suspended" %}
@@ -126,27 +126,52 @@
       
 
               <div class="col-12 mt-3">
-              {% if has_requested %}
-                <button class="btn btn-secondary fw-bold w-100" disabled>
-                  Already Requested
-                </button>
 
-              {% elif not can_request_again %}
-                <button class="btn btn-secondary fw-bold w-100" disabled>
-                  Request Again in {{ days_left }} day(s)
-                </button>
+                  {% if current_user and prop.owner_id == current_user.user_id %}
 
-              {% else %}
-                <form action="{{ url_for('interest.request_interest', property_id=prop.property_id) }}"
-                      method="post">
-                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                  <button class="btn btn-success fw-bold w-100">
-                    Request Interest
-                  </button>
-                </form>
-              {% endif %}
-            </div>
-      </div>
+                      <button class="btn btn-secondary fw-bold w-100" disabled>
+                          You Own This Property
+                      </button>
+
+                  {% elif has_requested %}
+
+                      <button class="btn btn-secondary fw-bold w-100" disabled>
+                          Already Requested
+                      </button>
+
+                  {% elif not can_request_again %}
+
+                      <button class="btn btn-secondary fw-bold w-100" disabled>
+                          Request Again in {{ days_left }} day(s)
+                      </button>
+
+                  {% else %}
+
+                      <form
+                          action="{{ url_for(
+                              'interest.request_interest',
+                              property_id=prop.property_id
+                          ) }}"
+                          method="post"
+                      >
+                          <input
+                              type="hidden"
+                              name="csrf_token"
+                              value="{{ csrf_token() }}"
+                          >
+
+                          <button
+                              type="submit"
+                              class="btn btn-success fw-bold w-100"
+                          >
+                              Request Interest
+                          </button>
+                      </form>
+
+                  {% endif %}
+
+              </div>
+          </div>
     </div>
   </div>
 

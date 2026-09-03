@@ -253,3 +253,527 @@
   }
 }
 
+/* =========================================================
+   PUBLIC PROPERTY DETAIL
+========================================================= */
+
+.property-header {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(13, 110, 253, 0.06),
+            rgba(25, 135, 84, 0.05)
+        );
+    border-bottom: 1px solid #e9ecef;
+  
+}
+
+.property-title {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+}
+
+.property-meta {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 13px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 50rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.price-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+
+/* =========================================================
+   GALLERY
+========================================================= */
+
+.property-image-card {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #f1f3f5;
+}
+
+.property-gallery-section {
+    padding-top: 30px !important;
+    padding-bottom: 40px !important;
+    margin: 0;
+}
+
+.property-image-card {
+    width: 100%;
+    height: 280px;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #f1f3f5;
+}
+
+.property-gallery-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.property-image-card:hover .property-gallery-image {
+    transform: scale(1.03);
+}
+
+.property-image-card:hover .property-gallery-image {
+    transform: scale(1.025);
+}
+
+.empty-gallery {
+    background: #f8f9fa;
+    border: 1px dashed #ced4da;
+    border-radius: 16px;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.property-content-section {
+    background: #f8f9fa;
+}
+
+.property-card {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
+}
+
+.property-card-header {
+    padding: 22px 24px;
+    border-bottom: 1px solid #edf0f2;
+}
+
+.property-card-body {
+    padding: 24px;
+}
+
+
+/* =========================================================
+   OVERVIEW
+========================================================= */
+
+.overview-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 100%;
+    padding: 14px;
+    border: 1px solid #edf0f2;
+    border-radius: 14px;
+}
+
+.overview-icon {
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+    border-radius: 12px;
+    background: #eef5ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0d6efd;
+    font-size: 1.2rem;
+}
+.overview-item.status-item .overview-icon {
+    background: #e8f5e9;
+    color: #198754;
+}
+.overview-item.price-item .overview-icon {
+    background: #e8f5e9;
+    color: #198754;
+}
+.overview-item small {
+    display: block;
+    color: #6c757d;
+    margin-bottom: 2px;
+}
+
+.overview-item strong {
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+.property-address {
+    background: #f8f9fa;
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.property-description {
+    color: #495057;
+    line-height: 1.85;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   OWNER
+========================================================= */
+
+.owner-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.owner-profile-image {
+    width: 72px;
+    height: 72px;
+    min-width: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f1f3f5;
+}
+
+.contact-details {
+    border-top: 1px solid #edf0f2;
+}
+
+.contact-row {
+    display: flex;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid #edf0f2;
+}
+
+.contact-row:last-child {
+    border-bottom: 0;
+}
+
+.contact-row > i {
+    color: #0d6efd;
+    margin-top: 3px;
+}
+
+.contact-row small {
+    display: block;
+    color: #6c757d;
+}
+
+.contact-row span {
+    display: block;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   AGENT
+========================================================= */
+
+.agent-icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #e8f5e9;
+    color: #198754;
+    font-size: 1.35rem;
+}
+
+
+/* =========================================================
+   SAFETY
+========================================================= */
+
+.safety-card {
+    border-left: 4px solid #198754;
+}
+
+.safety-icon {
+    width: 45px;
+    height: 45px;
+    min-width: 45px;
+    border-radius: 50%;
+    background: #e8f5e9;
+    color: #198754;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.safety-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    margin-bottom: 15px;
+    color: #495057;
+    line-height: 1.6;
+}
+
+.safety-item i {
+    color: #198754;
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   CTA
+========================================================= */
+
+.interest-card {
+    padding: 26px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #0d6efd, #198754);
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.interest-card p {
+    opacity: 0.9;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .property-header {
+        padding-top: 24px !important;
+        padding-bottom: 28px !important;
+    }
+
+    .property-title {
+        font-size: 1.8rem;
+    }
+
+    .price-card {
+        padding: 18px;
+    }
+
+    .price-card h2 {
+        font-size: 1.7rem;
+    }
+
+    .property-main-image,
+    .property-gallery-image {
+        height: 220px;
+    }
+
+    .property-card-header {
+        padding: 18px;
+    }
+
+    .property-card-body {
+        padding: 18px;
+    }
+
+    .property-card-header h3 {
+        font-size: 1.25rem;
+    }
+
+    .overview-item {
+        padding: 11px;
+    }
+
+    .overview-icon {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        font-size: 1rem;
+    }
+
+    .overview-item small {
+        font-size: 0.72rem;
+    }
+
+    .overview-item strong {
+        font-size: 0.86rem;
+    }
+
+    .owner-profile-image {
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
+    }
+
+    .interest-card {
+        padding: 22px;
+    }
+}
+
+
+/* Very small phones */
+@media (max-width: 380px) {
+
+    .property-meta {
+        font-size: 0.78rem;
+        padding: 7px 10px;
+    }
+
+    .property-card-body {
+        padding: 15px;
+    }
+
+    .overview-item {
+        gap: 8px;
+    }
+
+}
+
+.price-card {
+    width: 100%;
+}
+
+@media (max-width: 991.98px) {
+
+    .property-header {
+        padding-top: 25px !important;
+        padding-bottom: 25px !important;
+    }
+
+    .price-card {
+        margin-top: 5px;
+    }
+
+}
+
+@media (max-width: 767.98px) {
+
+    .property-header {
+        padding: 22px 0 !important;
+    }
+
+    .property-title {
+        font-size: 1.8rem;
+        line-height: 1.2;
+        word-break: break-word;
+    }
+
+    .property-meta {
+        font-size: 0.8rem;
+        padding: 7px 11px;
+    }
+
+    .price-card {
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .price-card h2 {
+        font-size: 1.6rem;
+        word-break: break-word;
+    }
+
+
+    /* Gallery */
+
+    .property-gallery-section {
+        padding-top: 24px !important;
+        padding-bottom: 30px !important;
+    }
+
+    .property-image-card {
+        height: 240px;
+        border-radius: 12px;
+    }
+
+    .property-gallery-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+
+    /* Cards */
+
+    .property-content-section {
+        padding-top: 30px !important;
+        padding-bottom: 30px !important;
+    }
+
+    .property-card {
+        border-radius: 14px;
+    }
+
+    .property-card-header {
+        padding: 17px;
+    }
+
+    .property-card-body {
+        padding: 17px;
+    }
+
+    .overview-item {
+        padding: 10px;
+    }
+
+    .owner-profile {
+        align-items: flex-start;
+    }
+
+    .owner-profile-image {
+        width: 58px;
+        height: 58px;
+        min-width: 58px;
+    }
+
+    .contact-row {
+        overflow-wrap: anywhere;
+    }
+
+    .interest-card {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 400px) {
+
+    .property-title {
+        font-size: 1.55rem;
+    }
+
+    .price-card h2 {
+        font-size: 1.4rem;
+    }
+
+    .property-image-card {
+        height: 210px;
+    }
+
+    .property-card-header,
+    .property-card-body {
+        padding: 15px;
+    }
+}
+
+.contact-row span {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.property-description {
+    line-height: 1.7;
+    margin: 0;
+}
+
+.property-card-body {
+    padding: 22px 24px;
+}

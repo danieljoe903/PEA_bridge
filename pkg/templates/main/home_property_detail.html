@@ -1,260 +1,665 @@
 {% extends "base.html" %}
-{% block title %}{{ prop.property_title or "Property Details" }} | PEA-Bridge{% endblock %}
+
+{% block title %}
+{{ prop.property_title or "Property Details" }} | PEA-Bridge
+{% endblock %}
+
 
 {% block content %}
-<section class="detail-hero">
-  <div class="container">
-    <div class="row g-4 align-items-center">
-      <div class="col-12 col-lg-7 text-white">
-        <span class="hero-badge text-success fw-bold">
-          {% if prop.property_status == "available" %}
-            Available
-          {% elif prop.property_status == "under_verification" %}
-            Under Verification
-          {% elif prop.property_status == "rejected" %}
-            Rejected
-          {% else %}
-            {{ prop.property_status|replace("_", " ")|title }}
-          {% endif %}
-        </span>
 
-        <h1 class="display-6 fw-bold mt-3 section-title text-info">
-          {{ prop.property_title or "Untitled Property" }}
-        </h1>
+<!-- =====================================================
+     PROPERTY HEADER
+===================================================== -->
+<section class="property-header py-4 mt-5 ">
+    <div class="container">
 
-        <p class="lead muted mt-3 mb-2 fw-bold">
-          {{ prop.adress }}
-        </p>
+        <div class="row g-4 align-items-center">
 
-        <div class="d-flex gap-3 flex-wrap mt-3">
-          <div class="mini-stat">
-            <div class="small muted fw-bold">State</div>
-            <div class="fw-bold text-warning">
-              {{ prop.states.state_name if prop.states else "No State" }}
-            </div>
-          </div>
+            <!-- Property Information -->
+            <div class="col-12 col-lg-8">
 
-          <div class="mini-stat">
-            <div class="small muted fw-bold">Type</div>
-            <div class="fw-bold text-warning">
-              {{ prop.property_type|title if prop.property_type else "N/A" }}
-            </div>
-          </div>
+                <!-- Status -->
+                <div class="mb-3">
+                    {% if prop.property_status == "available" %}
+                        <span class="badge rounded-pill bg-success px-3 py-2">
+                            ● Available
+                        </span>
 
-          <div class="mini-stat">
-            <div class="small muted fw-bold">Price</div>
-            <div class="fw-bold text-warning">
-              ₦ {{ "{:,.0f}".format(prop.price or 0) }}
-            </div>
-          </div>
-        </div>
-      </div>
+                    {% elif prop.property_status == "under_verification" %}
+                        <span class="badge rounded-pill bg-warning text-dark px-3 py-2">
+                            Under Verification
+                        </span>
 
-      <div class="col-12 col-lg-5">
-        <div class="glass p-3 p-md-4">
-          <h5 class="fw-bold mb-3 text-info">Quick Property Summary</h5>
+                    {% elif prop.property_status == "rejected" %}
+                        <span class="badge rounded-pill bg-danger px-3 py-2">
+                            Rejected
+                        </span>
 
-          <div class="row g-3">
-            <div class="col-6">
-              <div class="summary-box">
-                <div class="fw-bold  text-info">Listing</div>
-                <div class="fw-bold text-warning">{{ prop.property_listing or "SALE" }}</div>
-              </div>
-            </div>
-
-            <div class="col-6">
-              <div class="summary-box">
-                <div class="fw-bold text-info">Status</div>
-                <div class="fw-bold text-warning">
-                  {{ prop.property_status|replace("_", " ")|title }}
-                </div>
-              </div>
-            </div>
-
-            <div class="col-12">
-              <div class="summary-box">
-                <div class="fw-bold text-info">Address</div>
-                <div class="fw-bold text-warning">{{ prop.adress }}</div>
-              </div>
-            </div>
-          </div>
-            {% if current_user %}
-            <small></small>
-            {% else %}
-          <div class="d-grid mt-4">
-            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg" target="_blank">
-              Login to Request Interest
-            </a>
-          </div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <div class="row align-items-end g-3 mb-4">
-      <div class="col-12 col-lg-7">
-        <h2 class="section-title text-warning">Property Gallery</h2>
-        <p class="text-secondary mb-0">Preview the uploaded images for this listing.</p>
-      </div>
-    </div>
-
-    {% if images and images|length > 0 %}
-      <div class="row g-3 ">
-        {% for img in images %}
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="gallery-card">
-              <img
-                src="{{ url_for('static', filename=img.image_url) }}"
-                alt="Property Image"
-                class="img-fluid w-100 gallery-img" style="height:250px;"
-              >
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-    {% else %}
-      <div class="card card-soft">
-        <div class="card-body p-4">
-          <p class="text-muted mb-0">No images uploaded for this property yet.</p>
-        </div>
-      </div>
-    {% endif %}
-  </div>
-</section>
-
-<section class="">
-  <div class="container">
-    <div class="row g-4">
-
-      <div class="col-12 col-lg-7 ">
-        <div class="card card-soft h-100 ">
-          <div class="card-body p-4 p-md-5">
-            <h3 class="fw-bold mb-3 ">Property Details</h3>
-
-            <div class="detail-list">
-              <div class="detail-row">
-                <span class="label fw-bold">Title : </span>
-                <span class="value text-primary fw-bold">{{ prop.property_title or "Untitled Property" }}</span>
-              </div>
-
-
-              <div class="detail-row">
-                <span class="label fw-bold ">State : </span>
-                <span class="value text-primary fw-bold">{{ prop.states.state_name if prop.state else "No State" }}</span>
-              </div>
-
-              <div class="detail-row">
-                <span class="label fw-bold">Type : </span>
-                <span class="value text-primary fw-bold">{{ prop.property_type|title if prop.property_type else "N/A" }}</span>
-              </div>
-
-              <div class="detail-row">
-                <span class="label fw-bold">Price : </span>
-                <span class="value text-primary fw-bold">₦ {{ "{:,.0f}".format(prop.price or 0) }}</span>
-              </div>
-
-              <div class="detail-row">
-                <span class="label fw-bold">Status : </span>
-                <span class="value text-primary fw-bold">{{ prop.property_status|replace("_", " ")|title }}</span>
-              </div>
-
-              <div class="detail-row align-items-start">
-                <span class="label fw-bold">Address</span>
-                <span class="value text-primary fw-bold">{{ prop.adress }}</span>
-              </div>
-              <div class="detail-row align-items-start">
-                <span class="label fw-bold">Description</span>
-                <span class="value text-primary fw-bold">{{ prop.description }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-lg-5 ">
-        <div class="card card-soft h-100 ">
-          <div class="card-body p-4 p-md-5  ">
-            <h3 class="fw-bold mb-3  ">Owner Details</h3>
-
-            {% if prop.owner %}
-              <div class="owner-box">
-                <div class="owner-avatar">
-                  <img
-                    src="{{ url_for('static', filename=prop.owner.image_url or 'uploads/default.png') }}"
-                    alt="Owner"
-                    class="w-100 h-100 object-fit-cover rounded-circle"
-                  >
+                    {% else %}
+                        <span class="badge rounded-pill bg-secondary px-3 py-2">
+                            {{ prop.property_status|replace("_", " ")|title }}
+                        </span>
+                    {% endif %}
                 </div>
 
-                <div>
-                  <h5 class="fw-bold mt-3 text-info">
-                    {{ prop.owner.user_fname }} {{ prop.owner.users_lname }}
-                  </h5>
-                  <div class="text-muted small mb-2">Property Owner</div>
 
-                  <p class="mb-1"><strong>Email:</strong> {{ prop.owner.email }}</p>
-                  <p class="mb-0"><strong>Phone:</strong> {{ prop.owner.phone }}</p>
+                <!-- Title -->
+                <h1 class="fw-bold property-title mb-2">
+                    {{ prop.property_title or "Untitled Property" }}
+                </h1>
+
+
+                <!-- Location -->
+                <p class="text-secondary mb-3">
+                    <i class="bi bi-geo-alt-fill me-1"></i>
+                    {{ prop.adress }}
+                    {% if prop.states %}
+                        , {{ prop.states.state_name }}
+                    {% endif %}
+                </p>
+
+
+                <!-- Property Meta -->
+                <div class="d-flex flex-wrap gap-2">
+
+                    <span class="property-meta">
+                        <i class="bi bi-house-door me-1"></i>
+                        {{ prop.property_type|title if prop.property_type else "N/A" }}
+                    </span>
+
+                    <span class="property-meta">
+                        <i class="bi bi-tag me-1"></i>
+                        {{ prop.property_listing|title if prop.property_listing else "Sale" }}
+                    </span>
+
+                    {% if prop.states %}
+                    <span class="property-meta">
+                        <i class="bi bi-map me-1"></i>
+                        {{ prop.states.state_name }}
+                    </span>
+                    {% endif %}
+
                 </div>
-              </div>
-            {% else %}
-              <p class="text-muted mb-0">No owner details available.</p>
-            {% endif %}
 
-            <hr class="my-4">
+            </div>
 
-            <h5 class="fw-bold mb-2 text-info">Assigned Agent</h5>
-            {% if prop.agent and prop.agent.user %}
-              <p class="mb-1">
-                {{ prop.agent.user.user_fname }} {{ prop.agent.user.users_lname }}
-              </p>
-              <p class="text-muted small mb-0 btn btn-success fw-bold rounded-4">
-                {{ prop.agent.agency_status|title }} Agent
-              </p>
-            {% else %}
-              <p class="text-muted mb-0">No agent assigned.</p>
-            {% endif %}
-              <div class="mt-2">
-                      <h4 class="fw-bold ">For Buyers Safety</h4>
-              <ul style="list-style-type:disc;font-size:15px; list-style-position:outside;list-style-image:url('/static/image/star.png/');">
-                  <li>Always meet in public places or well known locations. avoid unfamiliar or isolated areas</li>
-                  <li>Dont go alone. go with family, a friend or an agent and  inform someone of your location</li>
-                  <li>Confirm that the property actually exist. verify all ducuments</li>
-                  <li>Do not pay before seeing the property or verifying documents</li>
-                  <li>comfirm the owner or agent identity</li>
-                  <li>Leave immediately if something happens</li>
-              </ul>
-              </div>
-          </div>
+
+            <!-- Price -->
+            <div class="col-12 col-lg-4">
+                <div class="price-card">
+
+                    <small class="text-secondary d-block mb-1">
+                        Property Price
+                    </small>
+
+                    <h2 class="fw-bold text-success mb-0">
+                        ₦{{ "{:,.0f}".format(prop.price or 0) }}
+                    </h2>
+
+                    {% if not current_user %}
+                    <a
+                        href="{{ url_for('auth.login') }}"
+                        class="btn btn-success w-100 mt-3"
+                    >
+                        Login to Request Interest
+                    </a>
+                    {% endif %}
+
+                </div>
+            </div>
+
         </div>
-      </div>
 
     </div>
-  </div>
 </section>
-    
-     
-<section>
-  <div class="container">
-    <div class="cta d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
-      <div>
-        <h5 class="fw-bold text-secondary mb-1">Interested in this property?</h5>
-        <p class="text-secondary mb-0">
-          Create an account or login to request interest and connect securely.
-        </p>
-      </div>
-        {% if current_user %}
-        <p></p>
+
+
+
+
+
+<!-- =====================================================
+     PROPERTY GALLERY
+===================================================== -->
+<section class="property-gallery-section ">
+    <div class="container">
+
+        <div class="mb-3">
+            <h3 class="fw-bold mb-1">Property Gallery</h3>
+            <p class="text-secondary mb-0">
+                Photos uploaded for this property.
+            </p>
+        </div>
+
+        {% if images and images|length > 0 %}
+
+            <div class="row g-3">
+
+                {% for img in images %}
+
+                    <div class="col-12 col-sm-6 col-lg-4">
+
+                        <div class="property-image-card">
+
+                            <img
+                                src="{{ url_for('static', filename=img.image_url) }}"
+                                alt="{{ prop.property_title or 'Property image' }}"
+                                class="property-gallery-image"
+                                loading="{% if loop.first %}eager{% else %}lazy{% endif %}"
+                            >
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
         {% else %}
-      <div class="d-flex gap-2 flex-wrap ">
-        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-success text-info px-4" target="_blank">Register</a>
-        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary text-info px-4" target="_blank">Login</a>
-      </div>
-      {% endif %}
+
+            <div class="empty-gallery text-center py-5">
+
+                <i class="bi bi-image fs-1 text-secondary"></i>
+
+                <h5 class="fw-bold mt-3">
+                    No Property Images
+                </h5>
+
+                <p class="text-secondary mb-0">
+                    Images have not been uploaded for this listing yet.
+                </p>
+
+            </div>
+
+        {% endif %}
+
     </div>
-  </div>
 </section>
+
+<!-- =====================================================
+     MAIN PROPERTY INFORMATION
+===================================================== -->
+<section class="property-content-section py-5">
+
+    <div class="container">
+
+        <div class="row g-4">
+
+            <!-- ==========================================
+                 LEFT COLUMN
+            =========================================== -->
+            <div class="col-12 col-lg-8">
+
+
+                <!-- PROPERTY OVERVIEW -->
+                <div class="property-card mb-4">
+
+                    <div class="property-card-header">
+                        <h3 class="fw-bold mb-0">
+                            Property Overview
+                        </h3>
+                    </div>
+
+
+                    <div class="property-card-body">
+
+                        <div class="row g-3">
+
+                            <!-- Type -->
+                            <div class="col-6 col-md-4">
+
+                                <div class="overview-item">
+
+                                    <div class="overview-icon">
+                                        <i class="bi bi-house-door"></i>
+                                    </div>
+
+                                    <div>
+                                        <small>Property Type</small>
+
+                                        <strong>
+                                            {{ prop.property_type|title if prop.property_type else "N/A" }}
+                                        </strong>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Listing -->
+                            <div class="col-6 col-md-4">
+
+                                <div class="overview-item">
+
+                                    <div class="overview-icon">
+                                        <i class="bi bi-tag"></i>
+                                    </div>
+
+                                    <div>
+                                        <small>Listing</small>
+
+                                        <strong>
+                                            {{ prop.property_listing|title if prop.property_listing else "Sale" }}
+                                        </strong>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- State -->
+                            <div class="col-6 col-md-4">
+
+                                <div class="overview-item">
+
+                                    <div class="overview-icon">
+                                        <i class="bi bi-map"></i>
+                                    </div>
+
+                                    <div>
+                                        <small>State</small>
+
+                                        <strong>
+                                            {{ prop.states.state_name|title if prop.states else "N/A" }}
+                                        </strong>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Status -->
+                            <div class="col-6 col-md-4">
+
+                                <div class="overview-item status-item">
+
+                                    <div class="overview-icon">
+                                        <i class="bi bi-check-circle"></i>
+                                    </div>
+
+                                    <div>
+                                        <small>Status</small>
+
+                                        <strong>
+                                            {{ prop.property_status|replace("_", " ")|title }}
+                                        </strong>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Price -->
+                            <div class="col-12 col-md-8">
+
+                                <div class="overview-item status-item">
+
+                                    <div class="overview-icon">
+                                        <i class="bi bi-cash-stack"></i>
+                                    </div>
+
+                                    <div>
+                                        <small>Price</small>
+
+                                        <strong class="text-success">
+                                            ₦{{ "{:,.0f}".format(prop.price or 0) }}
+                                        </strong>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Address -->
+                        <div class="property-address mt-4">
+
+                            <small class="text-secondary d-block mb-1">
+                                Property Address
+                            </small>
+
+                            <strong>
+                                <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                                {{ prop.adress or "Address not provided" }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- DESCRIPTION -->
+                <div class="property-card mb-4">
+
+                    <div class="property-card-header">
+                        <h3 class="fw-bold mb-0">
+                            About This Property
+                        </h3>
+                    </div>
+
+                    <div class="property-card-body">
+
+                        {% if prop.description %}
+
+                            <p class="property-description mb-0">
+                                {{ prop.description }}
+                            </p>
+
+                        {% else %}
+
+                            <p class="text-secondary mb-0">
+                                No description has been provided for this property.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- BUYER SAFETY -->
+                <div class="property-card safety-card">
+
+                    <div class="property-card-header">
+
+                        <div class="d-flex align-items-center gap-2">
+
+                            <div class="safety-icon">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+
+                            <div>
+                                <h3 class="fw-bold mb-0">
+                                    Buyer Safety Tips
+                                </h3>
+
+                                <small class="text-secondary">
+                                    Protect yourself when inspecting a property.
+                                </small>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="property-card-body">
+
+                        <div class="safety-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>
+                                Meet in a public place or a well-known location.
+                                Avoid unfamiliar or isolated areas.
+                            </span>
+                        </div>
+
+                        <div class="safety-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>
+                                Don't go alone. Go with a family member, friend,
+                                or trusted agent and inform someone of your location.
+                            </span>
+                        </div>
+
+                        <div class="safety-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>
+                                Confirm that the property exists and verify the
+                                relevant property documents.
+                            </span>
+                        </div>
+
+                        <div class="safety-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>
+                                Do not make payment before inspecting the property
+                                and verifying the necessary documents.
+                            </span>
+                        </div>
+
+                        <div class="safety-item">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>
+                                Confirm the identity of the property owner or
+                                assigned agent.
+                            </span>
+                        </div>
+
+                        <div class="safety-item mb-0">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>
+                                Leave immediately if you feel unsafe or notice
+                                suspicious activity.
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ==========================================
+                 RIGHT COLUMN
+            =========================================== -->
+            <div class="col-12 col-lg-4">
+
+
+                <!-- OWNER -->
+                <div class="property-card mb-4">
+
+                    <div class="property-card-header">
+                        <h4 class="fw-bold mb-0">
+                            Property Owner
+                        </h4>
+                    </div>
+
+
+                    <div class="property-card-body">
+
+                        {% if prop.owner %}
+
+                        <div class="owner-profile">
+
+                            <img
+                                src="{{ url_for(
+                                    'static',
+                                    filename=prop.owner.image_url or 'uploads/default.png'
+                                ) }}"
+                                alt="Property Owner"
+                                class="owner-profile-image"
+                            >
+
+
+                            <div class="flex-grow-1">
+
+                                <h5 class="fw-bold mb-1">
+                                    {{ prop.owner.user_fname }}
+                                    {{ prop.owner.users_lname }}
+                                </h5>
+
+                                <small class="text-secondary">
+                                    Property Owner
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="contact-details mt-4">
+
+                            <div class="contact-row">
+                                <i class="bi bi-envelope"></i>
+
+                                <div>
+                                    <small>Email</small>
+                                    <span class="text-break">
+                                        {{ prop.owner.email or "Not provided" }}
+                                    </span>
+                                </div>
+                            </div>
+
+
+                            <div class="contact-row">
+                                <i class="bi bi-telephone"></i>
+
+                                <div>
+                                    <small>Phone</small>
+                                    <span>
+                                        {{ prop.owner.phone or "Not provided" }}
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        {% else %}
+
+                        <p class="text-secondary mb-0">
+                            Owner information is unavailable.
+                        </p>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ASSIGNED AGENT -->
+                <div class="property-card mb-4">
+
+                    <div class="property-card-header">
+                        <h4 class="fw-bold mb-0">
+                            Assigned Agent
+                        </h4>
+                    </div>
+
+
+                    <div class="property-card-body">
+
+                        {% if prop.agent and prop.agent.user %}
+
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div class="agent-icon">
+                                <i class="bi bi-person-badge"></i>
+                            </div>
+
+                            <div>
+
+                                <h5 class="fw-bold mb-1">
+                                    {{ prop.agent.user.user_fname }}
+                                    {{ prop.agent.user.users_lname }}
+                                </h5>
+
+                                {% if prop.agent.agency_status == "active" %}
+
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-patch-check-fill me-1"></i>
+                                        Active Agent
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary">
+                                        {{ prop.agent.agency_status|title }} Agent
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                        {% else %}
+
+                        <div class="text-center py-3">
+
+                            <i class="bi bi-person-x fs-2 text-secondary"></i>
+
+                            <p class="text-secondary mt-2 mb-0">
+                                No agent assigned to this property.
+                            </p>
+
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- INTEREST BOX -->
+                <div class="interest-card">
+
+                    <h4 class="fw-bold">
+                        Interested in this property?
+                    </h4>
+
+                    <p>
+                        Connect securely through PEA-Bridge and take the next
+                        step toward this property.
+                    </p>
+
+
+                    {% if current_user %}
+
+                        <a
+                            href="{{ url_for('property.explore_properties') }}"
+                            class="btn btn-light w-100 fw-semibold"
+                        >
+                            Explore More Properties
+                        </a>
+
+                    {% else %}
+
+                        <div class="d-grid gap-2">
+
+                            <a
+                                href="{{ url_for('auth.register') }}"
+                                class="btn btn-light fw-semibold"
+                            >
+                                Create an Account
+                            </a>
+
+                            <a
+                                href="{{ url_for('auth.login') }}"
+                                class="btn btn-outline-light fw-semibold"
+                            >
+                                Login
+                            </a>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
 {% endblock %}

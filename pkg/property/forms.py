@@ -1,12 +1,26 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, TextAreaField, DecimalField, MultipleFileField, SubmitField
-from wtforms.validators import DataRequired, Optional,NumberRange
+from wtforms import (
+    StringField, SelectField, TextAreaField,
+      DecimalField, MultipleFileField, SubmitField,
+)
+from wtforms.validators import (
+    DataRequired, Optional,NumberRange,
+    Length,
+)
 
 class PropertyForm(FlaskForm):
 
     title = StringField(
         "Property Title",
         validators=[DataRequired()]
+    )
+
+    description = TextAreaField(
+        "Property Description",
+        validators=[
+            DataRequired(),
+            Length(min=20, max=3000)
+        ]
     )
 
     type = SelectField(

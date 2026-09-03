@@ -19,6 +19,18 @@ def request_interest(property_id):
 
     prop = Property.query.get_or_404(property_id)
 
+    if prop.owner_id == user.user_id:
+        flash(
+            "You cannot request interest in your own property.",
+            "warning"
+        )
+        return redirect(
+        url_for(
+            "property.public_property_detail",
+            property_id=property_id
+        )
+        )
+
     if prop.property_status != "available":
         flash("This property is no longer available.", "warning")
         return redirect(url_for("property.public_property_detail", property_id=property_id, next="explore"))

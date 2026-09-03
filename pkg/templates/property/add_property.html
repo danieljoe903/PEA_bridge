@@ -21,8 +21,8 @@
                     </div>
                     <div class="mb-3">
                       {{ form.description.label(class="form-label")}}
-                      {{ form.description(class="form-control", row="6") 
-                          placeholder="Describe the property, its features, location, condition, and other important details..." }}
+                      {{ form.description(class="form-control", row="6",
+                          placeholder="Describe the property, its features, location, condition, and other important details...") }}
 
                       {% for error in form.description.errors %}
                         <small class="bg-danger"> {{ errors }}</small>
