@@ -90,10 +90,10 @@
             {% else %}
               No Owner
             {% endif %}
-            <div class="fw-bold text-info">Address</div>
+            <div class="fw-bold text-info mt-4">Address</div>
             <div class="fw-bold">{{ prop.adress }}</div>
 
-            <div class="fw-bold text-info">Descriptions</div>
+            <div class="fw-bold text-info mt-4">Descriptions</div>
             <div class="fw-bold">{{ prop.description }}</div>
           </div>
         </div>
@@ -106,7 +106,7 @@
                   No phone: NO
                 {% endif %}
               </div>
-              <div class="text-white fw-bold">Agent</div>
+              <div class="text-white fw-bold mt-3">Agent</div>
           <div class="fw-bold">
             {% if prop.agent and prop.agent.user %}
               {% if prop.agent.agency_status == "active" %}
