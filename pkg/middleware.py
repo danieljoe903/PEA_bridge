@@ -11,7 +11,7 @@ from flask import (
 from pkg.extension import db
 from pkg.model import User
 
-TIMEOUT = 300
+TIMEOUT = 3600
 
 
 def setup_inactivity_check(app):
