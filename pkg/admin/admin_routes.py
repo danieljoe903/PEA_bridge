@@ -382,7 +382,7 @@ def archived_properties():
         pagination=pagination,
         properties=properties,
         active="archived_properties",
-        archive_reason=PROPERTY_ARCHIVE_REASONS,
+        archive_reasons=PROPERTY_ARCHIVE_REASONS,
         next_page=next_page,
     )
 
@@ -2522,7 +2522,7 @@ def archive_property(property_id):
 
     prop = Property.query.get_or_404(property_id)
 
-    if not prop.property_status == "archived":
+    if prop.property_status == "archived":
         flash(
             "This property is already archived.",
             "warning"
@@ -2616,7 +2616,7 @@ def archive_property(property_id):
     try:
 
         prop.property_status = "archived"
-        prop.archive_at = datetime.utcnow()
+        prop.archived_at = datetime.utcnow()
         prop.archive_reason = archive_reason
         prop.archive_note = archive_note or None
 
@@ -2639,45 +2639,47 @@ def archive_property(property_id):
                 property_id=prop.property_id
             )
         )
-    
-    email_sent = True
-
+            
     if source_submission:
-        email_sent = (
-            send_property_archived_email(
-                email=source_submission.landlord_email,
-                landlord_name=source_submission.landlord_name,
-                property_title=prop.property_title,
-                listing_type=prop.property_listing,
-                reference_number=(
-                    source_submission.reference_number
-                ),
-                archive_reason=archive_reason,
-                archive_note=archive_note or None
-            )
+
+        email_sent = send_property_archived_email(
+            email=source_submission.landlord_email,
+            landlord_name=source_submission.landlord_name,
+            property_title=prop.property_title,
+            listing_type=prop.property_listing,
+            reference_number=(
+                source_submission.reference_number
+            ),
+            archive_reason=archive_reason,
+            archive_note=archive_note or None
         )
 
-    elif source_submission and not email_sent:
-        flash(
-            "Property archived successfully, "
-            "but the landlord notification email "
-            "could not be sent.",
-            "warning"
-        )
+        if not email_sent:
+            flash(
+                "Property archived successfully, "
+                "but the landlord notification email "
+                "could not be sent.",
+                "warning"
+            )
+        else:
+            flash(
+                "Property archived successfully. "
+                "The landlord has been notified.",
+                "success"
+            )
 
     else:
+
         flash(
             "Property archived successfully.",
             "success"
         )
-
 
     return redirect(
         url_for(
             "admin.verify_properties"
         )
     )
-
 
 @admin_bp.route(
     "/properties/<int:property_id>/complete/",
@@ -2745,7 +2747,7 @@ def complete_property(property_id):
 
     try:
         # It is no longer archived.
-        prop.archive_at = None
+        prop.archived_at = None
         prop.archive_reason = None
         prop.archive_note = None
 
