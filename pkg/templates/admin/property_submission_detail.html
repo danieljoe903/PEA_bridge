@@ -1,0 +1,2763 @@
+{% extends "admin/admin_base.html" %}
+
+
+{% block title %}
+Review {{ submission.reference_number }} | Flexy Properties
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+
+    /* =========================================================
+       PAGE
+    ========================================================= */
+
+    .submission-review-page {
+        padding-bottom: 40px;
+    }
+
+
+    /* =========================================================
+       HEADER
+    ========================================================= */
+
+    .review-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        gap: 20px;
+
+        flex-wrap: wrap;
+
+        margin-bottom: 25px;
+    }
+
+
+    .review-back {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 7px;
+
+        margin-bottom: 10px;
+
+        color: #667085;
+
+        font-size: .82rem;
+        font-weight: 600;
+
+        text-decoration: none;
+
+        transition: .2s ease;
+    }
+
+
+    .review-back:hover {
+        color: #079455;
+    }
+
+
+    .review-title {
+        margin: 0;
+
+        color: #101828;
+
+        font-size: 1.65rem;
+        font-weight: 800;
+
+        letter-spacing: -.02em;
+    }
+
+
+    .review-subtitle {
+        margin: 7px 0 0;
+
+        color: #667085;
+
+        font-size: .88rem;
+    }
+
+
+    .header-badges {
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+
+        flex-wrap: wrap;
+    }
+
+
+    .reference-badge {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 7px;
+
+        padding: 8px 12px;
+
+        background: #f2f4f7;
+
+        border: 1px solid #eaecf0;
+        border-radius: 999px;
+
+        color: #344054;
+
+        font-size: .75rem;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       STATUS
+    ========================================================= */
+
+    .submission-status {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 7px;
+
+        padding: 7px 11px;
+
+        border-radius: 999px;
+
+        font-size: .72rem;
+        font-weight: 700;
+
+        text-transform: capitalize;
+    }
+
+
+    .submission-status.pending {
+        background: #fffaeb;
+
+        border: 1px solid #fedf89;
+
+        color: #b54708;
+    }
+
+
+    .submission-status.approved {
+        background: #ecfdf3;
+
+        border: 1px solid #abefc6;
+
+        color: #027a48;
+    }
+
+
+    .submission-status.rejected {
+        background: #fef3f2;
+
+        border: 1px solid #fecdca;
+
+        color: #b42318;
+    }
+
+
+    .status-dot {
+        width: 7px;
+        height: 7px;
+
+        border-radius: 50%;
+
+        background: currentColor;
+    }
+
+
+    /* =========================================================
+       LAYOUT
+    ========================================================= */
+
+    .review-layout {
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            340px;
+
+        gap: 24px;
+
+        align-items: start;
+    }
+
+
+    .review-main,
+    .review-sidebar {
+        min-width: 0;
+    }
+
+
+    /* =========================================================
+       CARD
+    ========================================================= */
+
+    .review-card {
+        margin-bottom: 22px;
+
+        background: #ffffff;
+
+        border: 1px solid #eaecf0;
+        border-radius: 14px;
+
+        box-shadow:
+            0 2px 8px rgba(16, 24, 40, .04);
+
+        overflow: hidden;
+    }
+
+
+    .review-card-header {
+        display: flex;
+        align-items: center;
+
+        gap: 11px;
+
+        padding: 18px 20px;
+
+        border-bottom: 1px solid #eaecf0;
+    }
+
+
+    .review-card-icon {
+        width: 38px;
+        height: 38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        background: #ecfdf3;
+
+        border-radius: 9px;
+
+        color: #079455;
+
+        font-size: 1rem;
+    }
+
+
+    .review-card-title {
+        margin: 0;
+
+        color: #101828;
+
+        font-size: .95rem;
+        font-weight: 750;
+    }
+
+
+    .review-card-description {
+        margin: 3px 0 0;
+
+        color: #98a2b3;
+
+        font-size: .74rem;
+    }
+
+
+    .review-card-body {
+        padding: 21px;
+    }
+
+
+    /* =========================================================
+       DETAILS
+    ========================================================= */
+
+    .detail-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 20px 28px;
+    }
+
+
+    .detail-item.full-width {
+        grid-column: 1 / -1;
+    }
+
+
+    .detail-label {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: #98a2b3;
+
+        font-size: .69rem;
+        font-weight: 700;
+
+        text-transform: uppercase;
+        letter-spacing: .055em;
+    }
+
+
+    .detail-value {
+        margin: 0;
+
+        color: #344054;
+
+        font-size: .87rem;
+        font-weight: 600;
+
+        line-height: 1.55;
+
+        overflow-wrap: anywhere;
+    }
+
+
+    .detail-value.large {
+        color: #101828;
+
+        font-size: .95rem;
+        font-weight: 700;
+    }
+
+
+    .property-price {
+        margin: 0;
+
+        color: #079455;
+
+        font-size: 1.05rem;
+        font-weight: 800;
+    }
+
+
+    .listing-badge {
+        display: inline-flex;
+
+        padding: 5px 9px;
+
+        background: #eff8ff;
+
+        border-radius: 6px;
+
+        color: #175cd3;
+
+        font-size: .72rem;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       DESCRIPTION
+    ========================================================= */
+
+    .property-description {
+        padding: 15px 17px;
+
+        background: #f9fafb;
+
+        border: 1px solid #eaecf0;
+        border-radius: 9px;
+
+        color: #475467;
+
+        font-size: .84rem;
+        line-height: 1.75;
+
+        white-space: pre-line;
+    }
+
+
+    /* =========================================================
+       CONTACT
+    ========================================================= */
+
+    .contact-value {
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+    }
+
+
+    .contact-value i {
+        color: #98a2b3;
+    }
+
+
+    .contact-link {
+        color: #344054;
+
+        text-decoration: none;
+    }
+
+
+    .contact-link:hover {
+        color: #079455;
+    }
+
+
+    .whatsapp-link {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 7px;
+
+        margin-top: 8px;
+
+        color: #079455;
+
+        font-size: .77rem;
+        font-weight: 700;
+
+        text-decoration: none;
+    }
+
+
+    .whatsapp-link:hover {
+        color: #067647;
+    }
+
+
+    /* =========================================================
+       IMAGES
+    ========================================================= */
+
+    .submission-images {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
+        gap: 13px;
+    }
+
+
+    .submission-image {
+        position: relative;
+
+        aspect-ratio: 4 / 3;
+
+        background: #f2f4f7;
+
+        border-radius: 10px;
+
+        overflow: hidden;
+
+        cursor: pointer;
+    }
+
+
+    .submission-image img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+
+        transition: transform .25s ease;
+    }
+
+
+    .submission-image:hover img {
+        transform: scale(1.035);
+    }
+
+
+    .submission-image-overlay {
+        position: absolute;
+        inset: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(11, 19, 32, .48);
+
+        color: #ffffff;
+
+        opacity: 0;
+
+        transition: .2s ease;
+    }
+
+
+    .submission-image:hover
+    .submission-image-overlay {
+        opacity: 1;
+    }
+
+
+    .no-images {
+        padding: 35px;
+
+        background: #f9fafb;
+
+        border: 1px dashed #d0d5dd;
+        border-radius: 10px;
+
+        color: #98a2b3;
+
+        text-align: center;
+    }
+
+
+    /* =========================================================
+       REVIEW SIDEBAR
+    ========================================================= */
+
+    .review-summary {
+        position: sticky;
+
+        top: 95px;
+    }
+
+
+    .summary-property {
+        padding-bottom: 18px;
+        margin-bottom: 10px;
+
+        border-bottom: 1px solid #eaecf0;
+    }
+
+
+    .summary-property-title {
+        margin-bottom: 5px;
+
+        color: #101828;
+
+        font-size: .95rem;
+        font-weight: 750;
+    }
+
+
+    .summary-reference {
+        color: #667085;
+
+        font-size: .76rem;
+    }
+
+
+    .summary-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        gap: 15px;
+
+        padding: 9px 0;
+    }
+
+
+    .summary-row-label {
+        color: #667085;
+
+        font-size: .76rem;
+    }
+
+
+    .summary-row-value {
+        color: #344054;
+
+        font-size: .76rem;
+        font-weight: 700;
+
+        text-align: right;
+    }
+
+
+    /* =========================================================
+       PENDING NOTICE
+    ========================================================= */
+
+    .review-notice {
+        display: flex;
+
+        gap: 10px;
+
+        margin-top: 18px;
+
+        padding: 13px;
+
+        background: #fffaeb;
+
+        border: 1px solid #fedf89;
+        border-radius: 9px;
+
+        color: #93370d;
+
+        font-size: .74rem;
+        line-height: 1.55;
+    }
+
+
+    .review-notice i {
+        flex-shrink: 0;
+
+        margin-top: 2px;
+    }
+
+
+    /* =========================================================
+       ACTION BUTTONS
+    ========================================================= */
+
+    .review-actions {
+        display: grid;
+
+        gap: 10px;
+
+        margin-top: 20px;
+    }
+
+
+    .approve-btn,
+    .reject-btn {
+        width: 100%;
+
+        min-height: 45px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        border-radius: 8px;
+
+        font-size: .79rem;
+        font-weight: 700;
+
+        transition: .2s ease;
+    }
+
+
+    .approve-btn {
+        background: #079455;
+
+        border: 1px solid #079455;
+
+        color: #ffffff;
+    }
+
+
+    .approve-btn:hover {
+        background: #067647;
+
+        border-color: #067647;
+
+        color: #ffffff;
+
+        transform: translateY(-1px);
+    }
+
+
+    .reject-btn {
+        background: #ffffff;
+
+        border: 1px solid #f04438;
+
+        color: #d92d20;
+    }
+
+
+    .reject-btn:hover {
+        background: #fef3f2;
+
+        color: #b42318;
+    }
+
+
+    /* =========================================================
+       REVIEW RESULTS
+    ========================================================= */
+
+    .review-result {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 12px;
+
+        margin-top: 20px;
+
+        padding: 15px;
+
+        border-radius: 10px;
+    }
+
+
+    .review-result-icon {
+        width: 38px;
+        height: 38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        border-radius: 50%;
+    }
+
+
+    .review-result h4 {
+        margin: 0 0 4px;
+
+        font-size: .83rem;
+        font-weight: 800;
+    }
+
+
+    .review-result p {
+        margin: 0;
+
+        font-size: .72rem;
+        line-height: 1.55;
+    }
+
+
+    .approved-result {
+        background: #ecfdf3;
+
+        border: 1px solid #abefc6;
+
+        color: #067647;
+    }
+
+
+    .approved-result .review-result-icon {
+        background: #d1fadf;
+
+        color: #079455;
+    }
+
+
+    .rejected-result {
+        background: #fef3f2;
+
+        border: 1px solid #fecdca;
+
+        color: #b42318;
+    }
+
+
+    .rejected-result .review-result-icon {
+        background: #fee4e2;
+
+        color: #d92d20;
+    }
+
+
+    /* =========================================================
+       REVIEW DETAILS
+    ========================================================= */
+
+    .review-info-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        gap: 15px;
+
+        padding: 13px 0;
+
+        border-bottom: 1px solid #eaecf0;
+
+        font-size: .73rem;
+    }
+
+
+    .review-info-row span {
+        display: flex;
+        align-items: center;
+
+        gap: 6px;
+
+        color: #667085;
+    }
+
+
+    .review-info-row span i {
+        color: #98a2b3;
+    }
+
+
+    .review-info-row strong {
+        color: #344054;
+
+        font-size: .73rem;
+
+        text-align: right;
+    }
+
+
+    /* =========================================================
+       PUBLISHED PROPERTY
+    ========================================================= */
+
+    .published-property-box {
+        display: flex;
+        align-items: center;
+
+        gap: 11px;
+
+        margin-top: 17px;
+
+        padding: 13px;
+
+        background: #f9fafb;
+
+        border: 1px solid #eaecf0;
+        border-radius: 9px;
+    }
+
+
+    .published-property-icon {
+        width: 38px;
+        height: 38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        background: #ecfdf3;
+
+        border-radius: 8px;
+
+        color: #079455;
+    }
+
+
+    .published-property-content {
+        min-width: 0;
+    }
+
+
+    .published-property-content small {
+        display: block;
+
+        margin-bottom: 2px;
+
+        color: #98a2b3;
+
+        font-size: .65rem;
+
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+
+
+    .published-property-content strong {
+        display: block;
+
+        color: #344054;
+
+        font-size: .76rem;
+
+        overflow-wrap: anywhere;
+    }
+
+
+    .published-property-content span {
+        display: block;
+
+        margin-top: 3px;
+
+        color: #98a2b3;
+
+        font-size: .66rem;
+    }
+
+
+    /* =========================================================
+       REJECTION REASON
+    ========================================================= */
+
+    .rejection-reason-box {
+        margin-top: 17px;
+
+        padding: 14px;
+
+        background: #fff7f6;
+
+        border-left: 3px solid #f04438;
+        border-radius: 7px;
+    }
+
+
+    .rejection-reason-heading {
+        display: flex;
+        align-items: center;
+
+        gap: 7px;
+
+        margin-bottom: 7px;
+
+        color: #b42318;
+
+        font-size: .72rem;
+        font-weight: 800;
+    }
+
+
+    .rejection-reason-box p {
+        margin: 0;
+
+        color: #475467;
+
+        font-size: .74rem;
+        line-height: 1.65;
+
+        white-space: pre-line;
+    }
+
+
+    /* =========================================================
+       MODALS
+    ========================================================= */
+
+    .review-modal {
+        border: 0;
+
+        border-radius: 16px;
+
+        box-shadow:
+            0 24px 60px rgba(16, 24, 40, .20);
+
+        overflow: hidden;
+    }
+
+
+    .review-modal .modal-body {
+        padding: 28px;
+    }
+
+
+    .modal-status-icon {
+        width: 54px;
+        height: 54px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 16px;
+
+        border-radius: 50%;
+
+        font-size: 1.3rem;
+    }
+
+
+    .modal-status-icon.approve {
+        background: #d1fadf;
+
+        color: #079455;
+    }
+
+
+    .modal-status-icon.reject {
+        background: #fee4e2;
+
+        color: #d92d20;
+    }
+
+
+    .modal-review-title {
+        margin-bottom: 8px;
+
+        color: #101828;
+
+        font-size: 1.08rem;
+        font-weight: 800;
+    }
+
+
+    .modal-review-text {
+        max-width: 400px;
+
+        margin:
+            0 auto
+            20px;
+
+        color: #667085;
+
+        font-size: .79rem;
+        line-height: 1.65;
+    }
+
+
+    /* =========================================================
+       APPROVAL SUMMARY
+    ========================================================= */
+
+    .approval-summary {
+        margin-bottom: 17px;
+
+        padding: 5px 15px;
+
+        background: #f9fafb;
+
+        border: 1px solid #eaecf0;
+        border-radius: 9px;
+
+        text-align: left;
+    }
+
+
+    .approval-summary > div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 15px;
+
+        padding: 10px 0;
+
+        border-bottom: 1px solid #eaecf0;
+    }
+
+
+    .approval-summary > div:last-child {
+        border-bottom: 0;
+    }
+
+
+    .approval-summary span {
+        color: #667085;
+
+        font-size: .72rem;
+    }
+
+
+    .approval-summary strong {
+        color: #344054;
+
+        font-size: .72rem;
+    }
+
+
+    /* =========================================================
+       MODAL NOTICE
+    ========================================================= */
+
+    .modal-warning {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 9px;
+
+        padding: 11px 12px;
+
+        background: #fffaeb;
+
+        border: 1px solid #fedf89;
+        border-radius: 8px;
+
+        color: #93370d;
+
+        font-size: .7rem;
+        line-height: 1.55;
+
+        text-align: left;
+    }
+
+
+    .modal-warning i {
+        flex-shrink: 0;
+
+        margin-top: 1px;
+    }
+
+
+    .rejection-warning {
+        margin-top: 17px;
+
+        background: #fef3f2;
+
+        border-color: #fecdca;
+
+        color: #b42318;
+    }
+
+
+    /* =========================================================
+       REJECTION FORM
+    ========================================================= */
+
+    .rejection-label {
+        display: block;
+
+        margin-bottom: 7px;
+
+        color: #344054;
+
+        font-size: .76rem;
+        font-weight: 700;
+    }
+
+
+    .rejection-label span {
+        color: #d92d20;
+    }
+
+
+    .rejection-textarea {
+        min-height: 125px;
+
+        resize: vertical;
+
+        border-color: #d0d5dd;
+        border-radius: 8px;
+
+        font-size: .79rem;
+        line-height: 1.6;
+    }
+
+
+    .rejection-textarea:focus {
+        border-color: #079455;
+
+        box-shadow:
+            0 0 0 .2rem
+            rgba(7, 148, 85, .10);
+    }
+
+
+    .rejection-help {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 10px;
+
+        margin-top: 6px;
+
+        color: #98a2b3;
+
+        font-size: .66rem;
+    }
+
+
+    /* =========================================================
+       MODAL BUTTONS
+    ========================================================= */
+
+    .modal-review-actions {
+        display: grid;
+
+        grid-template-columns:
+            1fr
+            1fr;
+
+        gap: 10px;
+
+        margin-top: 20px;
+    }
+
+
+    .modal-review-actions form {
+        width: 100%;
+    }
+
+
+    .modal-cancel-btn,
+    .modal-approve-btn,
+    .modal-reject-btn {
+        width: 100%;
+
+        min-height: 43px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 7px;
+
+        border-radius: 8px;
+
+        font-size: .75rem;
+        font-weight: 700;
+
+        transition: .2s ease;
+    }
+
+
+    .modal-cancel-btn {
+        background: #ffffff;
+
+        border: 1px solid #d0d5dd;
+
+        color: #344054;
+    }
+
+
+    .modal-cancel-btn:hover {
+        background: #f9fafb;
+    }
+
+
+    .modal-approve-btn {
+        background: #079455;
+
+        border: 1px solid #079455;
+
+        color: #ffffff;
+    }
+
+
+    .modal-approve-btn:hover {
+        background: #067647;
+
+        border-color: #067647;
+    }
+
+
+    .modal-reject-btn {
+        background: #d92d20;
+
+        border: 1px solid #d92d20;
+
+        color: #ffffff;
+    }
+
+
+    .modal-reject-btn:hover {
+        background: #b42318;
+
+        border-color: #b42318;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 1100px) {
+
+        .review-layout {
+            grid-template-columns: 1fr;
+        }
+
+
+        .review-summary {
+            position: static;
+        }
+
+    }
+
+
+    @media (max-width: 767.98px) {
+
+        .review-title {
+            font-size: 1.35rem;
+        }
+
+
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+
+
+        .detail-item.full-width {
+            grid-column: auto;
+        }
+
+
+        .submission-images {
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+    }
+
+
+    @media (max-width: 480px) {
+
+        .submission-images {
+            grid-template-columns: 1fr;
+        }
+
+
+        .review-card-body {
+            padding: 17px;
+        }
+
+
+        .review-card-header {
+            padding: 16px 17px;
+        }
+
+
+        .review-modal .modal-body {
+            padding: 22px 18px;
+        }
+
+
+        .modal-review-actions {
+            grid-template-columns: 1fr;
+        }
+
+
+        .review-info-row {
+            flex-direction: column;
+
+            gap: 5px;
+        }
+
+
+        .review-info-row strong {
+            text-align: left;
+        }
+
+    }
+/* =========================================================
+   PUBLISHED PROPERTY LINK
+========================================================= */
+
+.published-property-link {
+    display: block;
+
+    margin-top: 17px;
+
+    color: inherit;
+
+    text-decoration: none;
+}
+
+
+.published-property-link:hover {
+    color: inherit;
+}
+
+
+.published-property-link
+.published-property-box {
+    margin-top: 0;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        transform .2s ease;
+}
+
+
+.published-property-link:hover
+.published-property-box {
+    border-color: #abefc6;
+
+    box-shadow:
+        0 4px 12px
+        rgba(16, 24, 40, .07);
+
+    transform: translateY(-1px);
+}
+
+
+.published-property-arrow {
+    margin-left: auto;
+
+    flex-shrink: 0;
+
+    color: #98a2b3;
+
+    font-size: .9rem;
+
+    transition:
+        color .2s ease,
+        transform .2s ease;
+}
+
+
+.published-property-link:hover
+.published-property-arrow {
+    color: #079455;
+
+    transform: translateX(3px);
+}
+
+</style>
+
+
+
+<div class="submission-review-page">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="review-header">
+
+        <div>
+
+            <a
+                href="{{ url_for(
+                    'admin.property_submissions'
+                ) }}"
+                class="review-back"
+            >
+                <i class="bi bi-arrow-left"></i>
+                Back to Property Submissions
+            </a>
+
+
+            <h1 class="review-title">
+                Property Submission Review
+            </h1>
+
+
+            <p class="review-subtitle">
+                Review the submitted property information
+                before making a publishing decision.
+            </p>
+
+        </div>
+
+
+        <div class="header-badges">
+
+            <span class="reference-badge">
+
+                <i class="bi bi-hash"></i>
+
+                {{ submission.reference_number }}
+
+            </span>
+
+
+            <span
+                class="
+                    submission-status
+                    {{ submission.submission_status }}
+                "
+            >
+
+                <span class="status-dot"></span>
+
+                {{ submission.submission_status }}
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="review-layout">
+
+
+        <!-- =================================================
+             LEFT CONTENT
+        ================================================== -->
+
+        <main class="review-main">
+
+
+            <!-- =================================================
+                 LANDLORD INFORMATION
+            ================================================== -->
+
+            <section class="review-card">
+
+                <div class="review-card-header">
+
+                    <div class="review-card-icon">
+                        <i class="bi bi-person"></i>
+                    </div>
+
+
+                    <div>
+
+                        <h2 class="review-card-title">
+                            Landlord Information
+                        </h2>
+
+                        <p class="review-card-description">
+                            Contact information provided
+                            with this submission.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="review-card-body">
+
+                    <div class="detail-grid">
+
+
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                Full Name
+                            </span>
+
+                            <p class="detail-value large">
+                                {{ submission.landlord_name }}
+                            </p>
+
+                        </div>
+
+
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                Email Address
+                            </span>
+
+                            <div class="detail-value contact-value">
+
+                                <i class="bi bi-envelope"></i>
+
+                                <a
+                                    href="mailto:{{ submission.landlord_email }}"
+                                    class="contact-link"
+                                >
+                                    {{ submission.landlord_email }}
+                                </a>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                Phone / WhatsApp
+                            </span>
+
+                            <div class="detail-value contact-value">
+
+                                <i class="bi bi-telephone"></i>
+
+                                <a
+                                    href="tel:{{ submission.landlord_phone }}"
+                                    class="contact-link"
+                                >
+                                    {{ submission.landlord_phone }}
+                                </a>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                Submission Reference
+                            </span>
+
+                            <p class="detail-value">
+                                {{ submission.reference_number }}
+                            </p>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 PROPERTY INFORMATION
+            ================================================== -->
+
+            <section class="review-card">
+
+                <div class="review-card-header">
+
+                    <div class="review-card-icon">
+                        <i class="bi bi-buildings"></i>
+                    </div>
+
+
+                    <div>
+
+                        <h2 class="review-card-title">
+                            Property Information
+                        </h2>
+
+                        <p class="review-card-description">
+                            Property details submitted
+                            for marketing review.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="review-card-body">
+
+                    <div class="detail-grid">
+
+
+                        <div class="detail-item full-width">
+
+                            <span class="detail-label">
+                                Property Title
+                            </span>
+
+                            <p class="detail-value large">
+                                {{ submission.property_title }}
+                            </p>
+
+                        </div>
+
+
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                Property Type
+                            </span>
+
+                            <p class="detail-value text-capitalize">
+                                {{ submission.property_type }}
+                            </p>
+
+                        </div>
+
+
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                Listing Purpose
+                            </span>
+
+
+                            {% if submission.listing_type == "SALE" %}
+
+                                <span class="listing-badge">
+                                    For Sale
+                                </span>
+
+                            {% elif submission.listing_type == "RENT" %}
+
+                                <span class="listing-badge">
+                                    For Rent
+                                </span>
+
+                            {% else %}
+
+                                <span class="listing-badge">
+                                    {{ submission.listing_type }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                State
+                            </span>
+
+                            <p class="detail-value">
+                                {{ submission.state }}
+                            </p>
+
+                        </div>
+
+
+                        <div class="detail-item">
+
+                            <span class="detail-label">
+                                Asking Price
+                            </span>
+
+
+                            <p class="property-price">
+
+                                {% if submission.price %}
+
+                                    ₦{{ "{:,.2f}".format(
+                                        submission.price
+                                    ) }}
+
+                                {% else %}
+
+                                    Negotiable
+
+                                {% endif %}
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="detail-item full-width">
+
+                            <span class="detail-label">
+                                Property Address
+                            </span>
+
+                            <p class="detail-value">
+                                {{ submission.address }}
+                            </p>
+
+                        </div>
+
+
+                        <div class="detail-item full-width">
+
+                            <span class="detail-label">
+                                Property Description
+                            </span>
+
+                            <div class="property-description">
+                                {{ submission.description }}
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 PROPERTY IMAGES
+            ================================================== -->
+
+            <section class="review-card">
+
+                <div class="review-card-header">
+
+                    <div class="review-card-icon">
+                        <i class="bi bi-images"></i>
+                    </div>
+
+
+                    <div>
+
+                        <h2 class="review-card-title">
+                            Property Images
+                        </h2>
+
+                        <p class="review-card-description">
+
+                            {{ submission.images | length }}
+
+                            image{% if submission.images | length != 1 %}s{% endif %}
+
+                            submitted for review.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="review-card-body">
+
+                    {% if submission.images %}
+
+                        <div class="submission-images">
+
+                            {% for image in submission.images %}
+
+                                <div
+                                    class="submission-image"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#imageModal{{ image.image_id }}"
+                                >
+
+                                    <img
+                                        src="{{ url_for(
+                                            'static',
+                                            filename=image.image_url
+                                        ) }}"
+                                        alt="Property image {{ loop.index }}"
+                                        loading="lazy"
+                                    >
+
+
+                                    <div class="submission-image-overlay">
+
+                                        <i class="bi bi-arrows-fullscreen fs-5"></i>
+
+                                    </div>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                    {% else %}
+
+                        <div class="no-images">
+
+                            <i class="bi bi-image fs-3 d-block mb-2"></i>
+
+                            No property images were submitted.
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+
+
+        <!-- =================================================
+             REVIEW SIDEBAR
+        ================================================== -->
+
+        <aside class="review-sidebar">
+
+            <section class="review-card review-summary">
+
+                <div class="review-card-header">
+
+                    <div class="review-card-icon">
+                        <i class="bi bi-clipboard-check"></i>
+                    </div>
+
+
+                    <div>
+
+                        <h2 class="review-card-title">
+                            Review Decision
+                        </h2>
+
+                        <p class="review-card-description">
+                            Submission summary and review status.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="review-card-body">
+
+
+                    <div class="summary-property">
+
+                        <div class="summary-property-title">
+                            {{ submission.property_title }}
+                        </div>
+
+                        <div class="summary-reference">
+                            {{ submission.reference_number }}
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="summary-row">
+
+                        <span class="summary-row-label">
+                            Type
+                        </span>
+
+                        <span class="summary-row-value text-capitalize">
+                            {{ submission.property_type }}
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="summary-row">
+
+                        <span class="summary-row-label">
+                            Listing
+                        </span>
+
+                        <span class="summary-row-value">
+
+                            {% if submission.listing_type == "SALE" %}
+
+                                For Sale
+
+                            {% elif submission.listing_type == "RENT" %}
+
+                                For Rent
+
+                            {% else %}
+
+                                {{ submission.listing_type }}
+
+                            {% endif %}
+
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="summary-row">
+
+                        <span class="summary-row-label">
+                            State
+                        </span>
+
+                        <span class="summary-row-value">
+                            {{ submission.state }}
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="summary-row">
+
+                        <span class="summary-row-label">
+                            Images
+                        </span>
+
+                        <span class="summary-row-value">
+                            {{ submission.images | length }}
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="summary-row">
+
+                        <span class="summary-row-label">
+                            Submitted
+                        </span>
+
+                        <span class="summary-row-value">
+
+                            {% if submission.created_at %}
+
+                                {{ submission.created_at.strftime(
+                                    "%d %b %Y"
+                                ) }}
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         PENDING
+                    ================================================== -->
+
+                    {% if submission.submission_status == "pending" %}
+
+
+                        <div class="review-notice">
+
+                            <i class="bi bi-exclamation-triangle"></i>
+
+                            <div>
+
+                                Review the property details and
+                                images carefully before making
+                                a decision.
+
+                                Approval will publish this
+                                property on Flexy Properties.
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="review-actions">
+
+
+                            <button
+                                type="button"
+                                class="approve-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#approveSubmissionModal"
+                            >
+
+                                <i class="bi bi-check-circle"></i>
+
+                                Approve & Publish Property
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="reject-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#rejectSubmissionModal"
+                            >
+
+                                <i class="bi bi-x-circle"></i>
+
+                                Reject Submission
+
+                            </button>
+
+
+                        </div>
+
+
+
+                    <!-- =================================================
+                         APPROVED
+                    ================================================== -->
+
+                    {% elif submission.submission_status == "approved" %}
+
+
+                        <div class="review-result approved-result">
+
+                            <div class="review-result-icon">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+
+
+                            <div>
+
+                                <h4>
+                                    Submission Approved
+                                </h4>
+
+                                <p>
+                                    This property was approved
+                                    and published successfully.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+
+                        {% if submission.reviewed_at %}
+
+                            <div class="review-info-row">
+
+                                <span>
+                                    <i class="bi bi-calendar-check"></i>
+                                    Reviewed
+                                </span>
+
+                                <strong>
+
+                                    {{ submission.reviewed_at.strftime(
+                                        "%d %b %Y, %I:%M %p"
+                                    ) }}
+
+                                </strong>
+
+                            </div>
+
+                        {% endif %}
+
+
+
+                        {% if submission.reviewed_by_admin_id %}
+
+                            <div class="review-info-row">
+
+                                <span>
+                                    <i class="bi bi-person-check"></i>
+                                    Reviewed By
+                                </span>
+
+                                <strong>
+                                    Administrator
+                                    #{{ submission.reviewed_by_admin_id }}
+                                </strong>
+
+                            </div>
+
+                        {% endif %}
+
+
+
+                       {% if submission.published_property %}
+
+                        <a
+                            href="{{ url_for(
+                                'admin.view_property',
+                                property_id=submission.published_property.property_id
+                            ) }}"
+                            class="published-property-link"
+                        >
+
+                            <div class="published-property-box">
+
+                                <div class="published-property-icon">
+
+                                    <i class="bi bi-buildings"></i>
+
+                                </div>
+
+
+                                <div class="published-property-content">
+
+                                    <small>
+                                        Published Property
+                                    </small>
+
+                                    <strong>
+                                        {{ submission.published_property.property_title }}
+                                    </strong>
+
+                                    <span>
+                                        Property ID:
+                                        #{{ submission.published_property.property_id }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="published-property-arrow">
+
+                                    <i class="bi bi-arrow-right"></i>
+
+                                </div>
+
+                            </div>
+
+                        </a>
+
+                    {% endif %}
+
+                    <!-- =================================================
+                         REJECTED
+                    ================================================== -->
+
+                    {% elif submission.submission_status == "rejected" %}
+
+
+                        <div class="review-result rejected-result">
+
+                            <div class="review-result-icon">
+                                <i class="bi bi-x-circle-fill"></i>
+                            </div>
+
+
+                            <div>
+
+                                <h4>
+                                    Submission Rejected
+                                </h4>
+
+                                <p>
+                                    This property submission
+                                    was not approved for publication.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+
+                        {% if submission.reviewed_at %}
+
+                            <div class="review-info-row">
+
+                                <span>
+                                    <i class="bi bi-calendar-check"></i>
+                                    Reviewed
+                                </span>
+
+                                <strong>
+
+                                    {{ submission.reviewed_at.strftime(
+                                        "%d %b %Y, %I:%M %p"
+                                    ) }}
+
+                                </strong>
+
+                            </div>
+
+                        {% endif %}
+
+
+
+                        {% if submission.reviewed_by_admin_id %}
+
+                            <div class="review-info-row">
+
+                                <span>
+                                    <i class="bi bi-person-check"></i>
+                                    Reviewed By
+                                </span>
+
+                                <strong>
+                                    Administrator
+                                    #{{ submission.reviewed_by_admin_id }}
+                                </strong>
+
+                            </div>
+
+                        {% endif %}
+
+
+
+                        {% if submission.rejection_reason %}
+
+                            <div class="rejection-reason-box">
+
+                                <div class="rejection-reason-heading">
+
+                                    <i class="bi bi-chat-left-text"></i>
+
+                                    Rejection Reason
+
+                                </div>
+
+
+                                <p>
+                                    {{ submission.rejection_reason }}
+                                </p>
+
+                            </div>
+
+                        {% endif %}
+
+
+                    {% endif %}
+
+
+                </div>
+
+            </section>
+
+        </aside>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     APPROVAL MODAL
+========================================================= -->
+
+{% if submission.submission_status == "pending" %}
+
+<div
+    class="modal fade"
+    id="approveSubmissionModal"
+    tabindex="-1"
+    aria-labelledby="approveSubmissionModalLabel"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content review-modal">
+
+            <div class="modal-body">
+
+
+                <div class="text-center">
+
+
+                    <div class="modal-status-icon approve">
+
+                        <i class="bi bi-check-lg"></i>
+
+                    </div>
+
+
+                    <h4
+                        class="modal-review-title"
+                        id="approveSubmissionModalLabel"
+                    >
+                        Approve Property Submission?
+                    </h4>
+
+
+                    <p class="modal-review-text">
+
+                        You are about to approve
+
+                        <strong>
+                            {{ submission.reference_number }}
+                        </strong>
+
+                        and publish this property
+                        on Flexy Properties.
+
+                    </p>
+
+                </div>
+
+
+
+                <div class="approval-summary">
+
+
+                    <div>
+
+                        <span>
+                            Property
+                        </span>
+
+                        <strong>
+                            {{ submission.property_title }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Listing
+                        </span>
+
+                        <strong>
+
+                            {% if submission.listing_type == "SALE" %}
+
+                                For Sale
+
+                            {% elif submission.listing_type == "RENT" %}
+
+                                For Rent
+
+                            {% else %}
+
+                                {{ submission.listing_type }}
+
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Type
+                        </span>
+
+                        <strong class="text-capitalize">
+                            {{ submission.property_type }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            State
+                        </span>
+
+                        <strong>
+                            {{ submission.state }}
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="modal-warning">
+
+                    <i class="bi bi-info-circle"></i>
+
+                    <span>
+                        Approval creates a public property
+                        listing and copies the submitted
+                        property images into the published
+                        property.
+                    </span>
+
+                </div>
+
+
+
+                <div class="modal-review-actions">
+
+
+                    <button
+                        type="button"
+                        class="modal-cancel-btn"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancel
+                    </button>
+
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'admin.approve_property_submission',
+                            submission_id=submission.submission_id
+                        ) }}"
+                    >
+
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}"
+                        >
+
+
+                        <button
+                            type="submit"
+                            class="modal-approve-btn"
+                        >
+
+                            <i class="bi bi-check-circle"></i>
+
+                            Approve & Publish
+
+                        </button>
+
+                    </form>
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     REJECTION MODAL
+========================================================= -->
+
+<div
+    class="modal fade"
+    id="rejectSubmissionModal"
+    tabindex="-1"
+    aria-labelledby="rejectSubmissionModalLabel"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content review-modal">
+
+
+            <form
+                method="POST"
+                action="{{ url_for(
+                    'admin.reject_property_submission',
+                    submission_id=submission.submission_id
+                ) }}"
+            >
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+
+                <div class="modal-body">
+
+
+                    <div class="text-center">
+
+
+                        <div class="modal-status-icon reject">
+
+                            <i class="bi bi-x-lg"></i>
+
+                        </div>
+
+
+                        <h4
+                            class="modal-review-title"
+                            id="rejectSubmissionModalLabel"
+                        >
+                            Reject Property Submission?
+                        </h4>
+
+
+                        <p class="modal-review-text">
+
+                            You are reviewing
+
+                            <strong>
+                                {{ submission.reference_number }}
+                            </strong>.
+
+                            Please provide a clear reason
+                            for rejecting this property.
+
+                        </p>
+
+                    </div>
+
+
+
+                    <div>
+
+                        <label
+                            for="rejection_reason"
+                            class="rejection-label"
+                        >
+
+                            Rejection Reason
+
+                            <span>*</span>
+
+                        </label>
+
+
+                        <textarea
+                            name="rejection_reason"
+                            id="rejection_reason"
+                            class="
+                                form-control
+                                rejection-textarea
+                            "
+                            rows="5"
+                            minlength="10"
+                            maxlength="1000"
+                            required
+                            placeholder="Explain why this property submission is being rejected..."
+                        ></textarea>
+
+
+                        <div class="rejection-help">
+
+                            <span>
+                                Minimum 10 characters
+                            </span>
+
+                            <span id="reasonCounter">
+                                0 / 1000
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="modal-warning rejection-warning">
+
+                        <i class="bi bi-exclamation-triangle"></i>
+
+                        <span>
+                            Rejected submissions will not
+                            create a public property listing.
+                            This reason will be stored with
+                            the review.
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="modal-review-actions">
+
+
+                        <button
+                            type="button"
+                            class="modal-cancel-btn"
+                            data-bs-dismiss="modal"
+                        >
+                            Cancel
+                        </button>
+
+
+                        <button
+                            type="submit"
+                            class="modal-reject-btn"
+                        >
+
+                            <i class="bi bi-x-circle"></i>
+
+                            Reject Submission
+
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+
+<!-- =========================================================
+     IMAGE PREVIEW MODALS
+========================================================= -->
+
+{% for image in submission.images %}
+
+<div
+    class="modal fade"
+    id="imageModal{{ image.image_id }}"
+    tabindex="-1"
+    aria-hidden="true"
+>
+
+    <div
+        class="
+            modal-dialog
+            modal-dialog-centered
+            modal-xl
+        "
+    >
+
+        <div
+            class="
+                modal-content
+                bg-dark
+                border-0
+            "
+        >
+
+            <div class="modal-header border-0">
+
+                <span class="text-white small">
+
+                    Property Image {{ loop.index }}
+
+                </span>
+
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+
+            </div>
+
+
+            <div class="modal-body p-2 text-center">
+
+                <img
+                    src="{{ url_for(
+                        'static',
+                        filename=image.image_url
+                    ) }}"
+                    alt="Property image {{ loop.index }}"
+                    class="img-fluid rounded"
+                    style="
+                        max-height: 80vh;
+                        object-fit: contain;
+                    "
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+<script>
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const rejectionReason =
+                document.getElementById(
+                    "rejection_reason"
+                );
+
+            const reasonCounter =
+                document.getElementById(
+                    "reasonCounter"
+                );
+
+
+            if (
+                rejectionReason
+                &&
+                reasonCounter
+            ) {
+
+                function updateReasonCounter() {
+
+                    reasonCounter.textContent =
+                        rejectionReason.value.length
+                        + " / 1000";
+
+                }
+
+
+                rejectionReason.addEventListener(
+                    "input",
+                    updateReasonCounter
+                );
+
+
+                updateReasonCounter();
+
+            }
+
+        }
+    );
+
+</script>
+
+{% endblock %}

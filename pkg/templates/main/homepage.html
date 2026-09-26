@@ -1,582 +1,1509 @@
-{% extends "base.html"%}
-{% block title %} PEA-Bridge | Verified Property Marketplace {% endblock %}
+{% extends "base.html" %}
+
+{% block title %}
+Flexy Properties | Houses, Land & Properties for Sale and Rent in Nigeria
+{% endblock %}
+
+{% block meta_description %}
+Discover houses, apartments, land and commercial properties for sale and rent in Nigeria with Flexy Properties. Search available properties by location, type and budget.
+{% endblock %}
+
+{% block canonical_url %}
+https://www.flexyproperties.org/
+{% endblock %}
+
+{% block og_title %}
+Flexy Properties | Find Properties for Sale and Rent in Nigeria
+{% endblock %}
+
+{% block og_description %}
+Explore houses, apartments, land and commercial properties available through Flexy Properties. Find a property that fits your location, needs and budget.
+{% endblock %}
+
+{% block og_url %}
+https://www.flexyproperties.org/
+{% endblock %}
+
 
 {% block content %}
-  <!-- HERO -->
-  <header id="top" class="hero">
+
+<!-- =====================================================
+     HERO
+====================================================== -->
+<header id="top" class="hero">
+
     <div class="container">
-      <div class="row align-items-center g-4">
-        <div class="col-12 col-lg-6 text-white">
-          {% if current_user %}
-            <span class="hero-badge">
-              👋 Welcome back, {{ current_user.user_fname }} • Continue exploring verified properties
-            </span>
 
-            <h1 class="display-5 fw-bold mt-3 section-title">
-              Welcome back to <span class="brand">PEA-Bridge</span>.
-            </h1>
+        <div class="row align-items-center g-4">
 
-            <p class="lead muted mt-3">
-              Explore verified properties, manage your interests, and track your account from one trusted marketplace.
-            </p>
 
-            <div class="d-flex gap-3 flex-wrap mt-4">
-              <a href="{{ url_for('user.dashboard') }}" class="btn btn-brand btn-lg">Go to Dashboard</a>
-              <a href="{{ url_for('property.explore_properties') }}" class="btn btn-outline-light btn-lg">Explore Properties</a>
-            </div>
+            <!-- LEFT -->
+            <div class="col-12 col-lg-6 text-white">
 
-            <div class="row g-3 mt-4">
-              <div class="col-6">
-                <div class="p-3 rounded-4 border border-white border-opacity-25">
-                  <div class="fw-bold">Account Ready</div>
-                  <div class="muted small">Manage profile, interests, and listings</div>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="p-3 rounded-4 border border-white border-opacity-25 ">
-                  <div class="fw-bold features">
-                    {% if agent_profile and agent_profile.agency_status == "active" %}
-                      Verified Agent<span> ✓</span>
-                    {% elif agent_profile and agent_profile.agency_status == "pending" %}
-                      Agent Pending
-                    {% elif agent_profile and agent_profile.agency_status == "suspended" %}
-                      Agent Suspended
+                {% if current_user %}
+
+                    <span class="hero-badge">
+                        <i class="bi bi-house-check me-1"></i>
+                        Welcome back, {{ current_user.user_fname }}
+                    </span>
+
+                {% else %}
+
+                    <span class="hero-badge">
+                        <i class="bi bi-buildings me-1"></i>
+                        Property Marketplace
+                    </span>
+
+                {% endif %}
+
+
+                <h1 class="display-5 fw-bold mt-3 section-title">
+
+                    Find your next property or
+
+                    <span class="brand">
+                        market your property with us.
+                    </span>
+
+                </h1>
+
+
+                <p class="lead muted mt-3">
+
+                    Explore available houses, apartments, land and
+                    commercial properties, or submit your property
+                    to Flexy Properties for professional review
+                    and marketing.
+
+                </p>
+
+
+                <div class="d-flex gap-3 flex-wrap mt-4">
+
+                    <a
+                        href="{{ url_for('property.explore_properties') }}"
+                        class="btn btn-brand btn-lg"
+                    >
+                        <i class="bi bi-search me-1"></i>
+                        Explore Properties
+                    </a>
+
+
+                    {% if current_user %}
+
+                        <a
+                            href="{{ url_for('property.market_property') }}"
+                            class="btn btn-outline-light btn-lg"
+                        >
+                            <i class="bi bi-building-add me-1"></i>
+                            Market Your Property
+                        </a>
+
                     {% else %}
-                      Buyer Account
+
+                        <a
+                            href="{{ url_for('auth.login', next='market_property') }}"
+                            class="btn btn-outline-light btn-lg"
+                        >
+                            <i class="bi bi-building-add me-1"></i>
+                            Market Your Property
+                        </a>
+
                     {% endif %}
-                    
-                  </div>
-                  <div class="muted small">Your account status on PEA-Bridge</div>
+
                 </div>
-              </div>
-            </div>
-          {% else %}
-            <span class="hero-badge">✅ Verified listings • Trusted agents • Secure process</span>
 
-            <h1 class="display-5 fw-bold mt-3 section-title">
-              Find verified properties faster with <span class="brand">PEA-Bridge</span>.
-            </h1>
 
-            <p class="lead muted mt-3">
-              Search homes, apartments, and land across Nigeria. Every listing is reviewed to reduce duplicates,
-              scams, and wasted inspections.
-            </p>
+                <div class="row g-3 my-4">
 
-            <div class="d-flex gap-3 flex-wrap mt-4">
-              <a href="#contact" class="btn btn-brand btn-lg">Talk to an Agent</a>
-              <a href="#features" class="btn btn-outline-light btn-lg">Explore Features</a>
-            </div>
+                    <div class="col-6">
 
-            <div class="row g-3 mt-4">
-              <div class="col-6">
-                <div class="p-3 rounded-4 border border-white border-opacity-25">
-                  <div class="fw-bold">Verified Listings</div>
-                  <div class="muted small">Less fake posts & duplicates</div>
+                        <div
+                            class="
+                                p-3 rounded-4
+                                border border-white
+                                border-opacity-25
+                            "
+                        >
+
+                            <div class="fw-bold">
+                                Find a Property
+                            </div>
+
+                            <div class="muted small">
+                                Search by location, type and budget
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-6">
+
+                        <div
+                            class="
+                                p-3 rounded-4
+                                border border-white
+                                border-opacity-25
+                            "
+                        >
+
+                            <div class="fw-bold">
+                                Market a Property
+                            </div>
+
+                            <div class="muted small">
+                                Submit your property for review
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
-              </div>
-              <div class="col-6">
-                <div class="p-3 rounded-4 border border-white border-opacity-25">
-                  <div class="fw-bold">Secure Communication</div>
-                  <div class="muted small">Safer buyer–agent flow</div>
-                </div>
-              </div>
+
             </div>
-          {% endif %}
+
+
+            <!-- RIGHT / SEARCH -->
+            <div class="col-12 col-lg-6 mb-4">
+
+                <div class="glass p-3 p-md-4">
+
+                    <div class="mb-4">
+
+                        <h4 class="fw-bold mb-1">
+                            Find Your Next Property
+                        </h4>
+
+                        <p class="text-muted small mb-0">
+                            Tell us what you're looking for.
+                        </p>
+
+                    </div>
+
+
+                    <form id="homeSearchForm" class="row g-3">
+
+                        <!-- PROPERTY TYPE -->
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                for="type"
+                                class="form-label small fw-semibold"
+                            >
+                                Property Type
+                            </label>
+
+                            {{ form.type(
+                                class_="form-select",
+                                id="type"
+                            ) }}
+
+                        </div>
+
+
+                        <!-- LOCATION -->
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                for="location"
+                                class="form-label small fw-semibold"
+                            >
+                                Location
+                            </label>
+
+                            {{ form.location(
+                                class_="form-control",
+                                id="location",
+                                placeholder="e.g. Lagos"
+                            ) }}
+
+                        </div>
+
+
+                        <!-- BUDGET -->
+                        <div class="col-12">
+
+                            <label
+                                for="budget"
+                                class="form-label small fw-semibold"
+                            >
+                                Budget (₦)
+                            </label>
+
+                            {{ form.budget(
+                                class_="form-select",
+                                id="budget"
+                            ) }}
+
+                        </div>
+
+
+                        <div class="col-12">
+
+                            <button
+                                type="button"
+                                id="searchBtn"
+                                class="btn btn-brand w-100 py-2"
+                            >
+                                <i class="bi bi-search me-1"></i>
+                                Search Properties
+                            </button>
+
+                        </div>
+
+                    </form>
+
+
+                    <!-- AJAX SEARCH RESULT -->
+                    <div
+                        id="search_result"
+                        class="mt-4"
+                    ></div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="col-12 col-lg-6 mb-4">
-          <div class="glass p-3 p-md-4">
-            {% if current_user %}
-              <h5 class="fw-bold mb-3">Quick Actions</h5>
+    </div>
 
-              <div class="row g-3">
-                <div class="col-12 col-md-6">
-                  <a href="{{ url_for('user.dashboard') }}" class="text-decoration-none text-dark">
-                    <div class="card card-soft h-100">
-                      <div class="card-body p-3">
-                        <div class="fw-bold mb-1">Dashboard</div>
-                        <div class="small text-muted">View your account overview</div>
-                      </div>
-                    </div>
-                  </a>
+</header>
+
+
+<!-- =====================================================
+     FEATURED PROPERTIES
+====================================================== -->
+<section id="properties" class="bg-light">
+
+    <div class="container">
+
+        <div class="row align-items-end g-3 mb-4">
+
+            <div class="col-12 col-lg-8">
+
+                <div class="text-uppercase small fw-semibold mb-2">
+                    Featured Listings
                 </div>
 
-                <div class="col-12 col-md-6">
-                  <a href="{{ url_for('interest.my_interest') }}" class="text-decoration-none text-dark">
-                    <div class="card card-soft h-100">
-                      <div class="card-body p-3">
-                        <div class="fw-bold mb-1">My Interest</div>
-                        <div class="small text-muted">Track requested properties</div>
-                      </div>
-                    </div>
-                  </a>
-                </div>
+                <h2 class="section-title">
+                    Discover Featured Properties
+                </h2>
 
-                <div class="col-12 col-md-6">
-                  <a href="{{ url_for('user.profile') }}" class="text-decoration-none text-dark">
-                    <div class="card card-soft h-100">
-                      <div class="card-body p-3">
-                        <div class="fw-bold mb-1">Profile</div>
-                        <div class="small text-muted">Update your account details</div>
-                      </div>
-                    </div>
-                  </a>
-                </div>
+                <p class="text-muted mb-0">
+                    Explore selected properties currently available
+                    through Flexy Properties.
+                </p>
 
-                <div class="col-12 col-md-6">
-                  {% if agent_profile and agent_profile.agency_status == "active" %}
-                    <a href="{{ url_for('property.add_property') }}" class="text-decoration-none text-dark">
-                      <div class="card card-soft h-100">
-                        <div class="card-body p-3">
-                          <div class="fw-bold mb-1">Add Property</div>
-                          <div class="small text-muted">Create a new listing</div>
+            </div>
+
+        </div>
+
+
+        <div class="row g-3">
+
+            {% if featured_properties and featured_properties|length > 0 %}
+
+                {% for p in featured_properties %}
+
+                    <div class="col-12 col-md-6 col-lg-4">
+
+                        <div class="city">
+
+                            <a
+                                href="{{ url_for(
+                                    'main.home_property_detail',
+                                    property_id=p.property_id,
+                                    next='home'
+                                ) }}"
+                                class="city-link"
+                            >
+
+                                <img
+                                    src="{{ url_for(
+                                        'static',
+                                        filename=covers[p.property_id]
+                                    ) }}"
+                                    alt="{{ p.property_title }} in {{ p.states.state_name if p.states else 'Nigeria' }}"
+                                    class="img-fluid w-100"
+                                    loading="lazy"
+                                    style="height:250px; object-fit:cover;"
+                                >
+
+                            </a>
+
+
+                            <div class="label">
+
+                                <h5 class="fw-bold mb-1">
+                                    {{ p.property_title or "Property" }}
+                                </h5>
+
+                                <div class="small">
+
+                                    <i class="bi bi-geo-alt me-1"></i>
+
+                                    {{ p.states.state_name if p.states else "Nigeria" }}
+
+                                </div>
+
+                            </div>
+
                         </div>
-                      </div>
-                    </a>
-                  {% else %}
-                    <div class="card card-soft h-100">
-                      <div class="card-body p-3">
-                        <div class="fw-bold mb-1">Agent Access</div>
-                        <div class="small text-muted">
-                          {% if agent_profile and agent_profile.agency_status == "pending" %}
-                            Your agent application is pending
-                          {% elif agent_profile and agent_profile.agency_status == "suspended" %}
-                            Your agent access is suspended
-                          {% else %}
-                            Apply as an agent to add properties
-                          {% endif %}
-                        </div>
-                      </div>
+
                     </div>
-                  {% endif %}
-                </div>
-              </div>
 
-              <div class="mt-4">
-                <a href="{{ url_for('property.explore_properties') }}" class="btn btn-brand w-100 py-2">
-                  Continue Exploring Properties
-                </a>
-              </div>
-              {% else %}
-              <h5 class="fw-bold mb-3">Search Properties</h5>
+                {% endfor %}
 
-              <form id="homeSearchForm" class="row g-2">
-                <div class="col-12 col-md-6">
-                  <label class="form-label small mb-1">Property Type</label>
-                  {{ form.type(class_="form-select", id="type") }}
-                </div>
 
-                <div class="col-12 col-md-6">
-                  <label class="form-label small mb-1">State / City</label>
-                  {{ form.location(class_="form-control", id="location", placeholder="e.g. Lagos") }}
-                </div>
-
-                <div class="col-12 col-md-6">
-                  <label class="form-label small mb-1">Budget (₦)</label>
-                  {{ form.budget(class_="form-select", id="budget") }}
-                </div>
+            {% else %}
 
                 <div class="col-12">
-                  <button type="button" id="searchBtn" class="btn btn-brand w-100 py-2">Search Now</button>
-                  <p class="text-muted small mt-2 mb-0">
-                    Tip: Search by type, state, or budget.
-                  </p>
-                </div>
-              </form>
 
-              <div id="search_result" class="mt-4"></div>
+                    <div class="text-center py-5">
+
+                        <i class="bi bi-house fs-1 text-muted"></i>
+
+                        <h5 class="mt-3">
+                            No featured properties available
+                        </h5>
+
+                        <p class="text-muted">
+                            Please check again later for newly available properties.
+                        </p>
+
+                    </div>
+
+                </div>
+
             {% endif %}
-          </div>
+
         </div>
-      </div>
+
+
+        <div class="text-center mt-4">
+
+            <a
+                href="{{ url_for('property.explore_properties') }}"
+                class="btn btn-brand px-5 py-2"
+            >
+                View All Properties
+                <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+
+        </div>
+
     </div>
-  </header>
 
-  <!-- FEATURES -->
-  <section id="features">
+</section>
+
+<!-- =====================================================
+     MARKET YOUR PROPERTY
+====================================================== -->
+<section class="owner-section">
+
     <div class="container">
-      <div class="row align-items-end g-3 mb-4">
-        <div class="col-12 col-lg-7">
-          <h2 class="section-title">Everything you need to buy with confidence</h2>
-          <p class="text-muted mb-0">A simple experience built around trust, verification, and speed.</p>
-        </div>
-      </div>
 
-      <div class="row g-3">
-        <div class="col-12 col-md-6 col-lg-4">
-          <div class="card card-soft h-100">
-            <div class="card-body p-4">
-              <div class="d-flex gap-3 align-items-start">
-                <div class="icon-pill">🏠</div>
-                <div>
-                  <h5 class="fw-bold mb-1">Verified Listings</h5>
-                  <p class="text-muted mb-0">Reduced fake posts, duplicates, and outdated properties.</p>
+        <div class="owner-card">
+
+            <div class="row align-items-center g-4">
+
+                <!-- LEFT -->
+                <div class="col-12 col-lg-7">
+
+                    <div class="owner-badge">
+                        <i class="bi bi-building-check"></i>
+                        For Property Owners
+                    </div>
+
+                    <h2 class="section-title mt-3">
+                        Have a property you want to sell?
+                    </h2>
+
+                    <p class="text-muted mt-3 owner-description">
+                        Submit your property to Flexy Properties
+                        for review. Provide the property details,
+                        asking price and clear images, and our team
+                        will review your submission before it is
+                        considered for publication.
+                    </p>
+
+
+                    <div class="row g-3 mt-3">
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="owner-feature">
+
+                                <div class="owner-feature-icon">
+                                    <i class="bi bi-card-checklist"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Submit Property Details
+                                    </strong>
+
+                                    <small>
+                                        Tell us about the property
+                                        you want to market.
+                                    </small>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="owner-feature">
+
+                                <div class="owner-feature-icon">
+                                    <i class="bi bi-images"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Upload Property Photos
+                                    </strong>
+
+                                    <small>
+                                        Provide clear images for
+                                        our team to review.
+                                    </small>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="owner-feature">
+
+                                <div class="owner-feature-icon">
+                                    <i class="bi bi-search"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Professional Review
+                                    </strong>
+
+                                    <small>
+                                        Every submission is reviewed
+                                        before publication.
+                                    </small>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="owner-feature">
+
+                                <div class="owner-feature-icon">
+                                    <i class="bi bi-whatsapp"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Direct Communication
+                                    </strong>
+
+                                    <small>
+                                        Reach our team on WhatsApp
+                                        after your submission.
+                                    </small>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mt-4">
+
+                        {% if current_user %}
+
+                            <a
+                                href="{{ url_for(
+                                    'property.market_property'
+                                ) }}"
+                                class="btn btn-brand btn-lg"
+                            >
+                                <i class="bi bi-building-add me-1"></i>
+                                Market Your Property
+                            </a>
+
+                        {% else %}
+
+                            <a
+                                href="{{ url_for('auth.login') }}"
+                                class="btn btn-brand btn-lg"
+                            >
+                                <i class="bi bi-box-arrow-in-right me-1"></i>
+                                Login to Submit a Property
+                            </a>
+
+                            <div class="small text-muted mt-2">
+                                You need a Flexy Properties account
+                                to submit a property.
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <div class="col-12 col-md-6 col-lg-4">
-          <div class="card card-soft h-100">
-            <div class="card-body p-4">
-              <div class="d-flex gap-3 align-items-start">
-                <div class="icon-pill">🤝</div>
-                <div>
-                  <h5 class="fw-bold mb-1">Trusted Agents</h5>
-                  <p class="text-muted mb-0">Agents and vendors can be verified before engagement.</p>
+
+                <!-- RIGHT -->
+                <div class="col-12 col-lg-5">
+
+                    <div class="owner-process">
+
+                        <div class="owner-process-title">
+                            How property submission works
+                        </div>
+
+
+                        <div class="owner-step">
+
+                            <div class="owner-step-number">
+                                1
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Complete the form
+                                </strong>
+
+                                <p>
+                                    Provide your contact and
+                                    property information.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="owner-step">
+
+                            <div class="owner-step-number">
+                                2
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Upload clear photos
+                                </strong>
+
+                                <p>
+                                    Add recent images that show
+                                    the property clearly.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="owner-step">
+
+                            <div class="owner-step-number">
+                                3
+                            </div>
+
+                            <div>
+                                <strong>
+                                    We review your submission
+                                </strong>
+
+                                <p>
+                                    Flexy Properties reviews the
+                                    information before publication.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="owner-step mb-0">
+
+                            <div class="owner-step-number">
+                                4
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Stay in contact
+                                </strong>
+
+                                <p>
+                                    You'll receive a reference
+                                    number and can follow up with
+                                    us through WhatsApp.
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
-              </div>
+
             </div>
-          </div>
+
         </div>
 
-        <div class="col-12 col-md-6 col-lg-4">
-          <div class="card card-soft h-100">
-            <div class="card-body p-4">
-              <div class="d-flex gap-3 align-items-start">
-                <div class="icon-pill">🛡️</div>
-                <div>
-                  <h5 class="fw-bold mb-1">Secure Process</h5>
-                  <p class="text-muted mb-0">Safer communication and clearer property status updates.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 col-md-6 col-lg-4">
-          <div class="card card-soft h-100">
-            <div class="card-body p-4">
-              <div class="d-flex gap-3 align-items-start">
-                <div class="icon-pill">📍</div>
-                <div>
-                  <h5 class="fw-bold mb-1">Smart Search</h5>
-                  <p class="text-muted mb-0">Filter by location, budget, type, and features.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 col-md-6 col-lg-4">
-          <div class="card card-soft h-100">
-            <div class="card-body p-4">
-              <div class="d-flex gap-3 align-items-start">
-                <div class="icon-pill">💬</div>
-                <div>
-                  <h5 class="fw-bold mb-1">Direct Messaging</h5>
-                  <p class="text-muted mb-0">Connect quickly with agents for inspections and offers.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 col-md-6 col-lg-4">
-          <div class="card card-soft h-100">
-            <div class="card-body p-4">
-              <div class="d-flex gap-3 align-items-start">
-                <div class="icon-pill">📊</div>
-                <div>
-                  <h5 class="fw-bold mb-1">Transparent Status</h5>
-                  <p class="text-muted mb-0">See whether a listing is Verified, Pending, or Sold.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {% if current_user %}
-        <div class="mt-4 cta d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
-          <div>
-            <h5 class="fw-bold mb-1">You are signed in</h5>
-            <p class="text-muted mb-0">Use your account menu to access dashboard, profile, and logout anytime.</p>
-          </div>
-          <a class="btn btn-brand px-4" href="{{ url_for('user.dashboard') }}">Open Dashboard</a>
-        </div>
-      {% endif %}
     </div>
-  </section>
 
-  <!-- CITIES -->
-  <section id="cities" class="bg-light">
+</section>
+<!-- =====================================================
+     WHY FLEXY PROPERTIES
+====================================================== -->
+<section id="features">
+
     <div class="container">
-      <div class="row align-items-end g-3 mb-4">
-        <div class="col-12 col-lg-7">
-          <h2 class="section-title">Featured cities</h2>
-          <p class="text-muted mb-0">Start with popular markets — expand nationwide as you grow.</p>
-        </div>
-      </div>
 
-      <div class="row g-3">
-        {% if featured_properties and featured_properties|length > 0 %}
-          {% for p in featured_properties %}
-            <div class="col-12 col-md-4">
-              <div class="city">
-                <a href="{{ url_for('main.home_property_detail', property_id=p.property_id) }}"
-                   class="city-link">
-                  <img src="{{ url_for('static', filename=covers[p.property_id]) }}"
-                       alt="{{ p.property_title }}"
-                       class="img-fluid w-100"
-                       style="height:250px; object-fit:cover;">
+        <div class="row align-items-end g-3 mb-4">
+
+            <div class="col-12 col-lg-8">
+
+                <div class="text-uppercase small fw-semibold mb-2">
+                    Why Flexy Properties
+                </div>
+
+                <h2 class="section-title">
+                    A simpler way to find your next property
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Search, compare and discover available properties
+                    from one convenient platform.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-3">
+
+            <!-- CARD 1 -->
+            <div class="col-12 col-md-6 col-lg-3">
+
+                <div class="card card-soft h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="icon-pill">
+                            <i class="bi bi-house-check"></i>
+                        </div>
+
+                        <h5 class="fw-bold mt-3 mb-2">
+                            Selected Properties
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            Browse properties published and managed
+                            directly through Flexy Properties.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CARD 2 -->
+            <div class="col-12 col-md-6 col-lg-3">
+
+                <div class="card card-soft h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="icon-pill">
+                            <i class="bi bi-search"></i>
+                        </div>
+
+                        <h5 class="fw-bold mt-3 mb-2">
+                            Easy Property Search
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            Search properties using location,
+                            property type and your preferred budget.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CARD 3 -->
+            <div class="col-12 col-md-6 col-lg-3">
+
+                <div class="card card-soft h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="icon-pill">
+                            <i class="bi bi-card-checklist"></i>
+                        </div>
+
+                        <h5 class="fw-bold mt-3 mb-2">
+                            Clear Information
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            Review important property information,
+                            images and location before making an enquiry.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CARD 4 -->
+            <div class="col-12 col-md-6 col-lg-3">
+
+                <div class="card card-soft h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="icon-pill">
+                            <i class="bi bi-headset"></i>
+                        </div>
+
+                        <h5 class="fw-bold mt-3 mb-2">
+                            Property Enquiries
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            Interested in a property? Contact
+                            Flexy Properties for more information.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     HOW IT WORKS
+====================================================== -->
+<section id="how-it-works" class="bg-light">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <div class="text-uppercase small fw-semibold mb-2">
+                 For Property Seekers
+            </div>
+
+            <h2 class="section-title">
+                Finding Your Next Property
+            </h2>
+
+            <p class="text-muted mx-auto" style="max-width:650px;">
+                Finding a property doesn't need to be complicated.
+                Start your search and discover available options in a few steps.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <!-- STEP 1 -->
+            <div class="col-12 col-md-6 col-lg-3">
+
+                <div class="card card-soft h-100 text-center">
+
+                    <div class="card-body p-4">
+
+                        <div class="icon-pill mx-auto">
+                            1
+                        </div>
+
+                        <h5 class="fw-bold mt-3">
+                            Search
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            Search available properties by type,
+                            location and budget.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- STEP 2 -->
+            <div class="col-12 col-md-6 col-lg-3">
+
+                <div class="card card-soft h-100 text-center">
+
+                    <div class="card-body p-4">
+
+                        <div class="icon-pill mx-auto">
+                            2
+                        </div>
+
+                        <h5 class="fw-bold mt-3">
+                            Explore
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            Browse available properties and compare
+                            options that match what you're looking for.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- STEP 3 -->
+            <div class="col-12 col-md-6 col-lg-3">
+
+                <div class="card card-soft h-100 text-center">
+
+                    <div class="card-body p-4">
+
+                        <div class="icon-pill mx-auto">
+                            3
+                        </div>
+
+                        <h5 class="fw-bold mt-3">
+                            View Details
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            Open a property to view its images,
+                            location and important information.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- STEP 4 -->
+            <div class="col-12 col-md-6 col-lg-3">
+
+                <div class="card card-soft h-100 text-center">
+
+                    <div class="card-body p-4">
+
+                        <div class="icon-pill mx-auto">
+                            4
+                        </div>
+
+                        <h5 class="fw-bold mt-3">
+                           Send Your Interest
+                        </h5>
+
+                        <p class="text-muted mb-0">
+                            Found a property you like?
+                            Sign in and submit an interest request
+                            for the Flexy Properties team to review.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="text-center mt-4">
+
+            <a
+                href="{{ url_for('property.explore_properties') }}"
+                class="btn btn-brand px-5 py-2"
+            >
+                Start Exploring
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     ABOUT / WHY US
+====================================================== -->
+<section id="why">
+
+    <div class="container">
+
+        <div class="row align-items-center g-4">
+
+            <div class="col-12 col-lg-6">
+
+                <div class="text-uppercase small fw-semibold mb-2">
+                    About Us
+                </div>
+
+                <h2 class="section-title">
+                    Find your next place with Flexy Properties
+                </h2>
+
+                <p class="text-muted">
+                    Flexy Properties is a property platform designed
+                    to make discovering available real estate simpler.
+                </p>
+
+                <p class="text-muted">
+                    Whether you're searching for a house, apartment,
+                    land or commercial property, our platform helps
+                    you explore available options and find properties
+                    that match your requirements.
+                </p>
+
+                <a
+                    href="{{ url_for('property.explore_properties') }}"
+                    class="btn btn-brand mt-2"
+                >
+                    Explore Properties
                 </a>
 
-                <div class="label">
-                  <h5 class="fw-bold mb-1">
-                    {{ p.states.state_name if p.states else "No State" }}
-                  </h5>
-                  <div class="small">
-                    {{ p.property_title or "Property" }}
-                  </div>
-                </div>
-              </div>
             </div>
-          {% endfor %}
-        {% else %}
-          <div class="col-12">
-            <p class="text-center">No properties available yet.</p>
-          </div>
-        {% endif %}
-      </div>
 
-      <div class="mt-4 cta d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
-        <div>
-          <h5 class="fw-bold mb-1">
-            {% if current_user %}
-              Continue discovering verified listings
-            {% else %}
-              Want your listing featured?
-            {% endif %}
-          </h5>
-          <p class="text-muted mb-0">
-            {% if current_user %}
-              Explore more verified properties and track your interests from your account.
-            {% else %}
-              Get verified and reach serious buyers faster.
-            {% endif %}
-          </p>
+
+            <div class="col-12 col-lg-6">
+
+                <div class="card card-soft">
+
+                    <div class="card-body p-4 p-md-5">
+
+                        <h4 class="fw-bold mb-4">
+                            Why use Flexy Properties?
+                        </h4>
+
+
+                        <div class="d-flex gap-3 mb-4">
+
+                            <div class="icon-pill">
+                                <i class="bi bi-check-lg"></i>
+                            </div>
+
+                            <div>
+
+                                <h6 class="fw-bold mb-1">
+                                    Simple Property Discovery
+                                </h6>
+
+                                <p class="text-muted mb-0">
+                                    Find properties using an easy and
+                                    straightforward search experience.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="d-flex gap-3 mb-4">
+
+                            <div class="icon-pill">
+                                <i class="bi bi-check-lg"></i>
+                            </div>
+
+                            <div>
+
+                                <h6 class="fw-bold mb-1">
+                                    Useful Property Details
+                                </h6>
+
+                                <p class="text-muted mb-0">
+                                    Review property information before
+                                    deciding whether to make an enquiry.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="d-flex gap-3">
+
+                            <div class="icon-pill">
+                                <i class="bi bi-check-lg"></i>
+                            </div>
+
+                            <div>
+
+                                <h6 class="fw-bold mb-1">
+                                    Growing Property Selection
+                                </h6>
+
+                                <p class="text-muted mb-0">
+                                    Discover new properties as they
+                                    become available on Flexy Properties.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        {% if current_user %}
-          <a class="btn btn-brand px-4" href="{{ url_for('property.explore_properties') }}">Explore Properties</a>
-        {% else %}
-          <a class="btn btn-brand px-4" href="#contact">Get Started</a>
-        {% endif %}
-      </div>
     </div>
-  </section>
 
-  <!-- WHY US -->
-  <section id="why">
+</section>
+
+
+<!-- =====================================================
+     CTA
+====================================================== -->
+<section class="bg-light">
+
     <div class="container">
-      <div class="row align-items-end g-3 mb-4">
-        <div class="col-12 col-lg-7">
-          <h2 class="section-title">Why choose PEA-Bridge</h2>
-          <p class="text-muted mb-0">We focus on trust first — so your time and money are protected.</p>
-        </div>
-      </div>
 
-      <div class="row g-3">
-        <div class="col-12 col-lg-6">
-          <div class="card card-soft h-100">
-            <div class="card-body p-4">
-              <h5 class="fw-bold">Built for buyers and sellers</h5>
-              <p class="text-muted mb-0">
-                Find properties quickly with clean search, clear listing status, and a verified marketplace approach.
-              </p>
-              <ul class="mt-3 mb-0 text-muted">
-                <li>Fewer scams and duplicate listings</li>
-                <li>Faster inspections with verified agents</li>
-                <li>Clean layout that works on mobile</li>
-              </ul>
+        <div
+            class="cta d-flex flex-column flex-lg-row
+                   align-items-start align-items-lg-center
+                   justify-content-between gap-4"
+        >
+
+            <div>
+
+                <h3 class="fw-bold mb-2">
+                    Looking for a property or have one to market?
+                </h3>
+
+                <p class="text-muted mb-0">
+                    Explore available properties or submit
+                    your property to Flexy Properties for review.
+                </p>
+
             </div>
-          </div>
+
+
+            <div class="d-flex gap-2 flex-wrap">
+
+                <a
+                    href="{{ url_for(
+                        'property.explore_properties'
+                    ) }}"
+                    class="btn btn-brand btn-lg"
+                >
+                    Explore Properties
+                </a>
+
+
+                {% if current_user %}
+
+                    <a
+                        href="{{ url_for(
+                            'property.market_property'
+                        ) }}"
+                        class="btn btn-outline-dark btn-lg"
+                    >
+                        Market Your Property
+                    </a>
+
+                {% else %}
+
+                    <a
+                        href="{{ url_for('auth.login') }}"
+                        class="btn btn-outline-dark btn-lg"
+                    >
+                        Login to Market Property
+                    </a>
+
+                {% endif %}
+
+            </div>
+
         </div>
 
-        <div class="col-12 col-lg-6">
-          <div class="card card-soft h-100">
-            <div class="card-body p-4">
-              <h5 class="fw-bold">Built for agents and vendors</h5>
-              <p class="text-muted mb-0">
-                Verified profiles help you stand out and close faster. Track lead conversations and property status.
-              </p>
-              <ul class="mt-3 mb-0 text-muted">
-                <li>Verified badge improves trust</li>
-                <li>Direct enquiries from serious clients</li>
-                <li>Status updates reduce repeated calls</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-  </section>
 
-  <!-- TESTIMONIALS -->
-  <section id="testimonials" class="bg-light">
+</section>
+
+<!-- =====================================================
+     CONTACT
+====================================================== -->
+<section id="contact">
+
     <div class="container">
-      <div class="row align-items-end g-3 mb-4">
-        <div class="col-12 col-lg-7">
-          <h2 class="section-title">What users say</h2>
-          <p class="text-muted mb-0">Social proof helps your product feel real and trustworthy.</p>
-        </div>
-      </div>
 
-      <div class="row g-3">
-        <div class="col-12 col-md-4">
-          <div class="card card-soft h-100">
-            <div class="card-body p-4">
-              <p class="mb-3">“I found a verified apartment in days. The search filters saved me so much stress.”</p>
-              <div class="fw-bold">Ada • Lagos</div>
-              <div class="text-muted small">Buyer</div>
+        <div class="row align-items-start g-4">
+
+            <!-- CONTACT INFO -->
+            <div class="col-12 col-lg-5">
+
+                <div class="text-uppercase small fw-semibold mb-2">
+                    Get In Touch
+                </div>
+
+                <h2 class="section-title">
+                    Contact Flexy Properties
+                </h2>
+
+                <p class="text-muted">
+                    Have a question about a property or need more
+                    information? Send us a message and we'll get
+                    back to you.
+                </p>
+
+
+                <div class="card card-soft">
+
+                    <div class="card-body p-4">
+
+                        <!-- EMAIL -->
+                        <div class="d-flex gap-3">
+
+                            <div class="icon-pill">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+
+                            <div>
+
+                                <div class="fw-bold">
+                                    Email
+                                </div>
+
+                                <div class="text-muted">
+                                    mailflexy12@gmail.com
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <hr>
+                        <div class="d-flex gap-3">
+                            <div class="icon-pill">
+                                <i class="bi bi-telephone"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">
+                                Phone:
+                                </div>
+                                <div class="text-muted">
+                                +234 803 318 6564 
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <!-- LOCATION -->
+                        <div class="d-flex gap-3">
+
+                            <div class="icon-pill">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+
+                            <div>
+
+                                <div class="fw-bold">
+                                    Location
+                                </div>
+
+                                <div class="text-muted">
+                                    Nigeria
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
-          </div>
+
+
+            <!-- CONTACT FORM -->
+            <div class="col-12 col-lg-7">
+
+                <div class="card card-soft">
+
+                    <div class="card-body p-4 p-md-5">
+
+                        <h5 class="fw-bold mb-1">
+                            Send Us a Message
+                        </h5>
+
+                        <p class="text-muted small mb-4">
+                            Complete the form below and we'll be in touch.
+                        </p>
+
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('main.send_contact_message') }}"
+                            class="row g-3"
+                        >
+
+                            {{ userform.csrf_token }}
+
+
+                            <!-- NAME -->
+                            <div class="col-12 col-md-6">
+
+                                {{ userform.fullname.label(
+                                    class_="form-label"
+                                ) }}
+
+                                {{ userform.fullname(
+                                    class_="form-control",
+                                    placeholder="Your name"
+                                ) }}
+
+                                {% for error in userform.fullname.errors %}
+
+                                    <small class="text-danger">
+                                        {{ error }}
+                                    </small>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- EMAIL -->
+                            <div class="col-12 col-md-6">
+
+                                {{ userform.email.label(
+                                    class_="form-label"
+                                ) }}
+
+                                {{ userform.email(
+                                    class_="form-control",
+                                    placeholder="your@email.com"
+                                ) }}
+
+                                {% for error in userform.email.errors %}
+
+                                    <small class="text-danger">
+                                        {{ error }}
+                                    </small>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- SUBJECT -->
+                            <div class="col-12">
+
+                                {{ userform.subject.label(
+                                    class_="form-label"
+                                ) }}
+
+                                {{ userform.subject(
+                                    class_="form-control",
+                                    placeholder="How can we help?"
+                                ) }}
+
+                                {% for error in userform.subject.errors %}
+
+                                    <small class="text-danger">
+                                        {{ error }}
+                                    </small>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- MESSAGE -->
+                            <div class="col-12">
+
+                                {{ userform.message.label(
+                                    class_="form-label"
+                                ) }}
+
+                                {{ userform.message(
+                                    class_="form-control",
+                                    rows="5",
+                                    placeholder="Write your message..."
+                                ) }}
+
+                                {% for error in userform.message.errors %}
+
+                                    <small class="text-danger">
+                                        {{ error }}
+                                    </small>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- BUTTONS -->
+                            <div class="col-12 d-flex gap-2 flex-wrap">
+
+                                {{ userform.submit(
+                                    class_="btn btn-brand px-4"
+                                ) }}
+
+                                <button
+                                    type="reset"
+                                    class="btn btn-outline-secondary px-4"
+                                >
+                                    Clear
+                                </button>
+
+                            </div>
+
+
+                            <div class="col-12">
+
+                                <p class="text-muted small mb-0">
+                                    We will be in touch.
+                                </p>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="col-12 col-md-4">
-          <div class="card card-soft h-100">
-            <div class="card-body p-4">
-              <p class="mb-3">“As an agent, the verified profile improved my closing rate. Clients trust faster.”</p>
-              <div class="fw-bold">Ibrahim • Abuja</div>
-              <div class="text-muted small">Agent</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12 col-md-4">
-          <div class="card card-soft h-100">
-            <div class="card-body p-4">
-              <p class="mb-3">“The status label (Verified/Pending/Sold) made it easy to know what’s available.”</p>
-              <div class="fw-bold">Blessing • PH</div>
-              <div class="text-muted small">Renter</div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-  </section>
 
-  <!-- CONTACT -->
-  <section id="contact">
-    <div class="container">
-      <div class="row align-items-start g-4">
-        <div class="col-12 col-lg-5">
-          <h2 class="section-title">Contact</h2>
-          <p class="text-muted">
-            Want to list a property, get verified, or partner with PEA-Bridge? Send a message and we’ll reply quickly.
-          </p>
+</section>
 
-          <div class="card card-soft">
-            <div class="card-body p-4">
-              <div class="d-flex gap-3">
-                <div class="icon-pill">📧</div>
-                <div>
-                  <div class="fw-bold">Email</div>
-                  <div class="text-muted">support@pea-bridge.com</div>
-                </div>
-              </div>
-              <hr>
-              <div class="d-flex gap-3">
-                <div class="icon-pill">📞</div>
-                <div>
-                  <div class="fw-bold">Phone</div>
-                  <div class="text-muted">+234 000 000 0000</div>
-                </div>
-              </div>
-              <hr>
-              <div class="d-flex gap-3">
-                <div class="icon-pill">📍</div>
-                <div>
-                  <div class="fw-bold">Location</div>
-                  <div class="text-muted">Nigeria</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+{% endblock %}
 
-        <div class="col-12 col-lg-7">
-          <div class="card card-soft">
-            <div class="card-body p-4 p-md-5">
-              <h5 class="fw-bold mb-3">Send a message</h5>
-                  <form method="POST" action="{{ url_for('main.send_contact_message') }}" class="row g-3">
-                    {{ userform.csrf_token }}
 
-                    <div class="col-12 col-md-6">
-                      {{ userform.fullname.label(class_="form-label") }}
-                      {{ userform.fullname(class_="form-control", placeholder="Your name") }}
-                      {% for error in userform.fullname.errors %}
-                        <small class="text-danger">{{ error }}</small>
-                      {% endfor %}
-                    </div>
+{% block scripts %}
 
-                    <div class="col-12 col-md-6">
-                      {{ userform.email.label(class_="form-label") }}
-                      {{ userform.email(class_="form-control", placeholder="your@email.com") }}
-                      {% for error in userform.email.errors %}
-                        <small class="text-danger">{{ error }}</small>
-                      {% endfor %}
-                    </div>
-
-                    <div class="col-12">
-                      {{ userform.subject.label(class_="form-label") }}
-                      {{ userform.subject(class_="form-control", placeholder="How can we help?") }}
-                      {% for error in userform.subject.errors %}
-                        <small class="text-danger">{{ error }}</small>
-                      {% endfor %}
-                    </div>
-
-                    <div class="col-12">
-                      {{ userform.message.label(class_="form-label") }}
-                      {{ userform.message(class_="form-control", rows="5", placeholder="Write your message...") }}
-                      {% for error in userform.message.errors %}
-                        <small class="text-danger">{{ error }}</small>
-                      {% endfor %}
-                    </div>
-
-                    <div class="col-12 d-flex gap-2 flex-wrap">
-                      {{ userform.submit(class_="btn btn-brand px-4") }}
-                      <button type="reset" class="btn btn-outline-secondary px-4">Clear</button>
-                    </div>
-
-                    <p class="text-muted small mb-0">We will be in touch.</p>
-                  </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  {% endblock %}
-
-  
-  
-
-{% block scripts %} 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
+<script>
 
     $(document).ready(function () {
-      $("#search_result").hide();
 
-      $("#searchBtn").on("click", function (e) {
-        e.preventDefault();
+        $("#search_result").hide();
 
-        $.ajax({
-          url: "{{ url_for('main.search_view') }}",
-          type: "GET",
-          data: {
-            type: $("#type").val(),
-            location: $("#location").val(),
-            budget: $("#budget").val()
-          },
-          success: function (resp) {
-            $("#search_result").show().html(resp);
-          }
+
+        $("#searchBtn").on("click", function (e) {
+
+            e.preventDefault();
+
+
+            $.ajax({
+
+                url: "{{ url_for('main.search_view') }}",
+
+                type: "GET",
+
+                data: {
+
+                    type: $("#type").val(),
+
+                    location: $("#location").val(),
+
+                    budget: $("#budget").val()
+
+                },
+
+
+                success: function (resp) {
+                    const resultBox = $("#search_result");
+                    resultBox
+
+                        .stop(true, true)
+                        .html(resp)
+                        .fadeIn(200)
+
+                    if(
+                        resultBox
+
+                            .find("[data-timeout='true']")
+                            .length
+                    ){
+                        setTimeout( function()  {
+                        resultBox.fadeOut(1000);
+
+                    },1000);
+                    
+                }
+            
+
+                },
+
+
+                error: function () {
+
+                    $("#search_result")
+                        .stop(true, true)
+                        .show()
+                        .html(`
+                            <div class="alert alert-danger">
+                                We couldn't complete your search.
+                                Please try again.
+                            </div>
+                        `);
+                    setTimeout(function () {
+                        $("#search_result").fadeOut(1000);
+                    }, 1000)
+
+                }
+               
+
+            });
+
         });
-      });
+
     });
-  </script>
-  {% endblock %}
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,1183 @@
+{% extends "app_base.html" %}
+
+{% block title %}
+Market Your Property | Flexy Properties
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+    :root {
+        --flexy-navy: #0b1f33;
+        --flexy-navy-light: #132f4c;
+        --flexy-green: #198754;
+        --flexy-green-dark: #146c43;
+        --flexy-bg: #f5f7fa;
+        --flexy-border: #e3e8ee;
+        --flexy-text: #263238;
+        --flexy-muted: #6c757d;
+    }
+
+    body {
+        background: var(--flexy-bg);
+    }
+
+    .market-property-page {
+        padding-bottom: 70px;
+    }
+
+    /* =========================
+       HERO
+    ========================== */
+
+    .market-hero {
+        background:
+            linear-gradient(
+                135deg,
+                rgba(11, 31, 51, 0.98),
+                rgba(19, 47, 76, 0.94)
+            );
+        color: #fff;
+        padding: 70px 20px 110px;
+        text-align: center;
+    }
+
+    .market-hero-content {
+        max-width: 780px;
+        margin: auto;
+    }
+
+    .market-hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 15px;
+        border-radius: 30px;
+        background: rgba(25, 135, 84, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #bff1d5;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 18px;
+    }
+
+    .market-hero h1 {
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        font-weight: 700;
+        margin-bottom: 16px;
+    }
+
+    .market-hero p {
+        max-width: 650px;
+        margin: auto;
+        color: rgba(255, 255, 255, 0.78);
+        line-height: 1.8;
+        font-size: 1.03rem;
+    }
+
+    /* =========================
+       MAIN FORM CARD
+    ========================== */
+
+    .market-form-wrapper {
+        max-width: 1050px;
+        margin: -65px auto 0;
+        padding: 0 20px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .market-form-card {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 18px 50px rgba(20, 40, 60, 0.10);
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .form-intro {
+        padding: 28px 32px;
+        border-bottom: 1px solid var(--flexy-border);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .form-intro-icon {
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: rgba(25, 135, 84, 0.1);
+        color: var(--flexy-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+    }
+
+    .form-intro h5 {
+        margin: 0 0 4px;
+        color: var(--flexy-navy);
+        font-weight: 700;
+    }
+
+    .form-intro p {
+        margin: 0;
+        color: var(--flexy-muted);
+        font-size: 0.91rem;
+    }
+
+    .market-form-body {
+        padding: 35px;
+    }
+
+    /* =========================
+       SECTION
+    ========================== */
+
+    .form-section {
+        margin-bottom: 42px;
+    }
+
+    .form-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .section-heading {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid var(--flexy-border);
+    }
+
+    .section-number {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--flexy-navy);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .section-heading h4 {
+        color: var(--flexy-navy);
+        font-weight: 700;
+        font-size: 1.08rem;
+        margin: 0 0 3px;
+    }
+
+    .section-heading p {
+        margin: 0;
+        color: var(--flexy-muted);
+        font-size: 0.86rem;
+    }
+
+    /* =========================
+       FORM CONTROLS
+    ========================== */
+
+    .form-label {
+        color: var(--flexy-navy);
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+
+    .required-star {
+        color: #dc3545;
+    }
+
+    .form-control,
+    .form-select {
+        border: 1px solid #dce2e8;
+        border-radius: 9px;
+        min-height: 48px;
+        padding: 11px 14px;
+        color: var(--flexy-text);
+        box-shadow: none !important;
+        transition: 0.2s ease;
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .description-field {
+        min-height: 170px !important;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--flexy-green);
+        box-shadow:
+            0 0 0 3px rgba(25, 135, 84, 0.09)
+            !important;
+    }
+
+    .form-control::placeholder {
+        color: #a5adb5;
+    }
+
+    .field-help {
+        color: var(--flexy-muted);
+        font-size: 0.78rem;
+        margin-top: 6px;
+    }
+
+    .field-error {
+        color: #dc3545;
+        font-size: 0.8rem;
+        margin-top: 5px;
+    }
+
+    /* =========================
+       PRICE
+    ========================== */
+
+    .price-input-group {
+        display: flex;
+    }
+
+    .price-prefix {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 52px;
+        padding: 0 15px;
+        background: #f1f4f7;
+        border: 1px solid #dce2e8;
+        border-right: 0;
+        border-radius: 9px 0 0 9px;
+        color: var(--flexy-navy);
+        font-weight: 700;
+    }
+
+    .price-input-group .form-control {
+        border-radius: 0 9px 9px 0;
+    }
+
+    /* =========================
+       IMAGE UPLOAD
+    ========================== */
+
+    .image-upload-box {
+        position: relative;
+        border: 2px dashed #cad3dc;
+        background: #fafbfc;
+        border-radius: 14px;
+        padding: 36px 25px;
+        text-align: center;
+        transition: 0.2s ease;
+    }
+
+    .image-upload-box:hover {
+        border-color: var(--flexy-green);
+        background: #f8fcfa;
+    }
+
+    .upload-icon {
+        width: 62px;
+        height: 62px;
+        margin: 0 auto 14px;
+        border-radius: 50%;
+        background: rgba(25, 135, 84, 0.1);
+        color: var(--flexy-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+    }
+
+    .image-upload-box h5 {
+        color: var(--flexy-navy);
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 6px;
+    }
+
+    .image-upload-box p {
+        color: var(--flexy-muted);
+        font-size: 0.85rem;
+        margin-bottom: 18px;
+    }
+
+    .image-upload-box input[type="file"] {
+        max-width: 500px;
+        margin: auto;
+    }
+
+    .image-rules {
+        margin-top: 15px;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        color: var(--flexy-muted);
+        font-size: 0.78rem;
+    }
+
+    .image-rules span {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* =========================
+       DECLARATION
+    ========================== */
+
+    .declaration-box {
+        background: #f8fafb;
+        border: 1px solid var(--flexy-border);
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    .declaration-box .form-check {
+        display: flex;
+        gap: 11px;
+        align-items: flex-start;
+        margin: 0;
+    }
+
+    .declaration-box .form-check-input {
+        width: 19px;
+        height: 19px;
+        margin-top: 2px;
+        flex-shrink: 0;
+        cursor: pointer;
+    }
+
+    .declaration-box .form-check-input:checked {
+        background-color: var(--flexy-green);
+        border-color: var(--flexy-green);
+    }
+
+    .declaration-box label {
+        color: #495057;
+        font-size: 0.88rem;
+        line-height: 1.6;
+        cursor: pointer;
+    }
+
+    /* =========================
+       SUBMIT
+    ========================== */
+
+    .submission-footer {
+        border-top: 1px solid var(--flexy-border);
+        margin-top: 35px;
+        padding-top: 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .submission-note {
+        display: flex;
+        gap: 9px;
+        align-items: flex-start;
+        max-width: 500px;
+        color: var(--flexy-muted);
+        font-size: 0.8rem;
+        line-height: 1.5;
+    }
+
+    .submission-note i {
+        color: var(--flexy-green);
+        margin-top: 2px;
+    }
+
+    .submit-property-btn {
+        border: 0;
+        background: var(--flexy-green);
+        color: #fff;
+        min-height: 50px;
+        padding: 12px 25px;
+        border-radius: 9px;
+        font-weight: 600;
+        transition: 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .submit-property-btn:hover {
+        background: var(--flexy-green-dark);
+        transform: translateY(-1px);
+    }
+
+    /* =========================
+       PROCESS INFO
+    ========================== */
+
+    .process-section {
+        max-width: 1050px;
+        margin: 45px auto 0;
+        padding: 0 20px;
+    }
+
+    .process-title {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .process-title h3 {
+        color: var(--flexy-navy);
+        font-weight: 700;
+        font-size: 1.4rem;
+    }
+
+    .process-title p {
+        color: var(--flexy-muted);
+        font-size: 0.9rem;
+    }
+
+    .process-card {
+        background: #fff;
+        border: 1px solid var(--flexy-border);
+        border-radius: 13px;
+        padding: 24px;
+        height: 100%;
+    }
+
+    .process-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: rgba(25, 135, 84, 0.1);
+        color: var(--flexy-green);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 15px;
+        font-size: 1.15rem;
+    }
+
+    .process-card h5 {
+        color: var(--flexy-navy);
+        font-size: 0.95rem;
+        font-weight: 700;
+    }
+
+    .process-card p {
+        color: var(--flexy-muted);
+        font-size: 0.82rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* =========================
+       MOBILE
+    ========================== */
+
+    @media (max-width: 767px) {
+
+        .market-hero {
+            padding: 50px 18px 95px;
+        }
+
+        .market-hero h1 {
+            font-size: 2rem;
+        }
+
+        .market-form-wrapper {
+            padding: 0 13px;
+            margin-top: -55px;
+        }
+
+        .market-form-body {
+            padding: 25px 18px;
+        }
+
+        .form-intro {
+            padding: 22px 18px;
+        }
+
+        .submission-footer {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .submit-property-btn {
+            width: 100%;
+        }
+
+        .process-section {
+            padding: 0 13px;
+        }
+    }
+</style>
+
+
+<div class="market-property-page">
+
+    <!-- =========================
+         HERO
+    ========================== -->
+    <section class="market-hero">
+
+        <div class="market-hero-content">
+
+            <div class="market-hero-badge">
+                <i class="bi bi-house-check"></i>
+                Property Marketing
+            </div>
+
+            <h1>
+                Market Your Property With Us
+            </h1>
+
+            <p>
+                Have a property you would like to sell?
+                Submit the details to Flexy Properties and
+                our team will review your information before
+                the property is considered for listing.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FORM
+    ========================== -->
+    <div class="market-form-wrapper">
+
+        <div class="market-form-card">
+
+            <div class="form-intro">
+
+                <div class="form-intro-icon">
+                    <i class="bi bi-building-add"></i>
+                </div>
+
+                <div>
+                    <h5>
+                        Property Submission
+                    </h5>
+
+                    <p>
+                        Complete the form below with accurate
+                        information about you and your property.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="market-form-body">
+
+                <form
+                    method="POST"
+                    enctype="multipart/form-data"
+                    novalidate
+                >
+
+                    {{ form.hidden_tag() }}
+
+
+                    <!-- =====================
+                         LANDLORD INFORMATION
+                    ====================== -->
+                    <div class="form-section">
+
+                        <div class="section-heading">
+
+                            <div class="section-number">
+                                1
+                            </div>
+
+                            <div>
+                                <h4>
+                                    Your Information
+                                </h4>
+
+                                <p>
+                                    Tell us how we can contact you
+                                    regarding this property.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row g-4">
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+                                    Full Name
+                                    <span class="required-star">*</span>
+                                </label>
+
+                                {{ form.landlord_name(
+                                    class="form-control",
+                                    placeholder="Enter your full name"
+                                ) }}
+
+                                {% for error in form.landlord_name.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+                                    Phone / WhatsApp Number
+                                    <span class="required-star">*</span>
+                                </label>
+
+                                {{ form.landlord_phone(
+                                    class="form-control",
+                                    placeholder="e.g. 09012345678"
+                                ) }}
+
+                                <div class="field-help">
+                                    Use a number where our team can reach you.
+                                </div>
+
+                                {% for error in form.landlord_phone.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+
+
+                            <div class="col-12">
+
+                                <label class="form-label">
+                                    Email Address
+                                    <span class="required-star">*</span>
+                                </label>
+
+                                {{ form.landlord_email(
+                                    class="form-control",
+                                    placeholder="Enter your email address"
+                                ) }}
+
+                                <div class="field-help">
+                                    We may send updates about your
+                                    property submission to this email.
+                                </div>
+
+                                {% for error in form.landlord_email.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =====================
+                         PROPERTY INFORMATION
+                    ====================== -->
+                    <div class="form-section">
+
+                        <div class="section-heading">
+
+                            <div class="section-number">
+                                2
+                            </div>
+
+                            <div>
+                                <h4>
+                                    Property Information
+                                </h4>
+
+                                <p>
+                                    Provide clear and accurate information
+                                    about the property you want us to market.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row g-4">
+
+                            <div class="col-12">
+
+                                <label class="form-label">
+                                    Property Title
+                                    <span class="required-star">*</span>
+                                </label>
+
+                                {{ form.property_title(
+                                    class="form-control",
+                                    placeholder="e.g. 4 Bedroom Detached Duplex"
+                                ) }}
+
+                                {% for error in form.property_title.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+                                    Property Type
+                                    <span class="required-star">*</span>
+                                </label>
+
+                                {{ form.property_type(
+                                    class="form-select"
+                                ) }}
+
+                                {% for error in form.property_type.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+                                    Listing Purpose
+                                    <span class="required-star">*</span>
+                                </label>
+
+                                {{ form.listing_type(
+                                    class="form-select"
+                                ) }}
+
+                                <div class="field-help">
+                                    Select whether you want to sell
+                                    or rent out this property.
+                                </div>
+
+                                {% for error in form.listing_type.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <label class="form-label">
+                                    State
+                                    <span class="required-star">*</span>
+                                </label>
+
+                                {{ form.state(
+                                    class="form-control",
+                                    placeholder="e.g. Lagos"
+                                ) }}
+
+                                {% for error in form.state.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+
+
+                            <div class="col-12">
+
+                                <label class="form-label">
+                                    Property Address
+                                    <span class="required-star">*</span>
+                                </label>
+
+                                {{ form.address(
+                                    class="form-control",
+                                    placeholder="Enter the property location/address",
+                                    rows="3"
+                                ) }}
+
+                                {% for error in form.address.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+
+
+                            <div class="col-12">
+
+                                <label class="form-label">
+                                    Asking Price
+                                </label>
+
+                                <div class="price-input-group">
+
+                                    <div class="price-prefix">
+                                        ₦
+                                    </div>
+
+                                    {{ form.price(
+                                        class="form-control",
+                                        placeholder="e.g. 85000000"
+                                    ) }}
+
+                                </div>
+
+                                <div class="field-help">
+                                    Enter the expected selling price.
+                                    You can leave this blank if the price
+                                    will be discussed with our team.
+                                </div>
+
+                                {% for error in form.price.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+
+
+                            <div class="col-12">
+
+                                <label class="form-label">
+                                    Property Description
+                                    <span class="required-star">*</span>
+                                </label>
+
+                                {{ form.description(
+                                    class="form-control description-field",
+                                    placeholder="Describe the property, features, condition, nearby landmarks and other useful information..."
+                                ) }}
+
+                                <div class="field-help">
+                                    Include important features that will
+                                    help us understand and review the property.
+                                </div>
+
+                                {% for error in form.description.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =====================
+                         IMAGES
+                    ====================== -->
+                    <div class="form-section">
+
+                        <div class="section-heading">
+
+                            <div class="section-number">
+                                3
+                            </div>
+
+                            <div>
+                                <h4>
+                                    Property Photos
+                                </h4>
+
+                                <p>
+                                    Upload clear and recent photos of
+                                    the property.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="image-upload-box">
+
+                            <div class="upload-icon">
+                                <i class="bi bi-images"></i>
+                            </div>
+
+                            <h5>
+                                Upload Property Images
+                            </h5>
+
+                            <p>
+                                Select between 2 and 10 clear images
+                                of the property.
+                            </p>
+
+                            {{ form.images(
+                                class="form-control",
+                                accept=".jpg,.jpeg,.png,.webp",
+                                multiple=True
+                            ) }}
+
+                            <div class="image-rules">
+
+                                <span>
+                                    <i class="bi bi-check-circle"></i>
+                                    JPG, PNG or WEBP
+                                </span>
+
+                                <span>
+                                    <i class="bi bi-check-circle"></i>
+                                    Minimum 2 images
+                                </span>
+
+                                <span>
+                                    <i class="bi bi-check-circle"></i>
+                                    Maximum 10 images
+                                </span>
+
+                            </div>
+
+
+                            {% for error in form.images.errors %}
+                                <div class="field-error mt-3">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =====================
+                         DECLARATION
+                    ====================== -->
+                    <div class="form-section">
+
+                        <div class="section-heading">
+
+                            <div class="section-number">
+                                4
+                            </div>
+
+                            <div>
+                                <h4>
+                                    Confirmation
+                                </h4>
+
+                                <p>
+                                    Please confirm your authority to
+                                    submit this property.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="declaration-box">
+
+                            <div class="form-check">
+
+                                {{ form.declaration(
+                                    class="form-check-input", id="declaration"
+                                ) }}
+
+                                {{ form.declaration.label(
+                                    class="form-check-label"
+                                ) }}
+
+                            </div>
+
+
+                            {% for error in form.declaration.errors %}
+                                <div class="field-error mt-2">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =====================
+                         SUBMISSION
+                    ====================== -->
+                    <div class="submission-footer">
+
+                        <div class="submission-note">
+
+                            <i class="bi bi-shield-check"></i>
+
+                            <span>
+                                Submitting this form does not
+                                automatically publish your property.
+                                Every submission is reviewed by
+                                Flexy Properties before listing.
+                            </span>
+
+                        </div>
+
+
+                        
+                        
+                       <div>
+                        <button
+                            type="submit"
+                            class="submit-property-btn"
+                            id="submit"
+                        >
+
+                        <i class="bi bi-send-check"></i>
+                            Submit Property for Review
+                        </button>
+                    </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         HOW IT WORKS
+    ========================== -->
+    <section class="process-section">
+
+        <div class="process-title">
+
+            <h3>
+                What Happens After You Submit?
+            </h3>
+
+            <p>
+                Your property goes through a simple review
+                process before it can appear on Flexy Properties.
+            </p>
+
+        </div>
+
+
+        <div class="row g-3">
+
+            <div class="col-md-4">
+
+                <div class="process-card">
+
+                    <div class="process-icon">
+                        <i class="bi bi-send-check"></i>
+                    </div>
+
+                    <h5>
+                        1. Submit Your Property
+                    </h5>
+
+                    <p>
+                        Provide the property information and
+                        upload clear images for our team to review.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="process-card">
+
+                    <div class="process-icon">
+                        <i class="bi bi-search"></i>
+                    </div>
+
+                    <h5>
+                        2. Flexy Properties Reviews It
+                    </h5>
+
+                    <p>
+                        Our team reviews the information and may
+                        contact you if additional details or
+                        verification are required.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="process-card">
+
+                    <div class="process-icon">
+                        <i class="bi bi-house-check"></i>
+                    </div>
+
+                    <h5>
+                        3. Approved for Listing
+                    </h5>
+
+                    <p>
+                        If approved, Flexy Properties can prepare
+                        the property for publication on the
+                        marketplace.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    $(function () {
+
+        const declaration = $("#declaration");
+        const submitButton = $("#submit");
+
+        submitButton.prop(
+            "disabled",
+            !declaration.is(":checked")
+        );
+
+        declaration.on("change", function () {
+
+            submitButton.prop(
+                "disabled",
+                !$(this).is(":checked")
+            );
+
+        });
+
+    });
+</script>
+
+{% endblock %}

@@ -1,106 +1,987 @@
 {% extends "app_base.html" %}
-{% block title %}Profile | PEA-bridge{% endblock %}
+
+{% block title %}My Profile | Flexy Properties{% endblock %}
+
+{% block meta_description %}
+Manage your Flexy Properties profile photo and account password securely.
+{% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+/* =========================================================
+   PROFILE PAGE
+========================================================= */
+
+.profile-page {
+    min-height: calc(100vh - 74px);
+    background: #f5f7fa;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.profile-hero {
+    position: relative;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 85% 25%,
+            rgba(16, 185, 129, .18),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #071426 0%,
+            #102338 55%,
+            #0c3434 100%
+        );
+
+    padding: 58px 0 72px;
+
+    color: #ffffff;
+}
+
+.profile-hero::after {
+    content: "";
+
+    position: absolute;
+    width: 250px;
+    height: 250px;
+
+    right: -80px;
+    bottom: -130px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.025);
+}
+
+.profile-hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.profile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 7px 13px;
+    margin-bottom: 16px;
+
+    border: 1px solid rgba(74, 222, 128, .25);
+    border-radius: 999px;
+
+    background: rgba(16, 185, 129, .10);
+
+    color: #4ade80;
+
+    font-size: .75rem;
+    font-weight: 700;
+}
+
+.profile-hero h1 {
+    margin: 0 0 9px;
+
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+
+    letter-spacing: -1.2px;
+}
+
+.profile-hero p {
+    max-width: 570px;
+
+    margin: 0;
+
+    color: rgba(255,255,255,.65);
+
+    font-size: .9rem;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.profile-content {
+    position: relative;
+    z-index: 2;
+
+    padding: 50px 0 80px;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.profile-card {
+    height: 100%;
+
+    background: #ffffff;
+
+    border: 1px solid #e5eaf0;
+    border-radius: 18px;
+
+    box-shadow: 0 6px 25px rgba(15, 23, 42, .06);
+
+    overflow: hidden;
+}
+
+.profile-card-header {
+    padding: 22px 24px 18px;
+
+    border-bottom: 1px solid #edf0f3;
+}
+
+.profile-card-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-heading-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: #ecfdf3;
+    color: #079455;
+
+    font-size: 1rem;
+}
+
+.profile-card-header h2 {
+    margin: 0 0 3px;
+
+    color: #0f172a;
+
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.profile-card-header p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: .75rem;
+}
+
+.profile-card-body {
+    padding: 25px;
+}
+
+
+/* =========================================================
+   PROFILE PHOTO
+========================================================= */
+
+.profile-photo-section {
+    text-align: center;
+}
+
+.profile-photo-wrapper {
+    position: relative;
+
+    width: 135px;
+    height: 135px;
+
+    margin: 5px auto 17px;
+}
+
+.profile-photo {
+    width: 135px;
+    height: 135px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 50%;
+
+    background: #eef2f6;
+
+    border: 4px solid #ffffff;
+
+    box-shadow:
+        0 0 0 2px #dce4ea,
+        0 8px 25px rgba(15, 23, 42, .10);
+}
+
+.profile-photo img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+.profile-default-icon {
+    color: #94a3b8;
+
+    font-size: 4.5rem;
+}
+
+.profile-photo-indicator {
+    position: absolute;
+
+    right: 4px;
+    bottom: 7px;
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+
+    background: #079455;
+    color: #ffffff;
+
+    font-size: .8rem;
+}
+
+.profile-user-name {
+    margin: 0 0 4px;
+
+    color: #0f172a;
+
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.profile-user-email {
+    margin: 0 0 23px;
+
+    color: #64748b;
+
+    font-size: .78rem;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   FILE UPLOAD
+========================================================= */
+
+.profile-upload-area {
+    padding: 17px;
+
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+
+    background: #f8fafc;
+
+    text-align: left;
+}
+
+.profile-upload-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #334155;
+
+    font-size: .76rem;
+    font-weight: 700;
+}
+
+.profile-upload-area .form-control {
+    min-height: 43px;
+
+    border-color: #dce2e8;
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    font-size: .78rem;
+}
+
+.profile-upload-note {
+    display: block;
+
+    margin-top: 7px;
+
+    color: #94a3b8;
+
+    font-size: .67rem;
+}
+
+
+/* =========================================================
+   PASSWORD FORM
+========================================================= */
+
+.profile-form-group {
+    margin-bottom: 19px;
+}
+
+.profile-form-label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #334155;
+
+    font-size: .77rem;
+    font-weight: 700;
+}
+
+.profile-input-wrapper {
+    position: relative;
+}
+
+.profile-input-icon {
+    position: absolute;
+
+    left: 14px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #94a3b8;
+
+    font-size: .85rem;
+
+    pointer-events: none;
+}
+
+.profile-input-wrapper .form-control {
+    min-height: 47px;
+
+    padding-left: 41px;
+
+    border: 1px solid #dce2e8;
+    border-radius: 10px;
+
+    background: #f8fafc;
+
+    color: #0f172a;
+
+    font-size: .82rem;
+
+    box-shadow: none;
+}
+
+.profile-input-wrapper .form-control:focus {
+    border-color: #079455;
+
+    background: #ffffff;
+
+    box-shadow: 0 0 0 3px rgba(7, 148, 85, .08);
+}
+
+
+/* =========================================================
+   PASSWORD SECURITY NOTE
+========================================================= */
+
+.password-security-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    padding: 13px 14px;
+    margin-bottom: 20px;
+
+    border: 1px solid #d1fae5;
+    border-radius: 10px;
+
+    background: #f0fdf4;
+
+    color: #475569;
+
+    font-size: .72rem;
+    line-height: 1.55;
+}
+
+.password-security-note i {
+    margin-top: 1px;
+
+    color: #079455;
+
+    font-size: .9rem;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.profile-primary-btn {
+    width: 100%;
+    min-height: 44px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    border: 1px solid #079455;
+    border-radius: 9px;
+
+    background: #079455;
+    color: #ffffff;
+
+    font-size: .78rem;
+    font-weight: 750;
+
+    transition: .2s ease;
+}
+
+.profile-primary-btn:hover {
+    background: #067647;
+    border-color: #067647;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   ERRORS
+========================================================= */
+
+.profile-error {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #dc2626;
+
+    font-size: .7rem;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 991.98px) {
+
+    .profile-hero {
+        padding: 48px 0 60px;
+    }
+
+    .profile-content {
+        padding: 38px 0 65px;
+    }
+
+}
+
+
+@media (max-width: 575.98px) {
+
+    .profile-hero {
+        padding: 40px 0 48px;
+    }
+
+    .profile-hero h1 {
+        letter-spacing: -.7px;
+    }
+
+    .profile-content {
+        padding: 28px 0 50px;
+    }
+
+    .profile-card-header {
+        padding: 19px;
+    }
+
+    .profile-card-body {
+        padding: 20px 17px;
+    }
+
+    .profile-photo-wrapper,
+    .profile-photo {
+        width: 120px;
+        height: 120px;
+    }
+
+}
+
+</style>
+{% endblock %}
+
 
 {% block content %}
-<div class="container-fluid">
 
-  <div class="row g-4">
+<div class="profile-page">
 
-    <!-- PROFILE PICTURE CARD -->
-    <div class="col-12 col-lg-5">
-      <div class="card p-4" style="background:#0f172a;border:none;border-radius:14px;color:white;">
-        <div class="text-center">
-          <h3 class="fw-bold mb-4 text-info">Profile Settings</h3>
 
-                    <div class="rounded-circle overflow-hidden bg-white bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-3"
-                        style="width: 120px; height: 120px;">
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
 
-                      {% if user.image_url and user.image_url != 'uploads/default.png' %}
-                        <img src="{{ url_for('static', filename=user.image_url) }}"
-                            class="w-100 h-100 object-fit-cover"
-                            alt="Profile">
-                      {% else %}
-                        <i class="bi bi-person-fill text-light" style="font-size: 75px;"></i>
-                      {% endif %}
+    <section class="profile-hero">
+
+        <div class="container profile-hero-content">
+
+            <div class="profile-badge">
+
+                <i class="bi bi-person-gear"></i>
+
+                Account Settings
+
+            </div>
+
+
+            <h1>
+              <i class="bi bi-images btn btn-outline-success"></i>
+                My Profile
+            </h1>
+
+
+            <p>
+                Manage your Flexy Properties profile photo and
+                keep your account password up to date.
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         PROFILE CONTENT
+    ====================================================== -->
+
+    <section class="profile-content">
+
+        <div class="container">
+
+            <div class="row g-4 align-items-stretch">
+
+
+                <!-- =============================================
+                     PROFILE PHOTO
+                ============================================== -->
+
+                <div class="col-12 col-lg-5">
+
+                    <div class="profile-card">
+
+                        <div class="profile-card-header">
+
+                            <div class="profile-card-heading">
+
+                                <div class="profile-heading-icon">
+
+                                    <i class="bi bi-person-circle"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <h2>
+                                     
+                                        Profile Photo
+                                    </h2>
+
+                                    <p>
+                                        Update your account picture
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="profile-card-body profile-photo-section">
+
+
+                            <!-- PHOTO -->
+
+                            <div class="profile-photo-wrapper">
+
+                                <div class="profile-photo">
+
+                                    {% if user.image_url and
+                                          user.image_url != 'uploads/default.png' %}
+
+                                        <img
+                                            src="{{ url_for(
+                                                'static',
+                                                filename=user.image_url
+                                            ) }}"
+                                            alt="{{ user.user_fname }} profile photo"
+                                        >
+
+                                    {% else %}
+
+                                        <i class="
+                                            bi
+                                            bi-person-fill
+                                            profile-default-icon
+                                        "></i>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="profile-photo-indicator">
+
+                                    <i class="bi bi-camera-fill"></i>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- USER -->
+
+                            <h3 class="profile-user-name">
+
+                                {{ user.user_fname }}
+                                {{ user.users_lname }}
+
+                            </h3>
+
+
+                            <p class="profile-user-email">
+
+                                {{ user.email }}
+
+                            </p>
+
+
+
+                            <!-- PHOTO FORM -->
+
+                            <form
+                                action="{{ url_for(
+                                    'user.profile_pics'
+                                ) }}"
+                                method="post"
+                                enctype="multipart/form-data"
+                            >
+
+                                {{ photoform.hidden_tag() }}
+
+
+                                <div class="profile-upload-area">
+
+                                    <label
+                                        class="profile-upload-label"
+                                        for="{{ photoform.photo.id }}"
+                                    >
+
+                                        Choose a new profile photo
+
+                                    </label>
+
+
+                                    {{ photoform.photo(
+                                        class_="form-control",
+                                        accept="image/jpeg,image/png,image/webp"
+                                    ) }}
+
+
+                                    {% for error in photoform.photo.errors %}
+
+                                        <small class="profile-error">
+
+                                            {{ error }}
+
+                                        </small>
+
+                                    {% endfor %}
+
+
+                                    <small class="profile-upload-note">
+
+                                        Use a clear JPG, PNG or WebP image.
+
+                                    </small>
+
+                                </div>
+
+
+                                <div class="mt-3">
+
+                                    {{ photoform.submit(
+                                        class_="profile-primary-btn"
+                                    ) }}
+
+                                </div>
+
+                            </form>
+
+                        </div>
 
                     </div>
 
-          <p class="mb-3 text-white-50">
-            {{ user.user_fname }} {{ user.users_lname }}
-          </p>
+                </div>
 
-          <form action="{{ url_for('user.profile_pics') }}"
-                method="post"
-                enctype="multipart/form-data"
-                class="mt-2">
-            {{ photoform.hidden_tag() }}
 
-            <div class="mb-3">
-              {{ photoform.photo(class_='form-control', accept='image/*') }}
-              {% for error in photoform.photo.errors %}
-                <small class="text-danger">{{ error }}</small>
-              {% endfor %}
+
+                <!-- =============================================
+                     PASSWORD
+                ============================================== -->
+
+                <div class="col-12 col-lg-7">
+
+                    <div class="profile-card">
+
+                        <div class="profile-card-header">
+
+                            <div class="profile-card-heading">
+
+                                <div class="profile-heading-icon">
+
+                                    <i class="bi bi-shield-lock"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <h2>
+                                        Change Password
+                                    </h2>
+
+                                    <p>
+                                        Keep your Flexy Properties account secure
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="profile-card-body">
+
+
+                            <div class="password-security-note">
+
+                                <i class="bi bi-shield-check"></i>
+
+                                <span>
+                                    For your security, enter your current
+                                    password before creating a new password.
+                                </span>
+
+                            </div>
+
+
+
+                            <form
+                                action="{{ url_for(
+                                    'user.update_password'
+                                ) }}"
+                                method="POST"
+                            >
+
+                                {{ resetform.hidden_tag() }}
+
+
+
+                                <!-- CURRENT PASSWORD -->
+
+                                <div class="profile-form-group">
+
+                                    {{ resetform.current_password.label(
+                                        class_="profile-form-label"
+                                    ) }}
+
+
+                                    <div class="profile-input-wrapper">
+
+                                        <i class="
+                                            bi
+                                            bi-lock
+                                            profile-input-icon
+                                        "></i>
+
+
+                                        {{ resetform.current_password(
+                                            class_="form-control",
+                                            autocomplete="current-password"
+                                        ) }}
+
+                                    </div>
+
+
+                                    {% for error in
+                                        resetform.current_password.errors %}
+
+                                        <small class="profile-error">
+
+                                            {{ error }}
+
+                                        </small>
+
+                                    {% endfor %}
+
+                                </div>
+
+
+
+                                <!-- NEW PASSWORD -->
+
+                                <div class="profile-form-group">
+
+                                    {{ resetform.new_password.label(
+                                        class_="profile-form-label"
+                                    ) }}
+
+
+                                    <div class="profile-input-wrapper">
+
+                                        <i class="
+                                            bi
+                                            bi-key
+                                            profile-input-icon
+                                        "></i>
+
+
+                                        {{ resetform.new_password(
+                                            class_="form-control",
+                                            autocomplete="new-password"
+                                        ) }}
+
+                                    </div>
+
+
+                                    {% for error in
+                                        resetform.new_password.errors %}
+
+                                        <small class="profile-error">
+
+                                            {{ error }}
+
+                                        </small>
+
+                                    {% endfor %}
+
+                                </div>
+
+
+
+                                <!-- CONFIRM PASSWORD -->
+
+                                <div class="profile-form-group">
+
+                                    {{ resetform.confirm_password.label(
+                                        class_="profile-form-label"
+                                    ) }}
+
+
+                                    <div class="profile-input-wrapper">
+
+                                        <i class="
+                                            bi
+                                            bi-check-circle
+                                            profile-input-icon
+                                        "></i>
+
+
+                                        {{ resetform.confirm_password(
+                                            class_="form-control",
+                                            autocomplete="new-password"
+                                        ) }}
+
+                                    </div>
+
+
+                                    {% for error in
+                                        resetform.confirm_password.errors %}
+
+                                        <small class="profile-error">
+
+                                            {{ error }}
+
+                                        </small>
+
+                                    {% endfor %}
+
+                                </div>
+
+
+
+                                <!-- SUBMIT -->
+
+                                {{ resetform.submit(
+                                    class_="profile-primary-btn"
+                                ) }}
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
-            {{ photoform.submit(class_="btn btn-outline-success w-100") }}
-          </form>
         </div>
-      </div>
-    </div>
 
-    <!-- PASSWORD CARD -->
-    <div class="col-12 col-lg-7">
-      <div class="card p-4" style="background:#0f172a;border:none;border-radius:14px;color:white;">
-        <h3 class="mb-3 text-info">Update Password</h3>
-
-        <form action="{{ url_for('user.update_password') }}" method="POST">
-          {{ resetform.hidden_tag() }}
-
-          <div class="mb-3">
-            {{ resetform.current_password.label(class_='form-label') }}
-            {{ resetform.current_password(class_='form-control') }}
-            {% for error in resetform.current_password.errors %}
-              <small class="text-danger">{{ error }}</small>
-            {% endfor %}
-          </div>
-
-          <div class="mb-3">
-            {{ resetform.new_password.label(class_='form-label') }}
-            {{ resetform.new_password(class_='form-control') }}
-            {% for error in resetform.new_password.errors %}
-              <small class="text-danger">{{ error }}</small>
-            {% endfor %}
-          </div>
-
-          <div class="mb-3">
-            {{ resetform.confirm_password.label(class_='form-label') }}
-            {{ resetform.confirm_password(class_='form-control') }}
-            {% for error in resetform.confirm_password.errors %}
-              <small class="text-danger">{{ error }}</small>
-            {% endfor %}
-          </div>
-
-          {{ resetform.submit(class_='btn btn-outline-success w-100') }}
-        </form>
-      </div>
-    </div>
-
-  </div>
+    </section>
 
 </div>
-{% endblock content %}
+
+{% endblock %}
 
 
 {% block scripts %}
-      <script>
-            setTimeout(function(){
-        document.querySelectorAll('.auto-dismiss').forEach(function(alert){
-          let bsAlert =new bootstrap.Alert(alert);
-          bsAlert.close();
-        });
-      }, 3000);
 
-      
- </script>
+<script>
 
- {% endblock %}
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        setTimeout(function () {
+
+            document
+                .querySelectorAll(".auto-dismiss")
+                .forEach(function (alertElement) {
+
+                    const alert =
+                        bootstrap.Alert.getOrCreateInstance(
+                            alertElement
+                        );
+
+                    alert.close();
+
+                });
+
+        }, 3000);
+
+    }
+);
+
+</script>
+
+{% endblock %}

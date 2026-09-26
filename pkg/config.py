@@ -1,6 +1,11 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 class Config:
+
     SECRET_KEY = os.getenv("SECRET_KEY")
 
     SQLALCHEMY_DATABASE_URI = os.getenv(
@@ -9,6 +14,8 @@ class Config:
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    MAX_CONTENT_LENGTH = 50 * 1024 * 1024
 
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True,
@@ -22,12 +29,32 @@ class Config:
         "uploads"
     )
 
-    MAIL_SERVER = os.getenv("MAIL_SERVER")
-    MAIL_PORT = int(os.getenv("MAIL_PORT", 587))
-    MAIL_USE_TLS = os.getenv("MAIL_USE_TLS", "True") == "True"
-    MAIL_USE_SSL = os.getenv("MAIL_USE_SSL", "False") == "True"
-    MAIL_USERNAME = os.getenv("MAIL_USERNAME")
-    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
-    MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER")
-    PEA_BRIDGE_EMAIL = os.getenv("PEA_BRIDGE_EMAIL")
 
+    # ==========================================
+    # EMAIL CONFIGURATION
+    # ==========================================
+
+    MAIL_SERVER = "smtp.gmail.com"
+
+    MAIL_PORT = 465
+
+    MAIL_USE_TLS = False
+
+    MAIL_USE_SSL = True
+
+    MAIL_USERNAME = os.getenv(
+        "FLEXY_EMAIL"
+    )
+
+    MAIL_PASSWORD = os.getenv(
+        "FLEXY_EMAIL_APP_PASSWORD"
+    )
+
+    MAIL_DEFAULT_SENDER = (
+        "Flexy Properties",
+        os.getenv("FLEXY_EMAIL")
+    )
+
+    FLEXY_EMAIL = os.getenv(
+        "FLEXY_EMAIL"
+    )

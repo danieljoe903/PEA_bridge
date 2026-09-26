@@ -30,7 +30,7 @@ def create_app():
     # Safety fallback from .env/os environment
     app.config["SECRET_KEY"] = app.config.get("SECRET_KEY") or os.getenv("SECRET_KEY")
     app.config["ADMIN_EMAIL"] = app.config.get("ADMIN_EMAIL") or os.getenv("ADMIN_EMAIL")
-    app.config["PEA_BRIDGE_EMAIL"] = app.config.get("PEA_BRIDGE_EMAIL") or os.getenv("PEA_BRIDGE_EMAIL")
+    app.config["FLEXY_EMAIL"] = app.config.get("FLEXY_EMAIL") or os.getenv("FLEXY_EMAIL")
 
     # Extensions
     db.init_app(app)

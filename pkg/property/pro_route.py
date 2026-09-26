@@ -1,5 +1,5 @@
 import os
-import uuid
+from uuid import uuid4
 from datetime import datetime, timedelta
 from flask_mail import Message
 from flask import render_template, request, redirect, url_for, session, current_app, flash
@@ -8,8 +8,15 @@ from pkg.property import property_bp
 from pkg.property import forms
 from sqlalchemy import desc,or_,and_,asc
 from pkg.extension import db,mail
+from pkg.model import (
+    PropertySubmission,PropertySubmissionImage
+)
+from pkg.property.landlordform import LandlordPropertyForm
 from pkg.model import Property, PropertyImage,User,PropertyAgent,State,ClientInterest,PropertyDocument
-
+from pkg.emails import (
+    send_property_submission_confirmation,
+    send_new_property_submission_admin_email
+)
 
 
 def expire_old_properties():
@@ -25,99 +32,108 @@ def expire_old_properties():
     if expired_properties:
         db.session.commit()
 
-ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "webp"}
+ALLOWED_SUBMISSION_IMAGES = {
+    "jpg",
+    "jpeg",
+    "png",
+    "webp"
+}
 
-
-def allowed_file(name: str) -> bool:
-    return "." in name and name.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-@property_bp.route("/add/", methods=["GET", "POST"])
-def add_property():
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
-
-    form = forms.PropertyForm()
-
-    agent_profile = PropertyAgent.query.filter_by(
-        user_id=session["user_id"]
-    ).first()
-
-    if not agent_profile:
-        flash("You must apply as an agent before adding a property.", "warning")
-        return redirect(url_for("agent.apply"))
-
-    if agent_profile.agency_status == "pending":
-        flash("Your agent application is still pending approval.", "warning")
-        return redirect(url_for("user.dashboard"))
-
-    if agent_profile.agency_status == "suspended":
-        flash("Your agent account has been suspended. You cannot add property.", "danger")
-        return redirect(url_for("user.dashboard"))
-
-    if form.validate_on_submit():
-        state_name = form.state.data.strip().title()
-
-        state = State.query.filter_by(state_name=state_name).first()
-        if not state:
-            state = State(state_name=state_name)
-            db.session.add(state)
-            db.session.commit()
-
-        property = Property(
-            owner_id=session["user_id"],
-            property_title=form.title.data,
-            property_type=form.type.data,
-            adress=form.address.data,
-            state_id=state.state_id,
-            price=form.price.data,
-            description=form.description.data.strip(),
-            property_listing="SALE",
-            property_status="under_verification",
-            agent_id=agent_profile.agent_id if agent_profile else None,
-            expires_at=datetime.utcnow() + timedelta(days=14)
-        )
-
-        db.session.add(property)
-        db.session.commit()
-
-        images = request.files.getlist("images")
-
-        os.makedirs(
-            os.path.join(current_app.root_path, "static", "property_images"),
-            exist_ok=True
-        )
-
-        for image in images:
-            if image and image.filename and allowed_file(image.filename):
-                ext = secure_filename(image.filename).rsplit(".", 1)[1].lower()
-                unique_name = f"{uuid.uuid4().hex}.{ext}"
-
-                save_path = os.path.join(
-                    current_app.root_path,
-                    "static",
-                    "property_images",
-                    unique_name
-                )
-                image.save(save_path)
-
-                property_image = PropertyImage(
-                    property_id=property.property_id,
-                    image_url=f"property_images/{unique_name}"
-                )
-
-                db.session.add(property_image)
-
-        db.session.commit()
-
-        flash("Property added successfully and sent for admin verification.", "success")
-        return redirect(url_for("property.list_properties"))
-
-    return render_template(
-        "property/add_property.html",
-        form=form,
-        active="add_property"
+def allowed_submission_image(filename):
+    return (
+        "-" in filename
+        and filename.rsplit(".", 1)[1].lower()
+        in ALLOWED_SUBMISSION_IMAGES
     )
+
+
+
+# @property_bp.route("/add/", methods=["GET", "POST"])
+# def add_property():
+#     if "user_id" not in session:
+#         return redirect(url_for("auth.login"))
+
+#     form = forms.PropertyForm()
+
+#     agent_profile = PropertyAgent.query.filter_by(
+#         user_id=session["user_id"]
+#     ).first()
+
+#     if not agent_profile:
+#         flash("You must apply as an agent before adding a property.", "warning")
+#         return redirect(url_for("agent.apply"))
+
+#     if agent_profile.agency_status == "pending":
+#         flash("Your agent application is still pending approval.", "warning")
+#         return redirect(url_for("user.dashboard"))
+
+#     if agent_profile.agency_status == "suspended":
+#         flash("Your agent account has been suspended. You cannot add property.", "danger")
+#         return redirect(url_for("user.dashboard"))
+
+#     if form.validate_on_submit():
+#         state_name = form.state.data.strip().title()
+
+#         state = State.query.filter_by(state_name=state_name).first()
+#         if not state:
+#             state = State(state_name=state_name)
+#             db.session.add(state)
+#             db.session.commit()
+
+#         property = Property(
+#             owner_id=session["user_id"],
+#             property_title=form.title.data,
+#             property_type=form.type.data,
+#             adress=form.address.data,
+#             state_id=state.state_id,
+#             price=form.price.data,
+#             description=form.description.data.strip(),
+#             property_listing="SALE",
+#             property_status="under_verification",
+#             agent_id=agent_profile.agent_id if agent_profile else None,
+#             expires_at=datetime.utcnow() + timedelta(days=14)
+#         )
+
+#         db.session.add(property)
+#         db.session.commit()
+
+#         images = request.files.getlist("images")
+
+#         os.makedirs(
+#             os.path.join(current_app.root_path, "static", "property_images"),
+#             exist_ok=True
+#         )
+
+#         for image in images:
+#             if image and image.filename and allowed_file(image.filename):
+#                 ext = secure_filename(image.filename).rsplit(".", 1)[1].lower()
+#                 unique_name = f"{uuid.uuid4().hex}.{ext}"
+
+#                 save_path = os.path.join(
+#                     current_app.root_path,
+#                     "static",
+#                     "property_images",
+#                     unique_name
+#                 )
+#                 image.save(save_path)
+
+#                 property_image = PropertyImage(
+#                     property_id=property.property_id,
+#                     image_url=f"property_images/{unique_name}"
+#                 )
+
+#                 db.session.add(property_image)
+
+#         db.session.commit()
+
+#         flash("Property added successfully and sent for admin verification.", "success")
+#         return redirect(url_for("property.list_properties"))
+
+#     return render_template(
+#         "property/add_property.html",
+#         form=form,
+#         active="add_property"
+#     )
 # ==================
 # # list_properties
 # ==================
@@ -338,24 +354,45 @@ def explore_properties():
 
          # expire old available properties
     
-    expire_old_properties()
-    properties = (
+    page = request.args.get("page",1,type=int)
+
+    per_page = 20
+
+    pagination = (
         Property.query
         .filter(Property.property_status == "available")
         .order_by(desc(Property.created_at))
-        .all()
+        .paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False
+        )
     )
+
+    properties = pagination.items
 
     covers = {}
     for p in properties:
         cover = (
             PropertyImage.query
-            .filter_by(property_id=p.property_id)
-            .order_by(asc(PropertyImage.image_id))
+            .filter_by(property_id=p.property_id,is_primary=True)
             .first()
         )
-        covers[p.property_id] = cover.image_url if cover else "property_images/default_property.png"
+        if not cover:
+            cover =(
+                PropertyImage.query.filter_by(
+                    property_id=p.property_id
+                ).order_by(asc(PropertyImage.image_id)).first()
+            )
 
+        if cover and cover.image_url:
+            covers[p.property_id] = (
+                cover.image_url
+            )
+        else:
+            covers[p.property_id] =(
+                "uploads/default-property.jpg"
+            )
         
     RE_REQUEST_DAYS = 3
     request_status_map = {}
@@ -401,6 +438,7 @@ def explore_properties():
         active="explore",
         properties=properties,
         covers=covers,
+        pagination=pagination,
         request_status_map=request_status_map
     )
 
@@ -471,3 +509,239 @@ def search_view():
 
     
     return result
+
+
+@property_bp.route("/market-your-property/",methods=['GET','POST'])
+def market_property():
+
+    user = get_current_user()
+
+    if not user:
+        flash(
+            "Please log in to submit a property for marketing.",
+            "info"
+        )
+
+        return redirect(
+            url_for("auth.login")
+        )
+
+    form = LandlordPropertyForm()
+
+    if form.validate_on_submit():
+        # ==========================
+        # GET VALID IMAGES
+        # ==========================
+
+        images = [
+            image 
+            for image in form.images.data
+            if(
+                image
+                and image.filename and allowed_submission_image(
+                    image.filename
+                )
+            )
+        ]
+
+        # Require at least 2 images
+
+        if len(images) < 2:
+            flash(
+                "Please upload at least 2 property images.",
+                "warning"
+            )
+
+            return render_template(
+                "property/market_property.html",
+                form=form,
+                active="market_property"
+            )
+
+        if len(images) > 10:
+            flash(
+                "You can upload a maximum of 10 property images.",
+                "warning"
+            )
+
+            return render_template(
+                "property/market_property.html",
+                form=form,
+                active="market_property"
+            )
+
+        submission = PropertySubmission(
+            landlord_name=form.landlord_name.data.strip(),
+            landlord_email=form.landlord_email.data.strip(),
+            landlord_phone=form.landlord_phone.data.strip(),
+            property_title=form.property_title.data.strip(),
+            property_type=form.property_type.data,
+            listing_type=form.listing_type.data,
+            state=form.state.data.strip(),
+            address=form.address.data.strip(),
+            price=form.price.data,
+            description=form.description.data.strip(),
+            submission_status="pending"
+        )
+
+        save_files =[]
+
+        try:
+
+            # ==========================
+            # SAVE SUBMISSION FIRST
+            # ==========================
+
+            db.session.add(submission)
+
+            # Gives us submission_id
+            # without committing yet
+            db.session.flush()
+
+            # ==========================
+            # CREATE IMAGE FOLDER
+            # ==========================
+
+            submission_folder = os.path.join(
+                current_app.root_path,
+                "static",
+                "property_submission_images",
+                str(submission.submission_id)
+            )
+
+            os.makedirs(
+                submission_folder,
+                exist_ok=True
+            )
+
+            # ==========================
+            # SAVE IMAGES
+            # ==========================
+
+            for image in images:
+                original_name = secure_filename(
+                    image.filename
+                )
+
+                extension = (
+                    original_name
+                    .rsplit(".", 1)[1].lower()
+                )
+
+                unique_name = (
+                    f"{uuid4().hex}. {extension}"
+                )
+
+                image_path = os.path.join(
+                    submission_folder,
+                    unique_name
+                )
+
+                image.save(image_path)
+                save_files.append(image_path)
+
+                image_url = (
+                    "property_submission_images/"
+                    f"{submission.submission_id}/"
+                    f"{unique_name}"
+                )
+
+                submission_image = PropertySubmissionImage(
+                    submission_id=submission.submission_id,
+                    image_url=image_url
+                )
+
+                db.session.add(submission_image)
+
+            db.session.commit()
+
+        except Exception:
+            db.session.rollback()
+
+            # Remove any files that were
+            # saved before the failure
+
+            for file_path in save_files:
+                try:
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                except OSError:
+                    current_app.logger.exception(
+                        "SUBMISSION IMAGE CLEANUP ERROR"
+                    )
+            current_app.logger.exception(
+                "PROPERTY SUBMISSION ERROR"
+            )
+            flash(
+                "Your property could not be submitted. "
+                "Please try again.",
+                "danger"
+            )
+
+            return render_template(
+                "property/market_property.html",
+                form=form,
+                active="market_property"
+            )
+
+
+        # Database submission was successful.
+        # Email failures should NOT undo the submission.
+
+        send_property_submission_confirmation(
+            email=submission.landlord_email,
+            landlord_name=submission.landlord_name,
+            property_title=submission.property_title,
+            listing_type=submission.listing_type,
+            reference_number=submission.reference_number
+        )
+
+        send_new_property_submission_admin_email(
+            landlord_name=submission.landlord_name,
+            landlord_email=submission.landlord_email,
+            landlord_phone=submission.landlord_phone,
+            property_title=submission.property_title,
+            property_type=submission.property_type,
+            listing_type=submission.listing_type,
+            state=submission.state,
+            address=submission.address,
+            price=submission.price,
+            reference_number=submission.reference_number
+        )
+
+
+        # ==========================
+        # SUCCESS
+        # ==========================
+
+        return redirect(
+            url_for(
+                "property.property_submission_success",
+                submission_id=submission.submission_id
+            )
+        )
+
+    return render_template(
+        "property/market_property.html",
+        form=form,
+        active="market_property"
+    )
+
+@property_bp.route(
+    "/property-submission/<int:submission_id>/success/"
+)
+def property_submission_success(submission_id):
+
+    submission = (
+        PropertySubmission.query
+        .get_or_404(submission_id)
+    )
+
+    return render_template(
+        "property/property_submission_success.html",
+        submission=submission,
+        active="market_property"
+    )
+
+                
+    

@@ -1,124 +1,364 @@
-from flask import redirect, url_for, flash, session, render_template,sessions
+from flask import redirect, url_for, flash,current_app, session, render_template,sessions
 from datetime import datetime,timedelta
 from sqlalchemy import desc,or_,and_,asc
 from sqlalchemy.orm import joinedload
 from pkg.extension import db
-from pkg.model import ClientInterest, Property, User,PropertyAgent
+from pkg.model import ClientInterest, Property, User,PropertyAgent,PropertyImage
 from pkg.client_interest import interest_bp
+from pkg.emails import send_interest_confirmation,send_new_interest_admin_email
 
 def get_current_user():
     if "user_id" not in session:
         return None
     return db.session.get(User, session["user_id"])
 
-@interest_bp.route("/request/<int:property_id>/", methods=["POST"])
+
+@interest_bp.route(
+    "/request/<int:property_id>/",
+    methods=["POST"]
+)
 def request_interest(property_id):
+
     user = get_current_user()
+
     if not user:
-        return redirect(url_for("auth.login"))
-
-    prop = Property.query.get_or_404(property_id)
-
-    if prop.owner_id == user.user_id:
-        flash(
-            "You cannot request interest in your own property.",
-            "warning"
-        )
         return redirect(
-        url_for(
-            "property.public_property_detail",
-            property_id=property_id
+            url_for("auth.login")
         )
-        )
+
+    prop = Property.query.get_or_404(
+        property_id
+    )
+
+
+    # ==========================
+    # PROPERTY AVAILABILITY
+    # ==========================
 
     if prop.property_status != "available":
-        flash("This property is no longer available.", "warning")
-        return redirect(url_for("property.public_property_detail", property_id=property_id, next="explore"))
+
+        flash(
+            "This property is no longer available.",
+            "warning"
+        )
+
+        return redirect(
+            url_for(
+                "property.public_property_detail",
+                property_id=property_id,
+                next="explore"
+            )
+        )
+
+
+    # ==========================
+    # RE-REQUEST COOLDOWN
+    # ==========================
 
     RE_REQUEST_DAYS = 3
+
 
     existing_requests = (
         ClientInterest.query
         .filter(
-            ClientInterest.client_user_id == user.user_id,
-            ClientInterest.property_id == property_id
+            ClientInterest.client_user_id
+            == user.user_id,
+
+            ClientInterest.property_id
+            == property_id
         )
-        .order_by(desc(ClientInterest.created_at))
+        .order_by(
+            desc(ClientInterest.created_at)
+        )
         .all()
     )
 
-    # block if there is still an active request
+
+    # ==========================
+    # ACTIVE REQUEST CHECK
+    # ==========================
+
     active_request = next(
-        (r for r in existing_requests if r.interest_status in ["requested", "approved"]),
+        (
+            request
+            for request in existing_requests
+            if request.interest_status
+            in ["requested", "approved"]
+        ),
         None
     )
+
 
     if active_request:
-        flash("You already have an active request for this property.", "warning")
-        return redirect(url_for("property.public_property_detail", property_id=property_id, next="explore"))
 
-    # check latest declined request cooldown
+        flash(
+            "You already have an active request "
+            "for this property.",
+            "warning"
+        )
+
+        return redirect(
+            url_for(
+                "property.public_property_detail",
+                property_id=property_id,
+                next="explore"
+            )
+        )
+
+
+    # ==========================
+    # DECLINED REQUEST COOLDOWN
+    # ==========================
+
     latest_declined = next(
-        (r for r in existing_requests if r.interest_status == "declined"),
+        (
+            request
+            for request in existing_requests
+            if request.interest_status
+            == "declined"
+        ),
         None
     )
 
+
     if latest_declined:
-        next_allowed_date = latest_declined.created_at + timedelta(days=RE_REQUEST_DAYS)
+
+        next_allowed_date = (
+            latest_declined.created_at
+            + timedelta(
+                days=RE_REQUEST_DAYS
+            )
+        )
+
 
         if datetime.utcnow() < next_allowed_date:
-            days_left = (next_allowed_date - datetime.utcnow()).days + 1
-            flash(f"You can request this property again in {days_left} day(s).", "warning")
-            return redirect(url_for("property.public_property_detail", property_id=property_id, next="explore"))
 
-    new_request = ClientInterest(
-        client_user_id=user.user_id,
-        property_id=property_id,
-        interest_status="requested"
+            days_left = (
+                next_allowed_date
+                - datetime.utcnow()
+            ).days + 1
+
+
+            flash(
+                f"You can request this property "
+                f"again in {days_left} day(s).",
+                "warning"
+            )
+
+            return redirect(
+                url_for(
+                    "property.public_property_detail",
+                    property_id=property_id,
+                    next="explore"
+                )
+            )
+
+
+    # ==========================
+    # CREATE INTEREST REQUEST
+    # ==========================
+
+    try:
+
+        new_request = ClientInterest(
+            client_user_id=user.user_id,
+            property_id=property_id,
+            interest_status="requested"
+        )
+
+        db.session.add(new_request)
+
+        db.session.commit()
+
+
+    except Exception:
+
+        db.session.rollback()
+
+        current_app.logger.exception(
+            "INTEREST REQUEST DATABASE ERROR"
+        )
+
+        flash(
+            "Your interest request could not be "
+            "submitted. Please try again.",
+            "danger"
+        )
+
+        return redirect(
+            url_for(
+                "property.public_property_detail",
+                property_id=property_id,
+                next="explore"
+            )
+        )
+
+
+    # ==========================
+    # SEND EMAILS
+    # ==========================
+
+    customer_name = (
+        user.user_fname
+        or user.username
+        or "Customer"
     )
 
-    db.session.add(new_request)
-    db.session.commit()
 
-    flash("Interest request sent successfully.", "success")
-    return redirect(url_for("property.public_property_detail", property_id=property_id, next="explore"))
+    # Customer confirmation email
+    send_interest_confirmation(
+        email=user.email,
+        username=customer_name,
+        property_title=prop.property_title
+    )
+
+
+    # Admin notification email
+    send_new_interest_admin_email(
+        customer_name=customer_name,
+        customer_email=user.email,
+        property_title=prop.property_title,
+        property_id=prop.property_id
+    )
+
+
+    flash(
+    "Interest request sent successfully. "
+    "We've also sent a confirmation email. "
+    "If you don't see it in your inbox, please check "
+    "your Spam or Junk folder and mark Flexy Properties "
+    "as 'Not spam'.",
+    "success"
+    )
+
+
+    return redirect(
+        url_for(
+            "property.explore_properties"
+        )
+    )
 
 @interest_bp.route("/my_interest/")
 def my_interest():
+
     if "user_id" not in session:
-        return redirect(url_for('auth.login'))
-    user= User.query.get(session['user_id'])
-    
-    my_clientinterest=(
-        ClientInterest.query.join(Property)
+        return redirect(url_for("auth.login"))
+
+    user = User.query.get(session["user_id"])
+
+    if not user:
+        session.clear()
+        return redirect(url_for("auth.login"))
+
+    # Get this user's property requests/interests
+    my_clientinterest = (
+        ClientInterest.query
+        .join(Property)
         .filter(
             ClientInterest.client_user_id == user.user_id,
             Property.property_status != "archived"
-        ).options(joinedload(ClientInterest.property)).order_by(desc(ClientInterest.created_at)).all()
+        )
+        .options(
+            joinedload(ClientInterest.property)
+        )
+        .order_by(
+            desc(ClientInterest.created_at)
+        )
+        .all()
     )
 
+    # Cover images for properties in THIS user's interests
+    covers = {}
 
-    return render_template('interest/my_interest.html',my_clientinterest=my_clientinterest, active="my_interest")
+    for interest in my_clientinterest:
 
+        p = interest.property
 
-@interest_bp.route("/cancel/<int:interest_id>/",methods=['POST'])
+        if not p:
+            continue
+
+        image = (
+            PropertyImage.query
+            .filter_by(property_id=p.property_id,is_primary=True)
+            .first()
+        )
+
+        if image and image.image_url:
+            covers[p.property_id] = image.image_url
+        else:
+            covers[p.property_id] = "uploads/default-property.jpg"
+
+    return render_template(
+        "interest/my_interest.html",
+        my_clientinterest=my_clientinterest,
+        active="my_interest",
+        covers=covers,
+    )
+
+@interest_bp.route(
+    "/cancel/<int:interest_id>/",
+    methods=["POST"]
+)
 def cancel_request(interest_id):
-    user= get_current_user()
+
+    user = get_current_user()
+
     if not user:
-        return redirect(url_for('auth.login'))
-    
-    interest = ClientInterest.query.get_or_404(interest_id)
+        return redirect(url_for("auth.login"))
 
+    interest = ClientInterest.query.get_or_404(
+        interest_id
+    )
+
+    # Make sure the request belongs to this user
     if interest.client_user_id != user.user_id:
-        flash("You are not allowed to cancel the request","danger")
-        return redirect(url_for("interest.my_interest"))
-    
-    db.session.delete(interest)
-    db.session.commit()
+        flash(
+            "You are not allowed to cancel this request.",
+            "danger"
+        )
+        return redirect(
+            url_for("interest.my_interest")
+        )
 
-    flash("interest request cancelled successfully","success")
-    return redirect(url_for("interest.my_interest"))
+    # Only pending/requested interests can be cancelled
+    if interest.interest_status != "requested":
+        flash(
+            "This interest request can no longer be cancelled.",
+            "warning"
+        )
+        return redirect(
+            url_for("interest.my_interest")
+        )
 
+    try:
+        db.session.delete(interest)
+        db.session.commit()
+
+    except Exception:
+        db.session.rollback()
+
+        current_app.logger.exception(
+            "CANCEL INTEREST REQUEST ERROR"
+        )
+
+        flash(
+            "Your interest request could not be cancelled. "
+            "Please try again.",
+            "danger"
+        )
+
+        return redirect(
+            url_for("interest.my_interest")
+        )
+
+    flash(
+        "Interest request cancelled successfully.",
+        "success"
+    )
+
+    return redirect(
+        url_for("interest.my_interest")
+    )
 @interest_bp.route('/owner/')
 def owner_requests():
 
@@ -143,73 +383,3 @@ def owner_requests():
        requests_on_my_properties=requests_on_my_properties
     )
 
-@interest_bp.route('/approved/<int:interest_id>/', methods=['POST'])
-def approve_request(interest_id):
-
-    user= get_current_user()
-    if not user:
-        return redirect(url_for("auth.login"))
-    interest= ClientInterest.query.get_or_404(interest_id)
-
-    interest = ClientInterest.query.join(Property).filter(
-        ClientInterest.interest_id == interest_id
-    ).first_or_404()
-
-    if not interest.property or interest.property.owner_id != user.user_id:
-        flash("you are not allowed to approve this request","danger")
-        return redirect(url_for("interest.owner_requests"))
-    
-    if interest.property.property_status == "archived":
-        flash("You cannot approve request for archived property ","warning")
-        return redirect(url_for("interest.owner_requests"))
-    
-    if interest.property.property_status == "sold":
-        flash("This property has already been sold","warning")
-        return redirect(url_for("interest.owner_requests"))
-
-        # approve select request
-    interest.interest_status = "approved"
-
-    # mark  property as sold
-    interest.property.property_status = "sold"
-     
-    #  decline every other request on the same 
-    others_request =(
-        ClientInterest.query.filter(
-            ClientInterest.property_id == interest.property_id,
-            ClientInterest.interest_id == interest.interest_id
-        ).all()
-    )
-    db.session.commit()
-
-    for req in others_request:
-        if req.interest_status == "requested":
-            req.interest_status = "declined"
-
-    flash("Request Approved , Property mark as sold","success")
-    return redirect(url_for('interest.owner_requests'))
-
-@interest_bp.route('/decline/<int:interest_id>/', methods=['POST'])
-def decline_request(interest_id):
-    user = get_current_user()
-    if not user:
-        return redirect(url_for("auth.login"))
-    
-    interest= ClientInterest.query.join(Property).filter(
-        ClientInterest.interest_id == interest_id
-    ).first_or_404()
-
-    if not interest.property or interest.property.owner_id != user.user_id:
-        flash("you are not allowed to decline this request","danger")
-        return redirect(url_for("interest.owner_requests"))
-
-    # print("BEFORE:", interest.interest_status )
-
-    interest.interest_status = "declined"
-    db.session.commit()
-    db.session.refresh(interest)
-
-    # print("AFTER:", interest.interest_status )
-
-    flash("Request Declined", "danger")
-    return redirect(url_for('interest.owner_requests'))

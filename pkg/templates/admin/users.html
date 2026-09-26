@@ -1,79 +1,1566 @@
 {% extends "admin/admin_base.html" %}
-{% block title %}Users | PEA-bridge{% endblock %}
+
+{% block title %}Users | Flexy Properties{% endblock %}
+
+{% block page_title %}User Management{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+/* =========================================================
+   USERS PAGE
+========================================================= */
+
+.users-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.users-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+
+    gap: 15px;
+
+    margin-bottom: 22px;
+}
+
+.users-header h2 {
+    margin: 0 0 5px;
+
+    color: #0f172a;
+
+    font-size: 1.4rem;
+    font-weight: 800;
+
+    letter-spacing: -.4px;
+}
+
+.users-header p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: .76rem;
+}
+
+
+/* =========================================================
+   USER COUNT
+========================================================= */
+
+.users-count {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 7px 11px;
+
+    border: 1px solid #dce4e9;
+    border-radius: 999px;
+
+    background: #ffffff;
+
+    color: #475569;
+
+    font-size: .68rem;
+    font-weight: 700;
+}
+
+.users-count i {
+    color: #079455;
+}
+
+
+/* =========================================================
+   MANAGEMENT CARD
+========================================================= */
+
+.users-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    background: #ffffff;
+
+    border: 1px solid #e5eaf0;
+    border-radius: 16px;
+
+    box-shadow:
+        0 5px 20px rgba(15,23,42,.045);
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   CARD HEADER / SEARCH
+========================================================= */
+
+.users-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+
+    gap: 15px;
+
+    padding: 17px 19px;
+
+    border-bottom: 1px solid #edf0f3;
+}
+
+.users-card-title {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.users-card-icon {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: #ecfdf3;
+    color: #079455;
+
+    font-size: .85rem;
+}
+
+.users-card-title strong {
+    display: block;
+
+    color: #0f172a;
+
+    font-size: .8rem;
+}
+
+.users-card-title span {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #94a3b8;
+
+    font-size: .62rem;
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.users-search {
+    position: relative;
+
+    width: 270px;
+    max-width: 100%;
+}
+
+.users-search i {
+    position: absolute;
+
+    left: 12px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #94a3b8;
+
+    font-size: .75rem;
+
+    pointer-events: none;
+}
+
+.users-search input {
+    width: 100%;
+    height: 38px;
+
+    padding: 7px 12px 7px 35px;
+
+    border: 1px solid #dce2e8;
+    border-radius: 9px;
+
+    outline: none;
+
+    background: #f8fafc;
+
+    color: #0f172a;
+
+    font-size: .7rem;
+
+    transition: .2s ease;
+}
+
+.users-search input:focus {
+    border-color: #079455;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(7,148,85,.07);
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.users-table-wrapper {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.users-table-wrapper::-webkit-scrollbar {
+    height: 7px;
+}
+
+.users-table-wrapper::-webkit-scrollbar-track {
+    background: #f8fafc;
+}
+
+.users-table-wrapper::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 999px;
+}
+
+.users-table {
+    width: 100%;
+    min-width: 1050px;
+
+    margin: 0;
+
+    border-collapse: collapse;
+
+    white-space: nowrap;
+}
+
+.users-table thead {
+    background: #f8fafc;
+}
+
+.users-table th {
+    padding: 11px 14px;
+
+    border-bottom: 1px solid #e5eaf0;
+
+    color: #64748b;
+
+    font-size: .61rem;
+    font-weight: 800;
+
+    letter-spacing: .35px;
+
+    text-transform: uppercase;
+}
+
+.users-table td {
+    padding: 13px 14px;
+
+    border-bottom: 1px solid #f0f2f4;
+
+    color: #334155;
+
+    font-size: .7rem;
+
+    vertical-align: middle;
+}
+
+.users-table tbody tr {
+    transition: background .15s ease;
+}
+
+.users-table tbody tr:hover {
+    background: #fafcfd;
+}
+
+.users-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+/* =========================================================
+   USER ID
+========================================================= */
+
+.user-id {
+    color: #94a3b8;
+
+    font-size: .65rem;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   USER INFORMATION
+========================================================= */
+
+.user-info {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+
+    min-width: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 50%;
+
+    background: #eef2f6;
+
+    color: #64748b;
+
+    font-size: .8rem;
+    font-weight: 800;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+.user-details {
+    min-width: 0;
+}
+
+.user-full-name {
+    color: #0f172a;
+
+    font-size: .7rem;
+    font-weight: 750;
+}
+
+.user-username {
+    margin-top: 2px;
+
+    color: #94a3b8;
+
+    font-size: .61rem;
+}
+
+
+/* =========================================================
+   CONTACT
+========================================================= */
+
+.user-email {
+    display: block;
+
+    max-width: 190px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    color: #334155;
+
+    text-decoration: none;
+}
+
+.user-email:hover {
+    color: #079455;
+}
+
+.user-phone {
+    color: #64748b;
+}
+
+
+/* =========================================================
+   STATUS BADGES
+========================================================= */
+
+.user-status {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 5px 8px;
+
+    border-radius: 999px;
+
+    font-size: .59rem;
+    font-weight: 750;
+}
+
+.user-status i {
+    font-size: .38rem;
+}
+
+
+/* VERIFIED */
+
+.user-status.verified {
+    background: #dcfae6;
+    color: #067647;
+}
+
+
+/* UNVERIFIED */
+
+.user-status.unverified {
+    background: #fff7d6;
+    color: #9a6700;
+}
+
+
+/* ACTIVE */
+
+.user-status.active {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+
+/* SUSPENDED */
+
+.user-status.suspended {
+    background: #fee4e2;
+    color: #b42318;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 6px;
+    min-width: max-content;
+}
+
+.user-actions form {
+    margin: 0;
+}
+
+.user-action-btn {
+    min-height: 32px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    padding: 6px 9px;
+
+    border-radius: 7px;
+
+    font-size: .61rem;
+    font-weight: 700;
+
+    transition: .2s ease;
+}
+
+
+/* VERIFY */
+
+.btn-user-verify {
+    border: 1px solid #a7f3d0;
+
+    background: #ecfdf3;
+
+    color: #067647;
+}
+
+.btn-user-verify:hover {
+    border-color: #079455;
+
+    background: #079455;
+
+    color: #ffffff;
+}
+
+
+/* UNVERIFY */
+
+.btn-user-unverify {
+    border: 1px solid #fde68a;
+
+    background: #fffbeb;
+
+    color: #a16207;
+}
+
+.btn-user-unverify:hover {
+    border-color: #d97706;
+
+    background: #d97706;
+
+    color: #ffffff;
+}
+
+
+/* SUSPEND */
+
+.btn-user-suspend {
+    border: 1px solid #fecaca;
+
+    background: #fff5f5;
+
+    color: #b42318;
+}
+
+.btn-user-suspend:hover {
+    border-color: #b42318;
+
+    background: #b42318;
+
+    color: #ffffff;
+}
+
+
+/* ACTIVATE */
+
+.btn-user-activate {
+    border: 1px solid #bfdbfe;
+
+    background: #eff6ff;
+
+    color: #1d4ed8;
+}
+
+.btn-user-activate:hover {
+    border-color: #2563eb;
+
+    background: #2563eb;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.users-empty {
+    padding: 60px 20px;
+
+    text-align: center;
+}
+
+.users-empty-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 13px;
+
+    border-radius: 50%;
+
+    background: #f1f5f9;
+
+    color: #94a3b8;
+
+    font-size: 1.3rem;
+}
+
+.users-empty h4 {
+    margin: 0 0 5px;
+
+    color: #0f172a;
+
+    font-size: .9rem;
+    font-weight: 800;
+}
+
+.users-empty p {
+    margin: 0;
+
+    color: #94a3b8;
+
+    font-size: .7rem;
+}
+
+
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.properties-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    gap: 14px;
+    padding: 15px 18px;
+
+    border-top: 1px solid #edf1f5;
+
+    background: #ffffff;
+}
+
+.pagination-info {
+    color: #64748b;
+    font-size: .64rem;
+}
+
+.pagination-info strong {
+    color: #334155;
+    font-weight: 800;
+}
+
+.pagination-nav {
+    max-width: 100%;
+}
+
+.pagination-list {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.pagination-btn,
+.pagination-number {
+    min-width: 32px;
+    height: 32px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+    padding: 0 9px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+
+    background: #ffffff;
+    color: #475569;
+
+    text-decoration: none;
+
+    font-size: .62rem;
+    font-weight: 700;
+
+    transition: .2s ease;
+}
+
+.pagination-number {
+    width: 32px;
+    padding: 0;
+}
+
+.pagination-btn:hover,
+.pagination-number:hover {
+    border-color: #079455;
+    background: #f0fdf4;
+    color: #067647;
+}
+
+.pagination-number.active {
+    border-color: #079455;
+    background: #079455;
+    color: #ffffff;
+}
+
+.pagination-btn.disabled {
+    background: #f8fafc;
+    color: #cbd5e1;
+
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.pagination-dots {
+    min-width: 24px;
+
+    display: inline-block;
+
+    color: #94a3b8;
+
+    text-align: center;
+    font-size: .68rem;
+    font-weight: 700;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .users-header {
+        align-items: flex-start;
+    }
+
+    .users-card-header {
+        align-items: stretch;
+    }
+
+    .users-search {
+        width: 100%;
+    }
+
+    .properties-pagination {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 14px;
+    }
+
+    .pagination-info {
+        text-align: center;
+    }
+
+    .pagination-nav {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+
+    .pagination-list {
+        width: max-content;
+        min-width: 100%;
+        justify-content: center;
+    }
+
+    .pagination-btn span {
+        display: none;
+    }
+
+    .pagination-btn {
+        width: 32px;
+        padding: 0;
+    }
+
+}
+
+
+@media (max-width: 575.98px) {
+
+    .users-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .users-table th,
+    .users-table td {
+        padding-left: 11px;
+        padding-right: 11px;
+    }
+
+}
+
+</style>
+
+{% endblock %}
+
+
 
 {% block content %}
-<div class="container-fluid">
-  <h3 class="text-white mb-3">Users</h3>
 
-  <div class="card shadow-lg" style="background:#0f172a;border:none;border-radius:14px;color:white;">
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-dark table-striped align-middle">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Username</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Verified</th>
-              <th>Suspended</th>
-              <th class="text-end">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for u in users %}
-            <tr>
-              <td>{{ u.user_id }}</td>
-              <td>{{ u.username }}</td>
-              <td>{{ u.user_fname }} {{ u.users_lname }}</td>
-              <td>{{ u.email }}</td>
-              <td>{{ u.phone }}</td>
-              <td>
-                {% if u.is_verified %}
-                  <span class="badge bg-success">Yes</span>
-                {% else %}
-                  <span class="badge bg-warning text-dark">No</span>
-                {% endif %}
-              </td>
-              <td>
-                {% if u.suspended %}
-                  <span class="badge bg-danger">Yes</span>
-                {% else %}
-                  <span class="badge bg-success">No</span>
-                {% endif %}
-              </td>
-            <td class="text-end d-flex gap-2 justify-content-end">
+<div class="users-page">
 
-                {% if not u.is_verified %}
-                <form action="{{ url_for('admin.verify_user', user_id=u.user_id) }}" method="post">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button class="btn btn-success btn-sm fw-bold">Verify</button>
-                </form>
-                {% else %}
-                <form action="{{ url_for('admin.unverify_user', user_id=u.user_id) }}" method="post">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button class="btn btn-warning btn-sm fw-bold">Unverify</button>
-                </form>
-                {% endif %}
 
-                {% if u.suspended %}
-                <form action="{{ url_for('admin.activate_user', user_id=u.user_id) }}" method="post">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button class="btn btn-info btn-sm fw-bold">Activate</button>
-                </form>
-                {% else %}
-                <form action="{{ url_for('admin.suspend_user', user_id=u.user_id) }}" method="post">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button class="btn btn-danger btn-sm fw-bold">Suspend</button>
-                </form>
-                {% endif %}
-                    {% endfor %}
-                </td>
-          </tbody>
-        </table>
-      </div>
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="users-header">
+
+        <div>
+
+            <h2>
+                Users
+            </h2>
+
+            <p>
+                View and manage registered Flexy Properties users.
+            </p>
+
+        </div>
+
+
+        <div class="users-count">
+
+            <i class="bi bi-people-fill"></i>
+
+            {{ pagination.total if pagination else (users|length if users else 0) }}
+
+            {% set total_user_count =
+                pagination.total
+                if pagination
+                else (users|length if users else 0)
+            %}
+
+            {% if total_user_count == 1 %}
+                User
+            {% else %}
+                Users
+            {% endif %}
+
+        </div>
+
     </div>
-  </div>
+
+
+
+    <!-- =====================================================
+         USERS CARD
+    ====================================================== -->
+
+    <div class="users-card">
+
+
+        <!-- CARD HEADER -->
+
+        <div class="users-card-header">
+
+            <div class="users-card-title">
+
+                <div class="users-card-icon">
+
+                    <i class="bi bi-people"></i>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        Registered Users
+                    </strong>
+
+                    <span>
+                        Account and access management
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SEARCH -->
+
+            <div class="users-search">
+
+                <i class="bi bi-search"></i>
+
+                <input
+                    type="search"
+                    id="userSearch"
+                    placeholder="Search users..."
+                    autocomplete="off"
+                    aria-label="Search users"
+                >
+
+            </div>
+
+        </div>
+
+
+
+        {% if users %}
+
+
+            <!-- =================================================
+                 TABLE
+            ================================================== -->
+
+            <div class="users-table-wrapper">
+
+                <table
+                    class="users-table"
+                    id="usersTable"
+                >
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                User
+                            </th>
+
+                            <th>
+                                Email
+                            </th>
+
+                            <th>
+                                Phone
+                            </th>
+
+                            <th>
+                                Verification
+                            </th>
+
+                            <th>
+                                Account
+                            </th>
+
+                            <th class="text-end">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        {% for u in users %}
+
+                        <tr class="user-row">
+
+
+                            <!-- ID -->
+
+                            <td>
+
+                                <span class="user-id">
+
+                                    #{{ u.user_id }}
+
+                                </span>
+
+                            </td>
+
+
+
+                            <!-- USER -->
+
+                            <td>
+
+                                <div class="user-info">
+
+
+                                    <!-- PROFILE PHOTO -->
+
+                                    <div class="user-avatar">
+
+                                        {% if u.image_url and
+                                              u.image_url != 'uploads/default.png' %}
+
+                                            <img
+                                                src="{{ url_for(
+                                                    'static',
+                                                    filename=u.image_url
+                                                ) }}"
+                                                alt="{{ u.username }}"
+                                            >
+
+                                        {% else %}
+
+                                            <i class="bi bi-person-fill"></i>
+
+                                        {% endif %}
+
+                                    </div>
+
+
+
+                                    <!-- NAME -->
+
+                                    <div class="user-details">
+
+                                        <div class="user-full-name">
+
+                                            {{ u.user_fname }}
+                                            {{ u.users_lname }}
+
+                                        </div>
+
+
+                                        <div class="user-username">
+
+                                            @{{ u.username }}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+
+                            <!-- EMAIL -->
+
+                            <td>
+
+                                <a
+                                    href="mailto:{{ u.email }}"
+                                    class="user-email"
+                                    title="{{ u.email }}"
+                                >
+
+                                    {{ u.email }}
+
+                                </a>
+
+                            </td>
+
+
+
+                            <!-- PHONE -->
+
+                            <td>
+
+                                <span class="user-phone">
+
+                                    {{ u.phone or "—" }}
+
+                                </span>
+
+                            </td>
+
+
+
+                            <!-- VERIFICATION -->
+
+                            <td>
+
+                                {% if u.is_verified %}
+
+                                    <span class="
+                                        user-status
+                                        verified
+                                    ">
+
+                                        <i class="bi bi-circle-fill"></i>
+
+                                        Verified
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="
+                                        user-status
+                                        unverified
+                                    ">
+
+                                        <i class="bi bi-circle-fill"></i>
+
+                                        Unverified
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+
+                            <!-- ACCOUNT STATUS -->
+
+                            <td>
+
+                                {% if u.suspended %}
+
+                                    <span class="
+                                        user-status
+                                        suspended
+                                    ">
+
+                                        <i class="bi bi-circle-fill"></i>
+
+                                        Suspended
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="
+                                        user-status
+                                        active
+                                    ">
+
+                                        <i class="bi bi-circle-fill"></i>
+
+                                        Active
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+
+                            <!-- ACTIONS -->
+
+                            <td>
+
+                                <div class="user-actions">
+
+
+                                    <!-- VERIFY / UNVERIFY -->
+
+                                    {% if not u.is_verified %}
+
+                                        <form
+                                            action="{{ url_for(
+                                                'admin.verify_user',
+                                                user_id=u.user_id
+                                            ) }}"
+                                            method="post"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                            >
+
+
+                                            <button
+                                                type="submit"
+                                                class="
+                                                    user-action-btn
+                                                    btn-user-verify
+                                                "
+                                            >
+
+                                                <i class="
+                                                    bi
+                                                    bi-check-circle
+                                                "></i>
+
+                                                Verify
+
+                                            </button>
+
+                                        </form>
+
+                                    {% else %}
+
+                                        <form
+                                            action="{{ url_for(
+                                                'admin.unverify_user',
+                                                user_id=u.user_id
+                                            ) }}"
+                                            method="post"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                            >
+
+
+                                            <button
+                                                type="submit"
+                                                class="
+                                                    user-action-btn
+                                                    btn-user-unverify
+                                                "
+                                            >
+
+                                                <i class="
+                                                    bi
+                                                    bi-x-circle
+                                                "></i>
+
+                                                Unverify
+
+                                            </button>
+
+                                        </form>
+
+                                    {% endif %}
+
+
+
+                                    <!-- ACTIVATE / SUSPEND -->
+
+                                    {% if u.suspended %}
+
+                                        <form
+                                            action="{{ url_for(
+                                                'admin.activate_user',
+                                                user_id=u.user_id
+                                            ) }}"
+                                            method="post"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                            >
+
+
+                                            <button
+                                                type="submit"
+                                                class="
+                                                    user-action-btn
+                                                    btn-user-activate
+                                                "
+                                            >
+
+                                                <i class="
+                                                    bi
+                                                    bi-person-check
+                                                "></i>
+
+                                                Activate
+
+                                            </button>
+
+                                        </form>
+
+                                    {% else %}
+
+                                        <form
+                                            action="{{ url_for(
+                                                'admin.suspend_user',
+                                                user_id=u.user_id
+                                            ) }}"
+                                            method="post"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                            >
+
+
+                                            <button
+                                                type="submit"
+                                                class="
+                                                    user-action-btn
+                                                    btn-user-suspend
+                                                "
+                                            >
+
+                                                <i class="
+                                                    bi
+                                                    bi-person-x
+                                                "></i>
+
+                                                Suspend
+
+                                            </button>
+
+                                        </form>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </td>
+
+
+                        </tr>
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        
+         {% if pagination and pagination.pages > 1 %}
+
+            <div class="properties-pagination">
+
+                <div class="pagination-info">
+
+                    Showing
+
+                    <strong>
+                        {{
+                            ((pagination.page - 1) * pagination.per_page) + 1
+                        }}
+                    </strong>
+
+                    to
+
+                    <strong>
+                        {{
+                            [
+                                pagination.page * pagination.per_page,
+                                pagination.total
+                            ] | min
+                        }}
+                    </strong>
+
+                    of
+
+                    <strong>
+                        {{ pagination.total }}
+                    </strong>
+
+                    users
+
+                </div>
+
+
+                <nav
+                    aria-label="User pagination"
+                    class="pagination-nav"
+                >
+
+                    <ul class="pagination-list">
+
+                        <li>
+                            {% if pagination.has_prev %}
+
+                                <a
+                                    href="{{ url_for(
+                                        'admin.verify_properties',
+                                        page=pagination.prev_num
+                                    ) }}"
+                                    class="pagination-btn"
+                                    aria-label="Previous page"
+                                >
+                                    <i class="bi bi-chevron-left"></i>
+                                    <span>Previous</span>
+                                </a>
+
+                            {% else %}
+
+                                <span class="pagination-btn disabled">
+                                    <i class="bi bi-chevron-left"></i>
+                                    <span>Previous</span>
+                                </span>
+
+                            {% endif %}
+                        </li>
+
+
+                        {% for page_num in pagination.iter_pages(
+                            left_edge=1,
+                            right_edge=1,
+                            left_current=2,
+                            right_current=2
+                        ) %}
+
+                            {% if page_num %}
+
+                                {% if page_num == pagination.page %}
+
+                                    <li>
+                                        <span
+                                            class="pagination-number active"
+                                            aria-current="page"
+                                        >
+                                            {{ page_num }}
+                                        </span>
+                                    </li>
+
+                                {% else %}
+
+                                    <li>
+                                        <a
+                                            href="{{ url_for(
+                                                'admin.verify_properties',
+                                                page=page_num
+                                            ) }}"
+                                            class="pagination-number"
+                                        >
+                                            {{ page_num }}
+                                        </a>
+                                    </li>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <li>
+                                    <span class="pagination-dots">
+                                        ...
+                                    </span>
+                                </li>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+
+                        <li>
+                            {% if pagination.has_next %}
+
+                                <a
+                                    href="{{ url_for(
+                                        'admin.verify_properties',
+                                        page=pagination.next_num
+                                    ) }}"
+                                    class="pagination-btn"
+                                    aria-label="Next page"
+                                >
+                                    <span>Next</span>
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+
+                            {% else %}
+
+                                <span class="pagination-btn disabled">
+                                    <span>Next</span>
+                                    <i class="bi bi-chevron-right"></i>
+                                </span>
+
+                            {% endif %}
+                        </li>
+
+                    </ul>
+
+                </nav>
+
+            </div>
+
+        {% endif %}
+
+
+        {% else %}
+
+
+            <!-- =================================================
+                 EMPTY STATE
+            ================================================== -->
+
+            <div class="users-empty">
+
+                <div class="users-empty-icon">
+
+                    <i class="bi bi-people"></i>
+
+                </div>
+
+
+                <h4>
+                    No users found
+                </h4>
+
+
+                <p>
+                    Registered users will appear here.
+                </p>
+
+            </div>
+
+
+        {% endif %}
+
+
+    </div>
+
 </div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const searchInput =
+            document.getElementById("userSearch");
+
+        const rows =
+            document.querySelectorAll(
+                "#usersTable .user-row"
+            );
+
+
+        if (searchInput) {
+
+            searchInput.addEventListener(
+                "input",
+                function () {
+
+                    const searchValue =
+                        this.value
+                            .trim()
+                            .toLowerCase();
+
+
+                    rows.forEach(function (row) {
+
+                        const rowText =
+                            row.textContent.toLowerCase();
+
+
+                        row.style.display =
+                            rowText.includes(searchValue)
+                                ? ""
+                                : "none";
+
+                    });
+
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
+
 {% endblock %}

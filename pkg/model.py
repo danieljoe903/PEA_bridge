@@ -92,7 +92,7 @@ class Property(db.Model):
 
     property_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-    owner_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=False, index=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=True, index=True)
 
     property_title = db.Column(db.String(300), nullable=True)
 
@@ -114,10 +114,27 @@ class Property(db.Model):
     )
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    expires_at = db.Column(db.DateTime, nullable=False)
+    expires_at = db.Column(db.DateTime, nullable=True)
+    archived_at = db.Column(
+    db.DateTime,
+    nullable=True
+    )
+
+    archive_reason = db.Column(
+        db.String(50),
+        nullable=True
+    )
+
+    archive_note = db.Column(
+        db.Text,
+        nullable=True
+    )
 
     property_listing = db.Column(
-        db.Enum("SALE"),
+    db.Enum(
+        "SALE",
+        "RENT"
+        ),
         nullable=False
     )
 
@@ -134,7 +151,12 @@ class Property(db.Model):
     images = db.relationship("PropertyImage", back_populates="property",cascade="all, delete-orphan")
     documents = db.relationship("PropertyDocument", back_populates="property",cascade="all, delete-orphan")
     requests = db.relationship("ClientInterest", back_populates="property",cascade="all, delete-orphan")
-
+    source_submission = db.relationship(
+        "PropertySubmission",
+        foreign_keys="PropertySubmission.published_property_id",
+        back_populates="published_property",
+        uselist=False
+    )
 
 # -------------------------
 # PROPERTY IMAGES
@@ -148,6 +170,8 @@ class PropertyImage(db.Model):
     property_id = db.Column(db.Integer, db.ForeignKey("properties.property_id"), nullable=False, index=True)
 
     image_url = db.Column(db.String(100), nullable=True)
+
+    is_primary = db.Column(db.Boolean, default=False,nullable=False)
 
     uploaded_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
@@ -271,3 +295,178 @@ class UserType(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=True, index=True)
 
     user = db.relationship("User", back_populates="user_types")
+
+class PropertySubmission(db.Model):
+    __tablename__ = "property_submissions"
+
+    submission_id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    landlord_name = db.Column(
+        db.String(150),
+        nullable=False
+    )
+
+    landlord_email = db.Column(
+        db.String(255),
+        nullable=False
+    )
+
+    landlord_phone = db.Column(
+        db.String(30),
+        nullable=False
+    )
+
+    property_title = db.Column(
+        db.String(300),
+        nullable=False
+    )
+
+    property_type = db.Column(
+        db.Enum(
+            "land",
+            "house",
+            "apartment",
+            "commercial"
+        ),
+        nullable=False
+    )
+
+    listing_type = db.Column(
+        db.Enum(
+            "SALE",
+            "RENT"
+        ),
+        nullable=False
+    )
+
+    address = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    state = db.Column(
+        db.String(100),
+        nullable=False
+    )
+
+    price = db.Column(
+        db.Numeric(12, 2),
+        nullable=True
+    )
+
+    description = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    submission_status = db.Column(
+        db.Enum(
+            "pending",
+            "approved",
+            "rejected"
+        ),
+        nullable=False,
+        default="pending"
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow,
+        nullable=False
+    )
+
+
+    # =========================================================
+    # ADMIN REVIEW INFORMATION
+    # =========================================================
+
+    reviewed_at = db.Column(
+        db.DateTime,
+        nullable=True
+    )
+
+    reviewed_by_admin_id = db.Column(
+        db.Integer,
+        db.ForeignKey("admin.admin_id"),
+        nullable=True,
+        index=True
+    )
+
+    published_property_id = db.Column(
+        db.Integer,
+        db.ForeignKey("properties.property_id"),
+        nullable=True,
+        unique=True,
+        index=True
+    )
+
+    rejection_reason = db.Column(
+        db.Text,
+        nullable=True
+    )
+
+
+    # =========================================================
+    # RELATIONSHIPS
+    # =========================================================
+
+    images = db.relationship(
+        "PropertySubmissionImage",
+        back_populates="submission",
+        cascade="all, delete-orphan",
+        order_by="PropertySubmissionImage.image_id"
+    )
+
+    published_property = db.relationship(
+        "Property",
+        foreign_keys=[published_property_id],
+        back_populates="source_submission"
+    )
+
+    reviewed_by_admin = db.relationship(
+        "Admin",
+        foreign_keys=[reviewed_by_admin_id]
+    )
+
+
+    @property
+    def reference_number(self):
+        return f"FP-{self.submission_id:06d}"
+
+class PropertySubmissionImage(db.Model):
+    __tablename__ = "property_submission_images"
+
+    image_id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True
+    )
+
+    submission_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            "property_submissions.submission_id"
+        ),
+        nullable=False,
+        index=True
+    )
+
+    image_url = db.Column(
+        db.String(255),
+        nullable=False
+    )
+
+    uploaded_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow,
+        nullable=False
+    )
+
+    submission = db.relationship(
+        "PropertySubmission",
+        back_populates="images"
+    )

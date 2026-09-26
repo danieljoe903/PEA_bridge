@@ -1,43 +1,167 @@
-<!-- FOOTER -->
-  <footer>
-    <div class="container">
-      <div class="row g-4 align-items-start">
-        <div class="col-12 col-lg-5">
-          <div class="fw-bold mb-2">
-            <span class="text-warning">&lt;/&gt;</span> PEA-Bridge
-          </div>
-          <div class="small">
-            A verified marketplace for homes, land, and apartments — built to reduce scams and speed up discovery.
-          </div>
-        </div>
+<!-- =========================================================
+     FLEXY PROPERTIES FOOTER
+========================================================= -->
+<footer class="flexy-footer">
 
-        <div class="col-6 col-lg-3">
-          <div class="fw-bold mb-2">Links</div>
-          <div class="small d-grid gap-1">
-            <a class="text-decoration-none text-light opacity-75" href="#features">Features</a>
-            <a class="text-decoration-none text-light opacity-75" href="#cities">Cities</a>
-            <a class="text-decoration-none text-light opacity-75" href="#contact">Contact</a>
-          </div>
-        </div>
+  <div class="container">
 
-        <div class="col-6 col-lg-4">
-          <div class="fw-bold mb-2">Get updates</div>
-          <div class="small opacity-75 mb-2">Join us on our (catelogs only).</div>
-          <form class="d-flex gap-2">
-            <input class="form-control form-control-sm" placeholder="Email address">
-            <button type="button" class="btn btn-sm btn-brand">Join</button>
-          </form>
-        </div>
+    <div class="row g-5">
+
+      <!-- BRAND -->
+      <div class="col-12 col-lg-5">
+
+        <a
+          href="{{ url_for('main.homepage') }}"
+          class="flexy-footer-brand text-decoration-none"
+        >
+          <span class="flexy-footer-logo">
+            <i class="bi bi-buildings-fill"></i>
+          </span>
+
+          <span>
+            Flexy <strong>Properties</strong>
+          </span>
+        </a>
+
+        <p class="flexy-footer-description">
+          Discover houses, apartments, land and commercial
+          properties through a simple and convenient property
+          marketplace.
+        </p>
+
       </div>
 
-      <hr class="border-light border-opacity-10 my-4">
 
-      <div class="d-flex flex-column flex-md-row justify-content-between gap-2 small opacity-75 ">
-        <div>© <span id="year"></span> PEA-Bridge. All rights reserved.</div>
-        <div>
-          <a href="{{ url_for('main.privacy') }}" class="text-decoration-none">Privacy • Terms</a>
+      <!-- QUICK LINKS -->
+      <div class="col-6 col-md-4 col-lg-2">
+
+        <h6 class="flexy-footer-heading">
+          Explore
+        </h6>
+
+        <div class="flexy-footer-links">
+
+          <a href="{{ url_for('main.homepage') }}">
+            Home
+          </a>
+
+          <a href="{{ url_for('property.explore_properties') }}">
+            Properties
+          </a>
+
+          {% if current_user %}
+            <a href="{{ url_for('interest.my_interest') }}">
+              My Interests
+            </a>
+          {% endif %}
+
         </div>
+
       </div>
+
+
+      <!-- ACCOUNT -->
+      <div class="col-6 col-md-4 col-lg-2">
+
+        <h6 class="flexy-footer-heading">
+          Account
+        </h6>
+
+        <div class="flexy-footer-links">
+
+          {% if current_user %}
+
+            <a href="{{ url_for('user.profile') }}">
+              My Profile
+            </a>
+
+            <a href="{{ url_for('auth.logout') }}">
+              Logout
+            </a>
+
+          {% else %}
+
+            <a href="{{ url_for('auth.login') }}">
+              Sign In
+            </a>
+
+            <a href="{{ url_for('auth.register') }}">
+              Create Account
+            </a>
+
+          {% endif %}
+
+        </div>
+
+      </div>
+
+
+      <!-- SUPPORT -->
+      <div class="col-12 col-md-4 col-lg-3">
+
+        <h6 class="flexy-footer-heading">
+          Support
+        </h6>
+
+        <p class="flexy-footer-support-text">
+          Need help using Flexy Properties?
+          Contact our support team.
+        </p>
+
+        <a
+          href="mailto:mailflexy12@gmail.com"
+          class="flexy-support-email"
+        >
+          <i class="bi bi-envelope"></i>
+          mailflexy12@gmail.com
+        </a>
+
+        <a 
+            href="https://wa.me/2349017096022"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-outline-success mt-2 btn-sm rounded">
+            <i class="bi bi-whatsapp"></i>
+            Whatsapp Contact
+        </a>
+
+      </div>
+
     </div>
+
+
+    <!-- DIVIDER -->
+    <div class="flexy-footer-divider"></div>
+
+
+    <!-- BOTTOM -->
+    <div class="flexy-footer-bottom">
+
+      <div>
+        © <span id="year"></span>
+        Flexy Properties. All rights reserved.
+      </div>
+
+
+      <div class="flexy-footer-legal">
+
+        <a href="{{ url_for('main.privacy') }}">
+          Privacy & Terms
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
 </footer>
-  
+
+
+<script>
+  const yearElement = document.getElementById("year");
+
+  if (yearElement) {
+      yearElement.textContent = new Date().getFullYear();
+  }
+</script>

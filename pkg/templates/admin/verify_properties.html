@@ -1,124 +1,2657 @@
 {% extends "admin/admin_base.html" %}
-{% block title %}Property Verification | PEA-bridge{% endblock %}
+
+{% block title %}Properties | Flexy Properties{% endblock %}
+
+{% block page_title %}Property Management{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+/* =========================================================
+   PROPERTY MANAGEMENT
+========================================================= */
+
+.properties-admin-page {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.properties-admin-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    gap: 16px;
+
+    margin-bottom: 22px;
+}
+
+.properties-admin-header h2 {
+    margin: 0 0 5px;
+
+    color: #0f172a;
+
+    font-size: 1.4rem;
+    font-weight: 800;
+
+    letter-spacing: -.4px;
+}
+
+.properties-admin-header p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: .76rem;
+}
+
+
+/* =========================================================
+   HEADER ACTIONS
+========================================================= */
+
+.properties-header-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+.property-count {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    min-height: 38px;
+
+    padding: 7px 11px;
+
+    border: 1px solid #dce4e9;
+    border-radius: 9px;
+
+    background: #ffffff;
+    color: #475569;
+
+    font-size: .68rem;
+    font-weight: 700;
+}
+
+.property-count i {
+    color: #079455;
+}
+
+
+/* =========================================================
+   HEADER BUTTONS
+========================================================= */
+
+.property-header-btn {
+    min-height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 7px 11px;
+
+    border-radius: 9px;
+
+    text-decoration: none;
+
+    font-size: .67rem;
+    font-weight: 700;
+
+    transition: .2s ease;
+}
+
+
+/* EXPLORE */
+
+.property-explore-btn {
+    border: 1px solid #dce2e8;
+
+    background: #ffffff;
+    color: #475569;
+}
+
+.property-explore-btn:hover {
+    border-color: #079455;
+
+    background: #f0fdf4;
+    color: #079455;
+}
+
+
+/* ADD PROPERTY */
+
+.property-add-btn {
+    border: 1px solid #079455;
+
+    background: #079455;
+    color: #ffffff;
+}
+
+.property-add-btn:hover {
+    border-color: #067647;
+
+    background: #067647;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   PROPERTY SUMMARY
+========================================================= */
+
+.property-summary-card {
+    height: 100%;
+
+    padding: 15px 16px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5eaf0;
+    border-radius: 13px;
+
+    box-shadow:
+        0 3px 12px rgba(15,23,42,.03);
+}
+
+.property-summary-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 12px;
+}
+
+.property-summary-icon {
+    width: 35px;
+    height: 35px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    font-size: .8rem;
+}
+
+.summary-all {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.summary-available {
+    background: #ecfdf3;
+    color: #079455;
+}
+
+.summary-sold {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.summary-rented {
+    background: #fff1f2;
+    color: #be123c;
+}
+
+.property-summary-label {
+    color: #94a3b8;
+
+    font-size: .61rem;
+    font-weight: 700;
+}
+
+.property-summary-number {
+    color: #0f172a;
+
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   MANAGEMENT CARD
+========================================================= */
+
+.properties-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    margin-top: 20px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e5eaf0;
+    border-radius: 16px;
+
+    box-shadow:
+        0 5px 20px rgba(15,23,42,.045);
+}
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.properties-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    gap: 15px;
+
+    padding: 17px 19px;
+
+    border-bottom: 1px solid #edf0f3;
+}
+
+.properties-card-title {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.properties-card-icon {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: #ecfdf3;
+    color: #079455;
+
+    font-size: .85rem;
+}
+
+.properties-card-title strong {
+    display: block;
+
+    color: #0f172a;
+
+    font-size: .8rem;
+}
+
+.properties-card-title span {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #94a3b8;
+
+    font-size: .62rem;
+}
+
+
+/* =========================================================
+   SEARCH / FILTER
+========================================================= */
+
+.properties-tools {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+.properties-search {
+    position: relative;
+
+    width: 245px;
+    max-width: 100%;
+}
+
+.properties-search i {
+    position: absolute;
+
+    left: 12px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #94a3b8;
+
+    font-size: .72rem;
+
+    pointer-events: none;
+}
+
+.properties-search input {
+    width: 100%;
+    height: 38px;
+
+    padding: 7px 12px 7px 35px;
+
+    border: 1px solid #dce2e8;
+    border-radius: 9px;
+
+    outline: none;
+
+    background: #f8fafc;
+    color: #0f172a;
+
+    font-size: .68rem;
+
+    transition: .2s ease;
+}
+
+.properties-search input:focus {
+    border-color: #079455;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(7,148,85,.07);
+}
+
+.properties-filter {
+    height: 38px;
+
+    padding: 6px 30px 6px 10px;
+
+    border: 1px solid #dce2e8;
+    border-radius: 9px;
+
+    outline: none;
+
+    background-color: #f8fafc;
+    color: #475569;
+
+    font-size: .68rem;
+}
+
+.properties-filter:focus {
+    border-color: #079455;
+
+    box-shadow:
+        0 0 0 3px rgba(7,148,85,.07);
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.properties-table-wrapper {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.properties-table-wrapper::-webkit-scrollbar {
+    height: 7px;
+}
+
+.properties-table-wrapper::-webkit-scrollbar-track {
+    background: #f8fafc;
+}
+
+.properties-table-wrapper::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 999px;
+}
+
+.properties-table {
+    width: 100%;
+    min-width: 1180px;
+
+    margin: 0;
+
+    border-collapse: collapse;
+
+    white-space: nowrap;
+}
+
+.properties-table thead {
+    background: #f8fafc;
+}
+
+.properties-table th {
+    padding: 11px 14px;
+
+    border-bottom: 1px solid #e5eaf0;
+
+    color: #64748b;
+
+    font-size: .6rem;
+    font-weight: 800;
+
+    letter-spacing: .35px;
+
+    text-transform: uppercase;
+}
+
+.properties-table td {
+    padding: 13px 14px;
+
+    border-bottom: 1px solid #f0f2f4;
+
+    color: #334155;
+
+    font-size: .69rem;
+
+    vertical-align: middle;
+}
+
+.properties-table tbody tr {
+    transition: background .15s ease;
+}
+
+.properties-table tbody tr:hover {
+    background: #fafcfd;
+}
+
+.properties-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+
+/* =========================================================
+   PROPERTY INFORMATION
+========================================================= */
+
+.property-id {
+    color: #94a3b8;
+
+    font-size: .63rem;
+    font-weight: 700;
+}
+
+.property-table-info {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.property-table-icon {
+    width: 38px;
+    height: 38px;
+
+    min-width: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: #f0fdf4;
+    color: #079455;
+
+    font-size: .85rem;
+}
+
+.property-table-details {
+    min-width: 0;
+}
+
+.property-table-title {
+    display: block;
+
+    max-width: 230px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    color: #0f172a;
+
+    font-size: .7rem;
+    font-weight: 750;
+}
+
+.property-table-location {
+    max-width: 230px;
+
+    margin-top: 2px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    color: #94a3b8;
+
+    font-size: .59rem;
+}
+
+
+/* =========================================================
+   TYPE
+========================================================= */
+
+.property-type {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 5px 8px;
+
+    border-radius: 7px;
+
+    background: #f1f5f9;
+    color: #475569;
+
+    font-size: .59rem;
+    font-weight: 700;
+}
+
+
+
+/* =========================================================
+   LISTING TYPE
+========================================================= */
+
+.property-listing {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: .58rem;
+    font-weight: 800;
+}
+
+.property-listing.sale {
+    background: #ecfdf3;
+    color: #067647;
+}
+
+.property-listing.rent {
+    background: #f5f3ff;
+    color: #6d28d9;
+}
+
+.property-listing.other {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+/* =========================================================
+   PRICE
+========================================================= */
+
+.property-price {
+    color: #0f172a;
+
+    font-size: .7rem;
+    font-weight: 750;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.property-status {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 5px 8px;
+
+    border-radius: 999px;
+
+    font-size: .58rem;
+    font-weight: 750;
+}
+
+.property-status i {
+    font-size: .35rem;
+}
+
+.property-status.available {
+    background: #dcfae6;
+    color: #067647;
+}
+
+.property-status.sold {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.property-status.disabled {
+    background: #fee4e2;
+    color: #b42318;
+}
+
+.property-status.rented {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.property-status.pending {
+    background: #fff7d6;
+    color: #9a6700;
+}
+
+.property-status.archived {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.property-status.other {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.property-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+
+    gap: 6px;
+}
+
+.property-actions form {
+    margin: 0;
+}
+
+.property-action-btn {
+    min-height: 31px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    padding: 6px 9px;
+
+    border-radius: 7px;
+
+    text-decoration: none;
+
+    font-size: .59rem;
+    font-weight: 700;
+
+    transition: .2s ease;
+}
+
+
+/* VIEW */
+
+.property-view-action {
+    border: 1px solid #d7dde5;
+
+    background: #ffffff;
+    color: #334155;
+}
+
+.property-view-action:hover {
+    border-color: #079455;
+
+    background: #f0fdf4;
+    color: #079455;
+}
+
+
+/* APPROVE / RELIST */
+
+.property-approve-action {
+    border: 1px solid #a7f3d0;
+
+    background: #ecfdf3;
+    color: #067647;
+}
+
+.property-approve-action:hover {
+    border-color: #079455;
+
+    background: #079455;
+    color: #ffffff;
+}
+
+
+/* SOLD */
+
+.property-sold-action {
+    border: 1px solid #bfdbfe;
+
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.property-sold-action:hover {
+    border-color: #2563eb;
+
+    background: #2563eb;
+    color: #ffffff;
+}
+
+
+/* DISABLE */
+
+.property-disable-action {
+    border: 1px solid #fecaca;
+
+    background: #fff5f5;
+    color: #b42318;
+}
+
+.property-disable-action:hover {
+    border-color: #b42318;
+
+    background: #b42318;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.properties-empty {
+    padding: 65px 20px;
+
+    text-align: center;
+}
+
+.properties-empty-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 13px;
+
+    border-radius: 50%;
+
+    background: #f1f5f9;
+    color: #94a3b8;
+
+    font-size: 1.3rem;
+}
+
+.properties-empty h4 {
+    margin: 0 0 5px;
+
+    color: #0f172a;
+
+    font-size: .9rem;
+    font-weight: 800;
+}
+
+.properties-empty p {
+    margin: 0;
+
+    color: #94a3b8;
+
+    font-size: .7rem;
+}
+
+
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.properties-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 15px 18px;
+    border-top: 1px solid #edf0f3;
+    background: #ffffff;
+}
+
+.pagination-info {
+    color: #64748b;
+    font-size: .66rem;
+}
+
+.pagination-info strong {
+    color: #334155;
+    font-weight: 750;
+}
+
+.pagination-nav {
+    margin-left: auto;
+}
+
+.pagination-list {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pagination-btn,
+.pagination-number {
+    min-width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0 9px;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #475569;
+    text-decoration: none;
+    font-size: .62rem;
+    font-weight: 700;
+    transition: .2s ease;
+}
+
+.pagination-number {
+    width: 32px;
+    padding: 0;
+}
+
+.pagination-btn:hover,
+.pagination-number:hover {
+    border-color: #079455;
+    background: #f0fdf4;
+    color: #067647;
+}
+
+.pagination-number.active {
+    border-color: #079455;
+    background: #079455;
+    color: #ffffff;
+    cursor: default;
+}
+
+.pagination-btn.disabled {
+    background: #f8fafc;
+    color: #cbd5e1;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.pagination-dots {
+    min-width: 25px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: .7rem;
+    font-weight: 700;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .properties-admin-header {
+        align-items: flex-start;
+    }
+
+    .properties-header-actions {
+        width: 100%;
+    }
+
+    .properties-card-header {
+        align-items: stretch;
+    }
+
+    .properties-tools {
+        width: 100%;
+    }
+
+    .properties-search {
+        width: 100%;
+    }
+
+    .properties-filter {
+        flex: 1;
+    }
+
+}
+
+
+@media (max-width: 575.98px) {
+
+    .properties-admin-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .property-explore-btn,
+    .property-add-btn {
+        flex: 1;
+    }
+
+    .properties-table th,
+    .properties-table td {
+        padding-left: 11px;
+        padding-right: 11px;
+    }
+
+    .properties-pagination {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 14px;
+    }
+
+    .pagination-info {
+        text-align: center;
+    }
+
+    .pagination-nav {
+        width: 100%;
+        margin-left: 0;
+        overflow-x: auto;
+    }
+
+    .pagination-list {
+        width: max-content;
+        min-width: 100%;
+        justify-content: center;
+        padding-bottom: 2px;
+    }
+
+    .pagination-btn span {
+        display: none;
+    }
+
+    .pagination-btn {
+        width: 32px;
+        padding: 0;
+    }
+
+}
+
+/* =========================================================
+   PROPERTY SOURCE
+========================================================= */
+
+.property-source {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    min-width: 160px;
+}
+
+
+.property-source .source-icon {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    font-size: .85rem;
+}
+
+
+/* LANDLORD SUBMISSION */
+
+.submitted-source .source-icon {
+    background: #ecfdf3;
+
+    color: #079455;
+}
+
+
+.source-title {
+    color: #344054;
+
+    font-size: .76rem;
+    font-weight: 700;
+
+    line-height: 1.3;
+}
+
+
+.source-reference {
+    display: inline-block;
+
+    margin-top: 2px;
+
+    color: #079455;
+
+    font-size: .7rem;
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+
+.source-reference:hover {
+    color: #067647;
+
+    text-decoration: underline;
+}
+
+
+/* ADMIN ADDED */
+
+.admin-source .source-icon {
+    background: #f2f4f7;
+
+    color: #475467;
+}
+
+
+.source-description {
+    margin-top: 2px;
+
+    color: #98a2b3;
+
+    font-size: .69rem;
+}
+
+/* =========================================================
+   PROPERTY SOURCE
+========================================================= */
+
+.property-source {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 170px;
+}
+
+
+.property-source-icon {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    font-size: .85rem;
+}
+
+
+.property-source-content {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.property-source-title {
+    display: block;
+
+    color: #344054;
+
+    font-size: .74rem;
+    font-weight: 750;
+
+    line-height: 1.3;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   LANDLORD SUBMISSION
+========================================================= */
+
+.landlord-source
+.property-source-icon {
+    background: #ecfdf3;
+
+    color: #079455;
+}
+
+
+.property-source-reference {
+    display: inline-flex;
+    align-items: center;
+
+    width: fit-content;
+
+    color: #079455;
+
+    font-size: .69rem;
+    font-weight: 750;
+
+    text-decoration: none;
+
+    transition: .2s ease;
+}
+
+
+.property-source-reference:hover {
+    color: #067647;
+
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   ADMIN SOURCE
+========================================================= */
+
+.admin-source
+.property-source-icon {
+    background: #f2f4f7;
+
+    color: #475467;
+}
+
+
+.property-source-description {
+    color: #98a2b3;
+
+    font-size: .68rem;
+    font-weight: 500;
+}
+</style>
+
+{% endblock %}
+
+
 
 {% block content %}
-<div class="container-fluid">
-  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-    <h3 class="text-white mb-0">Property Verification</h3>
 
-    <a href="{{ url_for('property.explore_properties') }}"
-       class="btn btn-outline-light btn-sm">
-      View Explore Properties
-    </a>
-  </div>
+<div class="properties-admin-page">
 
-  <div class="card shadow-lg" style="background:#0f172a;border:none;border-radius:14px;color:white;">
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-dark table-striped align-middle text-break">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Owner</th>
-              <th>Type</th>
-              <th>Price</th>
-              <th>Status</th>
-              <th class="text-end">Action</th>
-            </tr>
-          </thead>
 
-          <tbody>
-            {% if properties and properties|length > 0 %}
-              {% for p in properties %}
-                <tr>
-                  <td>{{ p.property_id }}</td>
-                  <td>{{ p.property_title or "Untitled" }}</td>
-                  <td>
-                    {% if p.owner %}
-                      {{ p.owner.user_fname }} {{ p.owner.users_lname }}
-                    {% else %}
-                      -
-                    {% endif %}
-                  </td>
-                  <td>{{ p.property_type|title if p.property_type else "-" }}</td>
-                  <td>₦ {{ "{:,.0f}".format(p.price or 0) }}</td>
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
 
-                  <td>
-                    {% if p.property_status == "available" %}
-                      <span class="badge bg-success">Available</span>
-                    {% elif p.property_status == "under_verification" %}
-                      <span class="badge bg-warning text-dark">Under Verification</span>
-                    {% elif p.property_status == "sold" %}
-                      <span class="badge bg-primary">Sold</span>
-                    {% elif p.property_status == "rejected" %}
-                      <span class="badge bg-danger">Disabled</span>
-                    {% elif p.property_status == "rented" %}
-                      <span class="badge bg-info text-dark">Rented</span>
-                    {% else %}
-                      <span class="badge bg-secondary">{{ p.property_status }}</span>
-                    {% endif %}
-                  </td>
+    <div class="properties-admin-header">
 
-                  <td class="text-end">
-                    <div class="d-flex justify-content-end gap-2 flex-wrap">
+        <div>
 
-                      <a href="{{ url_for('admin.view_property', property_id=p.property_id) }}"
-                         class="btn btn-outline-light btn-sm">
-                        View
-                      </a>
+            <h2>
+                Properties
+            </h2>
 
-                      {% if p.property_status == "under_verification" %}
-                        <form action="{{ url_for('admin.approve_property', property_id=p.property_id) }}" method="post">
-                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                          <button class="btn btn-success btn-sm fw-bold">Approve</button>
-                        </form>
+            <p>
+                Manage property listings published on Flexy Properties.
+            </p>
 
-                        <form action="{{ url_for('admin.disable_property', property_id=p.property_id) }}" method="post">
-                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                          <button class="btn btn-danger btn-sm fw-bold">Disable</button>
-                        </form>
+        </div>
 
-                      {% elif p.property_status == "available" %}
-                        <form action="{{ url_for('admin.mark_property_sold', property_id=p.property_id) }}" method="post">
-                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                          <button class="btn btn-primary btn-sm fw-bold">Mark Sold</button>
-                        </form>
 
-                        <form action="{{ url_for('admin.disable_property', property_id=p.property_id) }}" method="post">
-                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                          <button class="btn btn-danger btn-sm fw-bold">Disable</button>
-                        </form>
+        <div class="properties-header-actions">
 
-                      {% elif p.property_status == "rejected" %}
-                        <form action="{{ url_for('admin.approve_property', property_id=p.property_id) }}" method="post">
-                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                          <button class="btn btn-success btn-sm fw-bold">Re-Approve</button>
-                        </form>
 
-                      {% elif p.property_status == "sold" %}
-                        <form action="{{ url_for('admin.approve_property', property_id=p.property_id) }}" method="post">
-                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                          <button class="btn btn-success btn-sm fw-bold">Re-List</button>
-                        </form>
-                      {% endif %}
+            <div class="property-count">
+
+                <i class="bi bi-buildings-fill"></i>
+
+                {{ total_properties }}
+
+                {% if total_properties == 1 %}
+                    Property
+                {% else %}
+                    Properties
+                {% endif %}
+
+            </div>
+
+            <a
+                href="{{ url_for('admin.archived_properties', next_page='property')}}"
+                class="btn btn-sm btn-secondary rounded">
+                
+                <i class="bi bi-archive-fill"></i>
+                Archived properties
+            </a>
+            <a
+                href="{{ url_for('property.explore_properties') }}"
+                class="
+                    property-header-btn
+                    property-explore-btn
+                "
+                target="_blank"
+            >
+
+                <i class="bi bi-box-arrow-up-right"></i>
+
+                Explore Website
+
+            </a>
+
+
+            <!--
+                We will connect this to the new
+                admin Add Property route.
+            -->
+
+            <a
+                href="{{ url_for('admin.add_property')}}"
+                class="
+                    property-header-btn
+                    property-add-btn
+                "
+            >
+
+                <i class="bi bi-plus-lg"></i>
+
+                Add Property
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         SUMMARY CARDS
+    ====================================================== -->
+
+    <div class="row g-3">
+
+
+        <!-- ALL -->
+
+        <div class="col-6 col-lg-3">
+
+            <div class="property-summary-card">
+
+                <div class="property-summary-top">
+
+                    <div class="
+                        property-summary-icon
+                        summary-all
+                    ">
+
+                        <i class="bi bi-buildings"></i>
 
                     </div>
-                  </td>
-                </tr>
-              {% endfor %}
-            {% else %}
-              <tr>
-                <td colspan="7" class="text-center text-white-50 py-4">
-                  No properties found.
-                </td>
-              </tr>
-            {% endif %}
-          </tbody>
 
-        </table>
-      </div>
+                    <span class="property-summary-label">
+                        Total
+                    </span>
+
+                </div>
+
+
+                <div class="property-summary-number">
+
+                    {{ total_properties }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- AVAILABLE -->
+
+        <div class="col-6 col-lg-3">
+
+            <div class="property-summary-card">
+
+                <div class="property-summary-top">
+
+                    <div class="
+                        property-summary-icon
+                        summary-available
+                    ">
+
+                        <i class="bi bi-house-check"></i>
+
+                    </div>
+
+                    <span class="property-summary-label">
+                        Available
+                    </span>
+
+                </div>
+
+
+                <div class="property-summary-number">
+                    {{ available_count }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- SOLD -->
+
+        <div class="col-6 col-lg-3">
+
+            <div class="property-summary-card">
+
+                <div class="property-summary-top">
+
+                    <div class="
+                        property-summary-icon
+                        summary-sold
+                    ">
+
+                        <i class="bi bi-check-circle"></i>
+
+                    </div>
+
+                    <span class="property-summary-label">
+                        Sold
+                    </span>
+
+                </div>
+
+
+                <div class="property-summary-number">
+                    {{ sold_count }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- DISABLED -->
+
+        <div class="col-6 col-lg-3">
+
+            <div class="property-summary-card">
+
+                <div class="property-summary-top">
+
+                    <div class="
+                        property-summary-icon
+                        summary-disabled
+                    ">
+
+                        <i class="bi bi-key"></i>
+
+                    </div>
+
+                    <span class="property-summary-label">
+                        Rented
+                    </span>
+
+                </div>
+
+
+                <div class="property-summary-number">
+                    {{ rented_count }}
+                </div>
+
+            </div>
+
+        </div>
+
+
     </div>
-  </div>
+
+
+
+    <!-- =====================================================
+         PROPERTY TABLE CARD
+    ====================================================== -->
+
+    <div class="properties-card">
+
+
+        <!-- CARD HEADER -->
+
+        <div class="properties-card-header">
+
+            <div class="properties-card-title">
+
+                <div class="properties-card-icon">
+
+                    <i class="bi bi-buildings"></i>
+
+                </div>
+
+
+                <div>
+
+                    <strong>
+                        Property Listings
+                    </strong>
+
+                    <span>
+                        Manage availability and listing status
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TOOLS -->
+
+            <div class="properties-tools">
+
+
+                <!-- SEARCH -->
+
+                <div class="properties-search">
+
+                    <i class="bi bi-search"></i>
+
+                    <input
+                        type="search"
+                        id="propertySearch"
+                        placeholder="Search properties..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+
+
+                <!-- LISTING FILTER -->
+
+                <select
+                    class="properties-filter"
+                    id="propertyListingFilter"
+                >
+                    <option value="">
+                        All Listings
+                    </option>
+
+                    <option value="sale">
+                        For Sale
+                    </option>
+
+                    <option value="rent">
+                        For Rent
+                    </option>
+                </select>
+
+
+                <!-- STATUS FILTER -->
+
+                <select
+                    class="properties-filter"
+                    id="propertyStatusFilter"
+                >
+
+                    <option value="">
+                        All Statuses
+                    </option>
+
+                    <option value="available">
+                        Available
+                    </option>
+
+                    <option value="sold">
+                        Sold
+                    </option>
+
+                    <option value="rejected">
+                        Disabled
+                    </option>
+
+                    <option value="rented">
+                        Rented
+                    </option>
+
+                    <option value="under_verification">
+                        Under Verification
+                    </option>
+
+                    <option value="archived">
+                        Archived
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+
+        {% if properties and properties|length > 0 %}
+
+
+            <!-- =================================================
+                 TABLE
+            ================================================== -->
+
+            <div class="properties-table-wrapper">
+
+                <table
+                    class="properties-table"
+                    id="propertiesTable"
+                >
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                Property
+                            </th>
+
+                            <th>
+                                Type
+                            </th>
+
+                            <th>
+                                Listing
+                            </th>
+
+                            <th>
+                                Price
+                            </th>
+                            <th>
+                                Source
+                            </th>
+                            <th>
+                                Status
+                            </th>
+
+                            <th class="text-end">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                        {% for p in properties %}
+
+                        <tr
+                            class="property-row"
+                            data-status="{{ p.property_status or '' }}"
+                            data-listing="{{ p.property_listing or '' }}"
+                        >
+
+
+                            <!-- ID -->
+
+                            <td>
+
+                                <span class="property-id">
+
+                                    #{{ p.property_id }}
+
+                                </span>
+
+                            </td>
+
+
+
+                            <!-- PROPERTY -->
+
+                            <td>
+
+                                <div class="property-table-info">
+
+                                    <div class="property-table-icon">
+
+                                        <i class="
+                                            bi
+                                            bi-house-door-fill
+                                        "></i>
+
+                                    </div>
+
+
+                                    <div class="property-table-details">
+
+                                        <span
+                                            class="property-table-title"
+                                            title="{{
+                                                p.property_title
+                                                or 'Untitled Property'
+                                            }}"
+                                        >
+
+                                            {{
+                                                p.property_title
+                                                or "Untitled Property"
+                                            }}
+
+                                        </span>
+
+
+                                        {% if p.adress %}
+
+                                            <div
+                                                class="
+                                                    property-table-location
+                                                "
+                                                title="{{ p.adress }}"
+                                            >
+
+                                                <i class="
+                                                    bi
+                                                    bi-geo-alt
+                                                "></i>
+
+                                                {{ p.adress }}
+
+                                            </div>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+
+                            <!-- TYPE -->
+
+                            <td>
+
+                                <span class="property-type">
+
+                                    {{
+                                        p.property_type
+                                        |replace("_", " ")
+                                        |title
+                                        if p.property_type
+                                        else "—"
+                                    }}
+
+                                </span>
+
+                            </td>
+
+
+
+
+                            <!-- LISTING TYPE -->
+
+                            <td>
+
+                                {% set listing_type =
+                                    (p.property_listing or '')|upper
+                                %}
+
+                                {% if listing_type == "SALE" %}
+
+                                    <span class="property-listing sale">
+                                        <i class="bi bi-tag-fill"></i>
+                                        For Sale
+                                    </span>
+
+                                {% elif listing_type == "RENT" %}
+
+                                    <span class="property-listing rent">
+                                        <i class="bi bi-key-fill"></i>
+                                        For Rent
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="property-listing other">
+                                        <i class="bi bi-dash-circle"></i>
+                                        Not Set
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- PRICE -->
+
+                            <td>
+
+                                <span class="property-price">
+
+                                    ₦{{
+                                        "{:,.0f}".format(
+                                            p.price or 0
+                                        )
+                                    }}
+
+                                </span>
+
+                            </td>
+
+                            <!-- property sources -->
+                            <td>
+
+                                {% if p.source_submission %}
+
+                                    <div class="property-source landlord-source">
+
+
+                                        <div class="property-source-icon">
+
+                                            <i class="bi bi-person-check"></i>
+
+                                        </div>
+
+
+                                        <div class="property-source-content">
+
+                                            <span class="property-source-title">
+                                                Landlord Submission
+                                            </span>
+
+
+                                            <a
+                                                href="{{ url_for(
+                                                    'admin.view_property_submission',
+                                                    submission_id=p.source_submission.submission_id
+                                                ) }}"
+                                                class="property-source-reference"
+                                                title="View original property submission"
+                                            >
+
+                                                {{ p.source_submission.reference_number }}
+
+                                            </a>
+
+                                        </div>
+
+                                    </div>
+
+
+                                {% else %}
+
+
+                                    <div class="property-source admin-source">
+
+
+                                        <div class="property-source-icon">
+
+                                            <i class="bi bi-shield-check"></i>
+
+                                        </div>
+
+
+                                        <div class="property-source-content">
+
+                                            <span class="property-source-title">
+                                                Admin Added
+                                            </span>
+
+
+                                            <span class="property-source-description">
+                                                Direct listing
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                {% endif %}
+
+                            </td>
+
+                                                        <!-- STATUS -->
+
+                            <td>
+
+
+                                {% if p.property_status == "available" %}
+
+                                    <span class="
+                                        property-status
+                                        available
+                                    ">
+
+                                        <i class="bi bi-circle-fill"></i>
+
+                                        Available
+
+                                    </span>
+
+
+                                {% elif p.property_status == "sold" %}
+
+                                    <span class="
+                                        property-status
+                                        sold
+                                    ">
+
+                                        <i class="bi bi-circle-fill"></i>
+
+                                        Sold
+
+                                    </span>
+
+
+                                {% elif p.property_status == "rejected" %}
+
+                                    <span class="
+                                        property-status
+                                        disabled
+                                    ">
+
+                                        <i class="bi bi-circle-fill"></i>
+
+                                        Disabled
+
+                                    </span>
+
+
+                                {% elif p.property_status == "rented" %}
+
+                                    <span class="
+                                        property-status
+                                        rented
+                                    ">
+
+                                        <i class="bi bi-circle-fill"></i>
+
+                                        Rented
+
+                                    </span>
+
+
+                                {% elif p.property_status ==
+                                        "under_verification" %}
+
+                                    <span class="
+                                        property-status
+                                        pending
+                                    ">
+
+                                        <i class="bi bi-circle-fill"></i>
+
+                                        Under Verification
+
+                                    </span>
+
+
+                                {% elif p.property_status == "archived" %}
+
+                                    <span class="
+                                        property-status
+                                        archived
+                                    ">
+
+                                        <i class="bi bi-circle-fill"></i>
+
+                                        Archived
+
+                                    </span>
+
+
+                                {% else %}
+
+                                    <span class="
+                                        property-status
+                                        other
+                                    ">
+
+                                        <i class="bi bi-circle-fill"></i>
+
+                                        {{
+                                            p.property_status
+                                            |replace("_", " ")
+                                            |title
+                                            if p.property_status
+                                            else "Unknown"
+                                        }}
+
+                                    </span>
+
+                                {% endif %}
+
+
+                            </td>
+
+
+
+                            <!-- ACTIONS -->
+
+                            <td>
+
+                                <div class="property-actions">
+
+
+                                    <!-- VIEW -->
+
+                                    <a
+                                        href="{{ url_for(
+                                            'admin.view_property',
+                                            property_id=p.property_id
+                                        ) }}"
+                                        class="
+                                            property-action-btn
+                                            property-view-action
+                                        "
+                                    >
+
+                                        <i class="bi bi-eye"></i>
+
+                                        View
+
+                                    </a>
+
+
+
+                                    <!-- =================================
+                                         OLD UNDER VERIFICATION RECORD
+                                    ================================== -->
+
+                                    {% if p.property_status ==
+                                          "under_verification" %}
+
+
+                                        <form
+                                            action="{{ url_for(
+                                                'admin.approve_property',
+                                                property_id=p.property_id
+                                            ) }}"
+                                            method="POST"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                            >
+
+
+                                            <button
+                                                type="submit"
+                                                class="
+                                                    property-action-btn
+                                                    property-approve-action
+                                                "
+                                            >
+
+                                                <i class="
+                                                    bi
+                                                    bi-check-lg
+                                                "></i>
+
+                                                Publish
+
+                                            </button>
+
+                                        </form>
+
+
+
+                                        <form
+                                            action="{{ url_for(
+                                                'admin.disable_property',
+                                                property_id=p.property_id
+                                            ) }}"
+                                            method="POST"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                            >
+
+
+                                            <button
+                                                type="submit"
+                                                class="
+                                                    property-action-btn
+                                                    property-disable-action
+                                                "
+                                                onclick="
+                                                    return confirm(
+                                                        'Disable this property?'
+                                                    );
+                                                "
+                                            >
+
+                                                <i class="
+                                                    bi
+                                                    bi-slash-circle
+                                                "></i>
+
+                                                Disable
+
+                                            </button>
+
+                                        </form>
+
+
+
+                                    <!-- =================================
+                                         AVAILABLE
+                                    ================================== -->
+
+                                    {% elif p.property_status ==
+                                            "available" %}
+
+
+                                        <!-- MARK SOLD -->
+                                        {% if p.property_listing|upper == "SALE" %}
+                                        <form
+                                            action="{{ url_for(
+                                                'admin.mark_property_sold',
+                                                property_id=p.property_id
+                                            ) }}"
+                                            method="POST"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                            >
+
+
+                                            <button
+                                                type="submit"
+                                                class="
+                                                    property-action-btn
+                                                    property-sold-action
+                                                "
+                                                onclick="
+                                                    return confirm(
+                                                        'Mark this property as sold? Pending interest requests for this property will be declined.'
+                                                    );
+                                                "
+                                            >
+
+                                                <i class="
+                                                    bi
+                                                    bi-check-circle
+                                                "></i>
+
+                                                Mark Sold
+
+                                            </button>
+
+                                        </form>
+                                        <!-- MARK RENTED -->
+                                        {% elif p.property_listing|upper == "RENT" %}
+                                        <form
+                                            action="{{ url_for(
+                                                'admin.mark_property_rented',
+                                                property_id=p.property_id
+                                            ) }}"
+                                            method="POST"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                            >
+
+
+                                            <button
+                                                type="submit"
+                                                class="
+                                                    property-action-btn
+                                                    property-sold-action
+                                                "
+                                                onclick="
+                                                    return confirm(
+                                                        'Mark this property as rented? Pending interest requests for this property will be declined.'
+                                                    );
+                                                "
+                                            >
+
+                                                <i class="
+                                                    bi
+                                                    bi-check-circle
+                                                "></i>
+
+                                                Mark Rented
+
+                                            </button>
+
+                                        </form>
+                                        {% endif %}
+
+                                        <!-- DISABLE -->
+
+                                        <form
+                                            action="{{ url_for(
+                                                'admin.disable_property',
+                                                property_id=p.property_id
+                                            ) }}"
+                                            method="POST"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                            >
+
+
+                                            <button
+                                                type="submit"
+                                                class="
+                                                    property-action-btn
+                                                    property-disable-action
+                                                "
+                                                onclick="
+                                                    return confirm(
+                                                        'Disable this property listing?'
+                                                    );
+                                                "
+                                            >
+
+                                                <i class="
+                                                    bi
+                                                    bi-slash-circle
+                                                "></i>
+
+                                                Disable
+
+                                            </button>
+
+                                        </form>
+                                          <a
+                                              href="{{ url_for(
+                                                  'admin.edit_property',
+                                                  property_id=p.property_id
+                                              ) }}"
+                                              class="btn btn-outline-warning btn-sm rounded"
+                                          >
+                                              <i class="bi bi-pencil-square"></i>
+                                              Edit
+                                          </a>
+
+
+                                    <!-- =================================
+                                         DISABLED
+                                    ================================== -->
+
+                                    {% elif p.property_status ==
+                                            "rejected" %}
+
+
+                                        <form
+                                            action="{{ url_for(
+                                                'admin.approve_property',
+                                                property_id=p.property_id
+                                            ) }}"
+                                            method="POST"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                            >
+
+
+                                            <button
+                                                type="submit"
+                                                class="
+                                                    property-action-btn
+                                                    property-approve-action
+                                                "
+                                            >
+
+                                                <i class="
+                                                    bi
+                                                    bi-arrow-repeat
+                                                "></i>
+
+                                                Re-List
+
+                                            </button>
+
+                                        </form>
+
+
+
+                                    <!-- =================================
+                                         SOLD
+                                    ================================== -->
+
+                                    {% elif p.property_status == "sold" %}
+
+
+                                        <form
+                                            action="{{ url_for(
+                                                'admin.approve_property',
+                                                property_id=p.property_id
+                                            ) }}"
+                                            method="POST"
+                                        >
+
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="{{ csrf_token() }}"
+                                            >
+
+
+                                            <button
+                                                type="submit"
+                                                class="
+                                                    property-action-btn
+                                                    property-approve-action
+                                                "
+                                                onclick="
+                                                    return confirm(
+                                                        'Make this property available again?'
+                                                    );
+                                                "
+                                            >
+
+                                                <i class="
+                                                    bi
+                                                    bi-arrow-repeat
+                                                "></i>
+
+                                                Re-List
+
+                                            </button>
+
+                                        </form>
+
+                                    {% endif %}
+
+
+                                </div>
+
+                            </td>
+
+
+                        </tr>
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            {% if pagination and pagination.pages > 1 %}
+
+            <div class="properties-pagination">
+
+                <div class="pagination-info">
+
+                    Showing
+
+                    <strong>
+                        {{
+                            ((pagination.page - 1) * pagination.per_page) + 1
+                        }}
+                    </strong>
+
+                    to
+
+                    <strong>
+                        {{
+                            [
+                                pagination.page * pagination.per_page,
+                                pagination.total
+                            ] | min
+                        }}
+                    </strong>
+
+                    of
+
+                    <strong>
+                        {{ pagination.total }}
+                    </strong>
+
+                    properties
+
+                </div>
+
+
+                <nav
+                    aria-label="Property pagination"
+                    class="pagination-nav"
+                >
+
+                    <ul class="pagination-list">
+
+                        <li>
+                            {% if pagination.has_prev %}
+
+                                <a
+                                    href="{{ url_for(
+                                        'admin.verify_properties',
+                                        page=pagination.prev_num
+                                    ) }}"
+                                    class="pagination-btn"
+                                    aria-label="Previous page"
+                                >
+                                    <i class="bi bi-chevron-left"></i>
+                                    <span>Previous</span>
+                                </a>
+
+                            {% else %}
+
+                                <span class="pagination-btn disabled">
+                                    <i class="bi bi-chevron-left"></i>
+                                    <span>Previous</span>
+                                </span>
+
+                            {% endif %}
+                        </li>
+
+
+                        {% for page_num in pagination.iter_pages(
+                            left_edge=1,
+                            right_edge=1,
+                            left_current=2,
+                            right_current=2
+                        ) %}
+
+                            {% if page_num %}
+
+                                {% if page_num == pagination.page %}
+
+                                    <li>
+                                        <span
+                                            class="pagination-number active"
+                                            aria-current="page"
+                                        >
+                                            {{ page_num }}
+                                        </span>
+                                    </li>
+
+                                {% else %}
+
+                                    <li>
+                                        <a
+                                            href="{{ url_for(
+                                                'admin.verify_properties',
+                                                page=page_num
+                                            ) }}"
+                                            class="pagination-number"
+                                        >
+                                            {{ page_num }}
+                                        </a>
+                                    </li>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <li>
+                                    <span class="pagination-dots">
+                                        ...
+                                    </span>
+                                </li>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+
+                        <li>
+                            {% if pagination.has_next %}
+
+                                <a
+                                    href="{{ url_for(
+                                        'admin.verify_properties',
+                                        page=pagination.next_num
+                                    ) }}"
+                                    class="pagination-btn"
+                                    aria-label="Next page"
+                                >
+                                    <span>Next</span>
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+
+                            {% else %}
+
+                                <span class="pagination-btn disabled">
+                                    <span>Next</span>
+                                    <i class="bi bi-chevron-right"></i>
+                                </span>
+
+                            {% endif %}
+                        </li>
+
+                    </ul>
+
+                </nav>
+
+            </div>
+
+            {% endif %}
+
+
+        {% else %}
+
+
+            <!-- =================================================
+                 EMPTY STATE
+            ================================================== -->
+
+            <div class="properties-empty">
+
+                <div class="properties-empty-icon">
+
+                    <i class="bi bi-buildings"></i>
+
+                </div>
+
+
+                <h4>
+                    No properties found
+                </h4>
+
+
+                <p>
+                    Properties added by the administrator
+                    will appear here.
+                </p>
+
+            </div>
+
+
+        {% endif %}
+
+
+    </div>
+
 </div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const searchInput =
+            document.getElementById(
+                "propertySearch"
+            );
+
+        const statusFilter =
+            document.getElementById(
+                "propertyStatusFilter"
+            );
+
+        const listingFilter =
+            document.getElementById(
+                "propertyListingFilter"
+            );
+
+        const rows =
+            document.querySelectorAll(
+                "#propertiesTable .property-row"
+            );
+
+
+        /* =================================================
+           FILTER TABLE
+        ================================================== */
+
+        function filterProperties() {
+
+            const searchValue =
+                searchInput
+                    ? searchInput.value
+                        .trim()
+                        .toLowerCase()
+                    : "";
+
+            const statusValue =
+                statusFilter
+                    ? statusFilter.value
+                        .trim()
+                        .toLowerCase()
+                    : "";
+
+            const listingValue =
+                listingFilter
+                    ? listingFilter.value
+                        .trim()
+                        .toLowerCase()
+                    : "";
+
+
+            rows.forEach(function (row) {
+
+                const rowText =
+                    row.textContent.toLowerCase();
+
+                const rowStatus =
+                    (
+                        row.dataset.status || ""
+                    ).toLowerCase();
+
+                const rowListing =
+                    (
+                        row.dataset.listing || ""
+                    ).toLowerCase();
+
+
+                const matchesSearch =
+                    rowText.includes(
+                        searchValue
+                    );
+
+
+                const matchesStatus =
+                    !statusValue ||
+                    rowStatus === statusValue;
+
+                const matchesListing =
+                    !listingValue ||
+                    rowListing === listingValue;
+
+
+                row.style.display =
+                    matchesSearch &&
+                    matchesStatus &&
+                    matchesListing
+                        ? ""
+                        : "none";
+
+            });
+
+        }
+
+
+        if (searchInput) {
+
+            searchInput.addEventListener(
+                "input",
+                filterProperties
+            );
+
+        }
+
+
+        if (statusFilter) {
+
+            statusFilter.addEventListener(
+                "change",
+                filterProperties
+            );
+
+        }
+
+        if (listingFilter) {
+
+            listingFilter.addEventListener(
+                "change",
+                filterProperties
+            );
+
+        }
+
+    }
+);
+
+</script>
+
 {% endblock %}

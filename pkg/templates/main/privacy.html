@@ -1,174 +1,1773 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PEA_bridge | Legal Policies</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8">
 
-  <style>
-    body{
-      background:#0b1320;
-      font-family: 'Inter', system-ui, sans-serif;
-    }
-    .legal-box{
-      background:#ffffff;
-      border-radius:18px;
-    }
-    .brand{
-      color:#7acc16;
-      font-weight:700;
-    }
-    .muted{
-      color:#6b7280;
-    }
-    .section-title{
-      border-left:5px solid #7acc16;
-      padding-left:12px;
-      margin-top:3rem;
-      margin-bottom:1rem;
-    }
-  </style>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>
+        Terms, Privacy & Disclaimer | Flexy Properties
+    </title>
+
+
+    <!-- SEO -->
+    <meta
+        name="description"
+        content="Read the Terms and Conditions, Privacy Policy and Disclaimer governing the use of Flexy Properties."
+    >
+
+    <meta
+        name="robots"
+        content="index, follow"
+    >
+
+    <link
+        rel="canonical"
+        href="https://www.flexyproperties.org/legal"
+    >
+
+
+    <!-- BOOTSTRAP -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- BOOTSTRAP ICONS -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+
+    <style>
+
+        :root {
+            --primary: #198754;
+            --dark: #0b1320;
+            --light-bg: #f6f8fa;
+            --border: #e5e7eb;
+            --muted: #6b7280;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            margin: 0;
+            background: var(--light-bg);
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+                         "Segoe UI", sans-serif;
+            color: #1f2937;
+            line-height: 1.75;
+        }
+
+
+        /* =========================================
+           NAVBAR
+        ========================================== */
+
+        .legal-navbar {
+            background: var(--dark);
+            min-height: 70px;
+        }
+
+
+        .navbar-brand {
+            font-size: 1.25rem;
+        }
+
+
+        /* =========================================
+           HERO
+        ========================================== */
+
+        .legal-hero {
+            background:
+                linear-gradient(
+                    135deg,
+                    #0b1320,
+                    #12253c
+                );
+
+            color: white;
+
+            padding: 70px 0 100px;
+        }
+
+
+        .legal-hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+        }
+
+
+        .legal-hero p {
+            max-width: 720px;
+            color: rgba(255,255,255,.72);
+        }
+
+
+        .legal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            background: rgba(25,135,84,.15);
+
+            color: #75d69d;
+
+            border: 1px solid rgba(117,214,157,.25);
+
+            border-radius: 50px;
+
+            padding: 7px 14px;
+
+            font-size: .85rem;
+            font-weight: 700;
+        }
+
+
+        /* =========================================
+           MAIN LAYOUT
+        ========================================== */
+
+        .legal-wrapper {
+            margin-top: -55px;
+            position: relative;
+            z-index: 2;
+        }
+
+
+        .legal-content {
+            background: white;
+
+            border: 1px solid var(--border);
+
+            border-radius: 20px;
+
+            padding: 45px;
+
+            box-shadow:
+                0 15px 45px rgba(0,0,0,.07);
+        }
+
+
+        /* =========================================
+           NAVIGATION CARD
+        ========================================== */
+
+        .legal-navigation {
+            background: white;
+
+            border: 1px solid var(--border);
+
+            border-radius: 18px;
+
+            padding: 24px;
+
+            position: sticky;
+
+            top: 90px;
+
+            box-shadow:
+                0 8px 25px rgba(0,0,0,.05);
+        }
+
+
+        .legal-navigation a {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            text-decoration: none;
+
+            color: #374151;
+
+            padding: 10px 12px;
+
+            border-radius: 10px;
+
+            font-weight: 600;
+
+            transition: .2s ease;
+        }
+
+
+        .legal-navigation a:hover {
+            background: #f0f9f4;
+            color: var(--primary);
+        }
+
+
+        /* =========================================
+           CONTENT
+        ========================================== */
+
+        .legal-section {
+            scroll-margin-top: 100px;
+        }
+
+
+        .legal-section + .legal-section {
+            margin-top: 60px;
+
+            padding-top: 55px;
+
+            border-top: 1px solid var(--border);
+        }
+
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .section-icon {
+            width: 48px;
+            height: 48px;
+
+            min-width: 48px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #eaf7ef;
+
+            color: var(--primary);
+
+            border-radius: 13px;
+
+            font-size: 1.25rem;
+        }
+
+
+        .section-heading h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+
+        .legal-content h3 {
+            font-size: 1.05rem;
+            font-weight: 750;
+
+            margin-top: 30px;
+            margin-bottom: 10px;
+
+            color: #111827;
+        }
+
+
+        .legal-content p,
+        .legal-content li {
+            color: #4b5563;
+        }
+
+
+        .legal-content ul {
+            padding-left: 1.25rem;
+        }
+
+
+        .legal-content li {
+            margin-bottom: 8px;
+        }
+
+
+        .legal-content strong {
+            color: #1f2937;
+        }
+
+
+        /* =========================================
+           NOTICE
+        ========================================== */
+
+        .legal-notice {
+            background: #f0f9f4;
+
+            border: 1px solid #ccebd8;
+
+            border-radius: 14px;
+
+            padding: 18px 20px;
+
+            margin: 25px 0;
+        }
+
+
+        /* =========================================
+           CONTACT BOX
+        ========================================== */
+
+        .legal-contact {
+            background: var(--dark);
+
+            color: white;
+
+            border-radius: 18px;
+
+            padding: 30px;
+
+            margin-top: 55px;
+        }
+
+
+        .legal-contact p {
+            color: rgba(255,255,255,.7);
+        }
+
+
+        .legal-contact a {
+            color: #75d69d;
+            text-decoration: none;
+        }
+
+
+        /* =========================================
+           FOOTER
+        ========================================== */
+
+        footer {
+            padding: 35px 15px;
+            color: #6b7280;
+        }
+
+
+        /* =========================================
+           MOBILE
+        ========================================== */
+
+        @media (max-width: 991.98px) {
+
+            .legal-navigation {
+                position: static;
+            }
+
+        }
+
+
+        @media (max-width: 767.98px) {
+
+            .legal-hero {
+                padding: 50px 0 80px;
+            }
+
+
+            .legal-wrapper {
+                margin-top: -35px;
+            }
+
+
+            .legal-content {
+                padding: 25px 20px;
+                border-radius: 16px;
+            }
+
+
+            .section-heading {
+                align-items: flex-start;
+            }
+
+
+            .section-heading h2 {
+                font-size: 1.45rem;
+            }
+
+
+            .section-icon {
+                width: 42px;
+                height: 42px;
+                min-width: 42px;
+            }
+
+        }
+
+    </style>
+
 </head>
 
+
+
 <body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-dark bg-dark sticky-top">
+
+
+<!-- =====================================================
+     NAVBAR
+====================================================== -->
+
+<nav class="navbar navbar-dark legal-navbar sticky-top">
+
     <div class="container">
-      <a class="navbar-brand fw-bold" href="{{url_for('main.homepage')}}">
-        <span class="text-warning">&lt;/&gt;</span> PEA_bridge
-      </a>
-    </div>
-  </nav>
 
-  <!-- Content -->
-  <main class="container my-5">
-    <div class="legal-box p-4 p-md-5 shadow-sm">
-      <header class="mb-4">
-        <h1 class="fw-bold">Legal Policies</h1>
-        <p class="muted mb-0">
-          <strong>Last Updated:</strong> <span class="brand">[Insert Date]</span>
+        <a
+            class="navbar-brand fw-bold"
+            href="{{ url_for('main.homepage') }}"
+        >
+
+            Flexy <span class="text-success">Properties</span>
+
+        </a>
+
+
+        <a
+            href="{{ url_for('main.homepage') }}"
+            class="btn btn-outline-light btn-sm"
+        >
+
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Home
+
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<!-- =====================================================
+     HERO
+====================================================== -->
+
+<section class="legal-hero">
+
+    <div class="container">
+
+        <span class="legal-badge">
+
+            <i class="bi bi-shield-check"></i>
+
+            Legal Information
+
+        </span>
+
+
+        <h1 class="mt-3 mb-3">
+
+            Legal Policies
+
+        </h1>
+
+
+        <p class="lead mb-3">
+
+            Please review the terms governing your use of Flexy Properties,
+            how we handle personal information, and important limitations
+            concerning property information and transactions.
+
         </p>
-      </header>
 
-      <!-- ================= TERMS & CONDITIONS ================= -->
-      <h2 class="section-title">Terms & Conditions</h2>
 
-      <p>
-        Welcome to <strong>PEA_bridge</strong> (“Platform”, “we”, “our”, “us”).
-        PEA_bridge (Property Estate Agent Bridge) is an online marketplace that connects
-        property owners, buyers, and optionally verified real estate agents.
-      </p>
+        <small class="text-white-50">
 
-      <p>
-        By accessing or using this platform, you agree to these Terms & Conditions.
-        If you do not agree, please discontinue use of the platform.
-      </p>
+            Last updated:
+            <strong class="text-white">
+                September 16, 2026
+            </strong>
 
-      <h5 class="fw-bold mt-3">User Accounts</h5>
-      <ul>
-        <li>Users must be at least <strong>18 years old</strong>.</li>
-        <li>Each user may operate only one account.</li>
-        <li>Users are responsible for all activities on their accounts.</li>
-      </ul>
-
-      <h5 class="fw-bold mt-3">User Access Model</h5>
-      <ul>
-        <li>All users may buy, sell, and browse properties.</li>
-        <li>There is no strict buyer/seller separation.</li>
-        <li>Agent status is optional and requires verification.</li>
-      </ul>
-
-      <h5 class="fw-bold mt-3">Listings & Verification</h5>
-      <ul>
-        <li>Listings may be reviewed and verified by administrators.</li>
-        <li>Statuses include: Available, Under Verification, Sold.</li>
-        <li>Misleading or illegal listings may be removed.</li>
-      </ul>
-
-      <h5 class="fw-bold mt-3">Termination</h5>
-      <p>
-        PEA_bridge reserves the right to suspend or terminate accounts that violate
-        platform rules or applicable laws.
-      </p>
-
-      <!-- ================= PRIVACY POLICY ================= -->
-      <h2 class="section-title">Privacy Policy</h2>
-
-      <p>
-        PEA_bridge respects your privacy and is committed to protecting your personal data.
-        This section explains how your information is collected and used.
-      </p>
-
-      <h5 class="fw-bold mt-3">Information Collected</h5>
-      <ul>
-        <li>Personal information (name, email, phone)</li>
-        <li>Property listings, images, and documents</li>
-        <li>Agent verification data (if applicable)</li>
-      </ul>
-
-      <h5 class="fw-bold mt-3">Use of Information</h5>
-      <ul>
-        <li>Account creation and management</li>
-        <li>Property listing and communication</li>
-        <li>Agent verification and platform security</li>
-      </ul>
-
-      <h5 class="fw-bold mt-3">Data Protection</h5>
-      <p>
-        Verification information is kept confidential and accessed only by authorized staff.
-        We apply reasonable security measures but cannot guarantee absolute security.
-      </p>
-
-      <h5 class="fw-bold mt-3">User Rights</h5>
-      <ul>
-        <li>Access and update your personal data</li>
-        <li>Request account deletion (where applicable)</li>
-      </ul>
-
-      <!-- ================= DISCLAIMER ================= -->
-      <h2 class="section-title">Disclaimer</h2>
-
-      <p>
-        The content provided on PEA_bridge is for informational purposes only.
-        We do not provide legal, financial, or real estate advice.
-      </p>
-
-      <h5 class="fw-bold mt-3">Listings</h5>
-      <ul>
-        <li>Listings are submitted by users.</li>
-        <li>We do not guarantee accuracy or availability.</li>
-      </ul>
-
-      <h5 class="fw-bold mt-3">Agents & Transactions</h5>
-      <ul>
-        <li>Agent verification does not guarantee performance.</li>
-        <li>All transactions occur directly between users.</li>
-        <li>PEA_bridge is not liable for disputes or losses.</li>
-      </ul>
-
-      <h5 class="fw-bold mt-3">Platform Availability</h5>
-      <p>
-        PEA_bridge is provided “as-is” and “as-available”.
-        Use of the platform is entirely at your own risk.
-      </p>
-
-      <h5 class="fw-bold mt-3">Contact</h5>
-      <p class="mb-0">
-        Email: <strong>support@pea-bridge.com</strong>
-      </p>
+        </small>
 
     </div>
-  </main>
 
-  <!-- Footer -->
-  <footer class="text-center text-white-50 py-4">
-    <small>© <span id="year"></span> PEA_bridge. All rights reserved.</small>
-  </footer>
+</section>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+
+
+<!-- =====================================================
+     MAIN
+====================================================== -->
+
+<main class="container legal-wrapper mb-5">
+
+    <div class="row g-4">
+
+
+        <!-- =============================================
+             SIDE NAVIGATION
+        ============================================== -->
+
+        <div class="col-12 col-lg-3">
+
+            <aside class="legal-navigation">
+
+                <div class="fw-bold mb-3">
+                    On this page
+                </div>
+
+
+                <a href="#terms">
+
+                    <i class="bi bi-file-earmark-text"></i>
+
+                    Terms & Conditions
+
+                </a>
+
+
+                <a href="#privacy">
+
+                    <i class="bi bi-shield-lock"></i>
+
+                    Privacy Policy
+
+                </a>
+
+
+                <a href="#disclaimer">
+
+                    <i class="bi bi-exclamation-circle"></i>
+
+                    Disclaimer
+
+                </a>
+
+
+                <a href="#contact">
+
+                    <i class="bi bi-envelope"></i>
+
+                    Contact
+
+                </a>
+
+            </aside>
+
+        </div>
+
+
+
+        <!-- =============================================
+             LEGAL CONTENT
+        ============================================== -->
+
+        <div class="col-12 col-lg-9">
+
+            <div class="legal-content">
+
+
+                <!-- =================================================
+                     TERMS AND CONDITIONS
+                ================================================== -->
+
+                <section
+                    id="terms"
+                    class="legal-section"
+                >
+
+
+                    <div class="section-heading">
+
+                        <div class="section-icon">
+
+                            <i class="bi bi-file-earmark-check"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <small class="text-success fw-bold">
+                                FLEXY PROPERTIES
+                            </small>
+
+                            <h2>
+                                Terms & Conditions
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <p>
+                        Property listings displayed publicly on the website
+                        are published and managed by Flexy Properties through
+                        its authorized administrative system.
+                    </p>
+
+                    <p>
+                        Registered users are not permitted to publish property
+                        listings directly. However, eligible registered users
+                        may use the <strong>Market Your Property</strong>
+                        feature to submit property information and photographs
+                        to Flexy Properties for review.
+                    </p>
+
+                    <p>
+                        A property submission is not a public listing and does
+                        not guarantee acceptance, publication, sale, rental or
+                        any other transaction. Flexy Properties may review,
+                        request additional information, approve or decline a
+                        submission before deciding whether the property will
+                        be published.
+                    </p>
+                    <h3>1. Purpose of Flexy Properties</h3>
+
+                    <p>
+
+                        Flexy Properties provides an online platform through
+                        which users can discover and view information about
+                        available properties.
+
+                    </p>
+
+
+                    <p>
+
+                        Property listings displayed on the website are
+                        published and managed by Flexy Properties through
+                        its authorized administrative system. Registered
+                        users are not permitted to publish property listings
+                        directly through their accounts.
+
+                    </p>
+
+
+
+                    <h3>2. User Accounts</h3>
+
+                    <p>
+
+                        Certain features of the website may require users
+                        to create an account.
+
+                    </p>
+
+
+                    <ul>
+
+                        <li>
+                            Users must provide accurate information when
+                            registering.
+                        </li>
+
+                        <li>
+                            Users are responsible for keeping their login
+                            credentials confidential.
+                        </li>
+
+                        <li>
+                            Users are responsible for activities performed
+                            through their accounts.
+                        </li>
+
+                        <li>
+                            Users should notify Flexy Properties if they
+                            believe their account has been accessed without
+                            authorization.
+                        </li>
+
+                    </ul>
+
+
+
+                    <h3>3. User Access</h3>
+
+                    <p>
+
+                        Visitors may access publicly available sections of
+                        the website and view selected property information.
+
+                    </p>
+
+
+                    <p>
+
+                        Registered users may access additional property
+                        information and features made available to
+                        authenticated users, including managing their
+                        account profile and expressing interest in
+                        available properties where that functionality
+                        is provided.
+
+                    </p>
+
+
+
+                    <h3>4. Property Listings</h3>
+
+                    <p>
+
+                        Property information may include descriptions,
+                        photographs, prices, locations, availability and
+                        other relevant details.
+
+                    </p>
+
+
+                    <p>
+
+                        Flexy Properties may add, modify, update, suspend
+                        or remove a property listing where appropriate,
+                        including when a property is no longer available
+                        or information requires correction.
+
+                    </p>
+
+
+                    <div class="legal-notice">
+
+                        <strong>
+                            Important:
+                        </strong>
+
+                        Property availability, price and other information
+                        may change. Users should confirm material property
+                        information before making a financial commitment.
+
+                    </div>
+
+
+
+                    <h3>5. Acceptable Use</h3>
+
+                    <p>
+
+                        Users must not misuse Flexy Properties or interfere
+                        with the proper operation of the website.
+
+                    </p>
+
+
+                    <p>
+                        Users must not:
+                    </p>
+
+
+                    <ul>
+
+                        <li>
+                            Attempt to gain unauthorized access to another
+                            user's account or restricted areas of the
+                            website.
+                        </li>
+
+                        <li>
+                            Use the website for fraudulent or unlawful
+                            activities.
+                        </li>
+
+                        <li>
+                            Attempt to damage, disable or disrupt the
+                            website or its supporting systems.
+                        </li>
+
+                        <li>
+                            Submit false, misleading or harmful information
+                            through forms or communication features.
+                        </li>
+
+                        <li>
+                            Use automated systems to abuse or overload
+                            the website.
+                        </li>
+
+                    </ul>
+
+
+
+                    <h3>6. Property Enquiries and Transactions</h3>
+
+                    <p>
+                        Users may contact Flexy Properties or use available
+                        website features to express interest in a property
+                        or request additional information.
+                    </p>
+
+                    <p>
+                        Flexy Properties does not currently process property
+                        payments or financial transactions through this website.
+                    </p>
+
+                    <p>
+                        Expressing interest in a property, submitting an enquiry,
+                        or creating an account does not by itself create a sale,
+                        tenancy, purchase agreement or other legally binding
+                        property transaction.
+                    </p>
+
+
+                    <h3>7. Account Suspension or Termination</h3>
+
+                    <p>
+
+                        Flexy Properties may restrict, suspend or terminate
+                        access to an account where there is suspected
+                        misuse, fraud, unlawful activity, a security risk,
+                        or a material violation of these Terms and
+                        Conditions.
+
+                    </p>
+
+
+
+                    <h3>8. Changes to These Terms</h3>
+
+                    <p>
+
+                        These Terms and Conditions may be updated from
+                        time to time to reflect changes to the website,
+                        services or applicable requirements.
+
+                    </p>
+
+
+                    <p>
+
+                        The latest version will be published on this page
+                        together with the applicable last-updated date.
+
+                    </p>
+
+
+                    <h3>9. Market Your Property</h3>
+
+                    <p>
+                        The Market Your Property feature allows registered
+                        users who own a property, or who have appropriate
+                        authority from the property owner, to submit a
+                        property to Flexy Properties for review and possible
+                        marketing.
+                    </p>
+
+                    <p>
+                        By submitting a property, you confirm that the
+                        information you provide is accurate to the best of
+                        your knowledge and that you have the right or
+                        appropriate authority to provide the property
+                        information and uploaded materials.
+                    </p>
+
+                    <p>
+                        Property submissions may include information such as
+                        the property description, property type, listing
+                        purpose, price, location and photographs.
+                    </p>
+
+                    <p>
+                        Flexy Properties may contact the submitter to request
+                        clarification, additional information or verification
+                        before deciding whether to publish the property.
+                    </p>
+
+                    <div class="legal-notice">
+
+                        <strong>Important:</strong>
+
+                        Submitting a property through Flexy Properties does
+                        not automatically publish the property and does not
+                        guarantee that the property will be accepted,
+                        marketed, sold or rented.
+
+                    </div>
+
+
+                </section>
+
+
+                    <!-- =================================================
+                            PRIVACY POLICY
+                        ================================================== -->
+
+                <section
+                    id="privacy"
+                    class="legal-section"
+                >
+
+                    <div class="section-heading">
+
+                        <div class="section-icon">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+
+                        <div>
+
+                            <small class="text-success fw-bold">
+                                YOUR INFORMATION
+                            </small>
+
+                            <h2>
+                                Privacy Policy
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <p>
+                        Flexy Properties respects the privacy of users,
+                        property seekers, property owners and authorized
+                        representatives who use our website and services.
+                    </p>
+
+                    <p>
+                        This Privacy Policy explains the types of information
+                        we may collect, how that information may be used,
+                        and how information submitted through features such
+                        as account registration, property enquiries and
+                        property submissions may be handled.
+                    </p>
+
+
+                    <!-- =========================================
+                        1. INFORMATION WE COLLECT
+                    ========================================== -->
+
+                    <h3>1. Information We May Collect</h3>
+
+                    <p>
+                        The information we collect depends on how you use
+                        Flexy Properties and the features you choose to use.
+                        This information may include:
+                    </p>
+
+                    <ul>
+
+                        <li>
+                            Your name.
+                        </li>
+
+                        <li>
+                            Your email address.
+                        </li>
+
+                        <li>
+                            Your telephone or WhatsApp number,
+                            where provided.
+                        </li>
+
+                        <li>
+                            Profile photograph, where uploaded.
+                        </li>
+
+                        <li>
+                            Account and authentication information
+                            necessary to manage your account.
+                        </li>
+
+                        <li>
+                            Messages, enquiries or other information
+                            submitted through website forms.
+                        </li>
+
+                        <li>
+                            Information relating to properties in which
+                            you express interest.
+                        </li>
+
+                        <li>
+                            Property information submitted through the
+                            Market Your Property feature.
+                        </li>
+
+                        <li>
+                            Technical information reasonably necessary
+                            for website operation, security and
+                            troubleshooting.
+                        </li>
+
+                    </ul>
+
+
+                    <!-- =========================================
+                        2. PROPERTY SUBMISSION INFORMATION
+                    ========================================== -->
+
+                    <h3>2. Property Submission Information</h3>
+
+                    <p>
+                        Registered users may use the
+                        <strong>Market Your Property</strong> feature to
+                        submit a property to Flexy Properties for review
+                        and possible marketing.
+                    </p>
+
+                    <p>
+                        When you submit a property, we may collect
+                        information including:
+                    </p>
+
+                    <ul>
+
+                        <li>
+                            Your full name.
+                        </li>
+
+                        <li>
+                            Your email address.
+                        </li>
+
+                        <li>
+                            Your telephone or WhatsApp number.
+                        </li>
+
+                        <li>
+                            The property title and description.
+                        </li>
+
+                        <li>
+                            Property type, such as house, apartment,
+                            land or commercial property.
+                        </li>
+
+                        <li>
+                            Whether the property is being offered
+                            for sale or rent.
+                        </li>
+
+                        <li>
+                            The property address, state and other
+                            location information you provide.
+                        </li>
+
+                        <li>
+                            The asking sale or rental price.
+                        </li>
+
+                        <li>
+                            Photographs or other property-related
+                            materials uploaded with the submission.
+                        </li>
+
+                        <li>
+                            The unique reference number associated
+                            with the submission.
+                        </li>
+
+                    </ul>
+
+
+                    <div class="legal-notice">
+
+                        <strong>
+                            Property Submission Notice:
+                        </strong>
+
+                        Information submitted through the Market Your
+                        Property feature is provided to Flexy Properties
+                        for review. Submitting a property does not
+                        automatically publish the property on the website
+                        or guarantee that Flexy Properties will accept it
+                        for marketing.
+
+                    </div>
+
+
+                    <!-- =========================================
+                        3. HOW INFORMATION IS USED
+                    ========================================== -->
+
+                    <h3>3. How We May Use Your Information</h3>
+
+                    <p>
+                        Information collected through Flexy Properties
+                        may be used to:
+                    </p>
+
+                    <ul>
+
+                        <li>
+                            Create and manage user accounts.
+                        </li>
+
+                        <li>
+                            Authenticate users and protect account
+                            security.
+                        </li>
+
+                        <li>
+                            Provide property search and account
+                            functionality.
+                        </li>
+
+                        <li>
+                            Process and manage property interest
+                            requests.
+                        </li>
+
+                        <li>
+                            Respond to property enquiries and other
+                            communications.
+                        </li>
+
+                        <li>
+                            Receive, organize and review property
+                            submissions.
+                        </li>
+
+                        <li>
+                            Contact a property submitter where
+                            clarification, additional information or
+                            verification is required.
+                        </li>
+
+                        <li>
+                            Determine whether a submitted property
+                            may be suitable for publication and
+                            marketing through Flexy Properties.
+                        </li>
+
+                        <li>
+                            Prepare approved property information
+                            for publication on the website.
+                        </li>
+
+                        <li>
+                            Send transactional emails relating to
+                            accounts, property interests and property
+                            submissions.
+                        </li>
+
+                        <li>
+                            Provide and improve website functionality.
+                        </li>
+
+                        <li>
+                            Detect, investigate and prevent misuse,
+                            fraud, unauthorized access and security
+                            incidents.
+                        </li>
+
+                        <li>
+                            Maintain the security and integrity of
+                            Flexy Properties.
+                        </li>
+
+                    </ul>
+
+
+                    <!-- =========================================
+                        4. PROPERTY PHOTOS
+                    ========================================== -->
+
+                    <h3>4. Property Photographs and Submitted Content</h3>
+
+                    <p>
+                        Property owners or authorized representatives
+                        may upload photographs and property information
+                        when submitting a property for review.
+                    </p>
+
+                    <p>
+                        These materials may be stored and reviewed by
+                        Flexy Properties for the purpose of evaluating
+                        the submission and, where the property is
+                        accepted, preparing and managing the property's
+                        listing.
+                    </p>
+
+                    <p>
+                        Users should only upload photographs, descriptions
+                        and other materials that they are authorized to
+                        provide to Flexy Properties.
+                    </p>
+
+
+                    <!-- =========================================
+                        5. PUBLIC PROPERTY LISTINGS
+                    ========================================== -->
+
+                    <h3>5. Information That May Become Public</h3>
+
+                    <p>
+                        Property submissions are not automatically
+                        displayed publicly.
+                    </p>
+
+                    <p>
+                        If Flexy Properties approves a property for
+                        publication, selected property information may
+                        become publicly visible as part of the property
+                        listing. This may include:
+                    </p>
+
+                    <ul>
+
+                        <li>
+                            Property title.
+                        </li>
+
+                        <li>
+                            Property description.
+                        </li>
+
+                        <li>
+                            Property type.
+                        </li>
+
+                        <li>
+                            Sale or rental status.
+                        </li>
+
+                        <li>
+                            Price.
+                        </li>
+
+                        <li>
+                            General location information.
+                        </li>
+
+                        <li>
+                            Property photographs.
+                        </li>
+
+                        <li>
+                            Other property details considered
+                            appropriate for the listing.
+                        </li>
+
+                    </ul>
+
+                    <p>
+                        Personal contact information provided by a
+                        property submitter is not intended to be
+                        automatically displayed as part of a public
+                        property listing unless there is an appropriate
+                        reason and authorization to do so.
+                    </p>
+
+
+                    <!-- =========================================
+                        6. EMAIL COMMUNICATION
+                    ========================================== -->
+
+                    <h3>6. Email Communications</h3>
+
+                    <p>
+                        Flexy Properties may use the email address you
+                        provide to send service-related and transactional
+                        communications.
+                    </p>
+
+                    <p>
+                        These communications may include:
+                    </p>
+
+                    <ul>
+
+                        <li>
+                            Account registration and account-related
+                            notifications.
+                        </li>
+
+                        <li>
+                            Password reset communications.
+                        </li>
+
+                        <li>
+                            Property interest request confirmations
+                            and status updates.
+                        </li>
+
+                        <li>
+                            Property submission confirmations.
+                        </li>
+
+                        <li>
+                            Property submission review or status
+                            communications.
+                        </li>
+
+                        <li>
+                            Responses to enquiries or support requests.
+                        </li>
+
+                    </ul>
+
+
+                    <!-- =========================================
+                        7. WHATSAPP
+                    ========================================== -->
+
+                    <h3>7. WhatsApp and External Communication</h3>
+
+                    <p>
+                        Flexy Properties may provide a WhatsApp link
+                        that allows users or property submitters to
+                        contact our team regarding a property,
+                        submission or other service-related matter.
+                    </p>
+
+                    <p>
+                        When you choose to communicate with Flexy
+                        Properties through WhatsApp, your communication
+                        is also subject to the terms and privacy
+                        practices of WhatsApp and its service provider.
+                    </p>
+
+                    <p>
+                        Flexy Properties does not require users to
+                        contact us through WhatsApp where another
+                        available communication method is suitable.
+                    </p>
+
+
+                    <!-- =========================================
+                        8. PASSWORD SECURITY
+                    ========================================== -->
+
+                    <h3>8. Account and Password Security</h3>
+
+                    <p>
+                        Users are responsible for protecting their
+                        account credentials and should use a strong
+                        password that is not shared with others.
+                    </p>
+
+                    <p>
+                        Flexy Properties takes reasonable measures
+                        intended to protect account and personal
+                        information against unauthorized access,
+                        misuse, alteration or disclosure.
+                    </p>
+
+
+                    <!-- =========================================
+                        9. DATA SHARING
+                    ========================================== -->
+
+                    <h3>9. Data Sharing and Service Providers</h3>
+
+                    <p>
+                        Flexy Properties does not intend to publicly
+                        display personal information except where a
+                        feature clearly requires information to be
+                        displayed or the user has authorized its use
+                        for that purpose.
+                    </p>
+
+                    <p>
+                        Information may be processed or disclosed where
+                        reasonably necessary to:
+                    </p>
+
+                    <ul>
+
+                        <li>
+                            Operate and maintain Flexy Properties.
+                        </li>
+
+                        <li>
+                            Provide website hosting, email, storage
+                            or other technical services used by the
+                            platform.
+                        </li>
+
+                        <li>
+                            Review and manage property submissions.
+                        </li>
+
+                        <li>
+                            Protect Flexy Properties, its users and
+                            its systems.
+                        </li>
+
+                        <li>
+                            Investigate suspected fraud, abuse or
+                            unlawful activity.
+                        </li>
+
+                        <li>
+                            Comply with applicable legal obligations
+                            or lawful requests.
+                        </li>
+
+                        <li>
+                            Carry out an action that the user has
+                            authorized.
+                        </li>
+
+                    </ul>
+
+
+                    <!-- =========================================
+                        10. DATA RETENTION
+                    ========================================== -->
+
+                    <h3>10. Data Retention</h3>
+
+                    <p>
+                        Personal information may be retained for as
+                        long as reasonably necessary for the purposes
+                        for which it was collected, including providing
+                        website services, maintaining security, handling
+                        enquiries, reviewing property submissions,
+                        maintaining appropriate records, resolving
+                        disputes and complying with applicable
+                        obligations.
+                    </p>
+
+                    <p>
+                        Property submission information may therefore
+                        remain in our records after a submission has
+                        been approved, rejected or otherwise completed
+                        where retention is reasonably necessary for
+                        administrative, security, record-keeping or
+                        legal purposes.
+                    </p>
+
+
+                    <!-- =========================================
+                        11. USER INFORMATION
+                    ========================================== -->
+
+                    <h3>11. Your Account Information</h3>
+
+                    <p>
+                        Registered users may update certain account
+                        information through their profile where the
+                        relevant information is made editable by
+                        Flexy Properties.
+                    </p>
+
+                    <p>
+                        If information relating to a property submission
+                        needs to be corrected, users may contact Flexy
+                        Properties and provide the relevant submission
+                        reference number.
+                    </p>
+
+
+                    <!-- =========================================
+                        12. SECURITY
+                    ========================================== -->
+
+                    <h3>12. Data Security</h3>
+
+                    <p>
+                        Flexy Properties uses reasonable administrative
+                        and technical measures intended to protect
+                        personal information and property submission
+                        information.
+                    </p>
+
+                    <p>
+                        However, no website, internet transmission or
+                        electronic storage system can guarantee absolute
+                        security. Users should therefore take reasonable
+                        care when providing information online.
+                    </p>
+
+
+                    <!-- =========================================
+                        13. POLICY CHANGES
+                    ========================================== -->
+
+                    <h3>13. Changes to This Privacy Policy</h3>
+
+                    <p>
+                        We may update this Privacy Policy where necessary
+                        to reflect changes to Flexy Properties, our
+                        services, property submission features or
+                        applicable requirements.
+                    </p>
+
+                    <p>
+                        The latest version will be published on this
+                        page together with the applicable last-updated
+                        date.
+                    </p>
+
+                </section>
+
+                <!-- =================================================
+                     DISCLAIMER
+                ================================================== -->
+
+                <section
+                    id="disclaimer"
+                    class="legal-section"
+                >
+
+
+                    <div class="section-heading">
+
+                        <div class="section-icon">
+
+                            <i class="bi bi-exclamation-triangle"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <small class="text-success fw-bold">
+                                IMPORTANT INFORMATION
+                            </small>
+
+                            <h2>
+                                Disclaimer
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <p>
+
+                        Information available through Flexy Properties is
+                        provided for general property discovery and
+                        informational purposes.
+
+                    </p>
+
+
+
+                    <h3>1. Property Information</h3>
+
+                    <p>
+
+                        Flexy Properties aims to keep property information
+                        useful and current. However, property prices,
+                        descriptions, availability, photographs and other
+                        information may change.
+
+                    </p>
+
+
+                   <p>
+                        Users should confirm all information that is material
+                        to their decision before proceeding with any property
+                        transaction outside the website.
+                    </p>
+
+                    <div class="legal-notice">
+                        <strong>Important:</strong>
+                        Flexy Properties does not currently accept or process
+                        property payments through this website. Users should
+                        not interpret any website page, form, enquiry, or
+                        property-interest request as an online payment request.
+                    </div>
+
+
+
+                   <h3>2. Property Inspection</h3>
+
+                    <p>
+                        Users are encouraged to inspect a property and review
+                        relevant documentation before making significant
+                        commitments relating to that property.
+                    </p>
+
+
+                    <h3>3. Professional Advice</h3>
+
+                    <p>
+
+                        Content available on the website should not be
+                        treated as legal, financial, valuation or other
+                        professional advice.
+
+                    </p>
+
+
+                    <p>
+
+                        Where appropriate, users should obtain advice from
+                        a suitably qualified professional before making
+                        important property or financial decisions.
+
+                    </p>
+
+
+
+                    <h3>4. External Services</h3>
+
+                    <p>
+
+                        Where the website provides access to third-party
+                        services or external websites, Flexy Properties
+                        does not control the operation or content of those
+                        independent services.
+
+                    </p>
+
+
+
+                    <h3>5. Website Availability</h3>
+
+                    <p>
+
+                        Flexy Properties may occasionally be unavailable
+                        due to maintenance, technical problems, security
+                        requirements or circumstances outside reasonable
+                        control.
+
+                    </p>
+
+
+                    <p>
+
+                        We do not guarantee uninterrupted availability of
+                        every website feature at all times.
+
+                    </p>
+                    <h3>Property Submissions</h3>
+
+                    <p>
+                        Flexy Properties may receive property information,
+                        descriptions, photographs, prices and other materials
+                        from property owners or persons representing that they
+                        have authority to submit a property.
+                    </p>
+
+                    <p>
+                        Submission of property information does not by itself
+                        constitute verification, approval or endorsement of
+                        the property or the person submitting it.
+                    </p>
+
+                    <p>
+                        Flexy Properties may review information before
+                        publication and may request additional information
+                        where appropriate. Users interested in a property
+                        should still carry out appropriate inspections,
+                        document checks and other due diligence before making
+                        significant commitments.
+                    </p>
+
+
+                </section>
+
+
+
+                <!-- =================================================
+                     CONTACT
+                ================================================== -->
+
+                <section
+                    id="contact"
+                    class="legal-contact"
+                >
+
+
+                    <div class="row align-items-center g-4">
+
+                        <div class="col-12 col-md-8">
+
+                            <small class="text-success fw-bold">
+                                QUESTIONS?
+                            </small>
+
+
+                            <h3 class="fw-bold mt-1">
+                                Contact Flexy Properties
+                            </h3>
+
+
+                            <p class="mb-0">
+
+                                If you have questions about these policies,
+                                your account or the handling of your
+                                information, please contact us.
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="col-12 col-md-4">
+
+                            <div class="d-flex align-items-center gap-3">
+
+                                <div class="section-icon">
+
+                                    <i class="bi bi-envelope"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <small class="text-white-50">
+                                        Email
+                                    </small>
+
+                                    <div>
+
+                                        <a
+                                            href="mailto:mailflexy12@gmail.com"
+                                            class="fw-bold text-break"
+                                        >
+                                            mailflexy12@gmail.com
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+
+<!-- =====================================================
+     FOOTER
+====================================================== -->
+
+<footer class="text-center">
+
+    <div class="container">
+
+        <small>
+            Last updated:
+            <strong>
+                September 23,
+            </strong>
+            © <span id="year"></span>
+            Flexy Properties. All rights reserved.
+
+        </small>
+
+    </div>
+
+</footer>
+
+
+
+<script>
+
+    document.getElementById("year").textContent =
+        new Date().getFullYear();
+
+</script>
+
+
 </body>
 </html>

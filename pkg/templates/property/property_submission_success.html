@@ -1,0 +1,644 @@
+{% extends "app_base.html" %}
+
+{% block title %}
+Property Submitted | Flexy Properties
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+    :root {
+        --flexy-navy: #0b1f33;
+        --flexy-navy-light: #132f4c;
+        --flexy-green: #198754;
+        --flexy-green-dark: #146c43;
+        --flexy-bg: #f5f7fa;
+        --flexy-border: #e3e8ee;
+        --flexy-muted: #6c757d;
+    }
+
+    body {
+        background: var(--flexy-bg);
+    }
+
+    .submission-success-page {
+        min-height: calc(100vh - 80px);
+        padding: 70px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .success-container {
+        width: 100%;
+        max-width: 850px;
+    }
+
+    /* =========================
+       SUCCESS CARD
+    ========================== */
+
+    .success-card {
+        background: #fff;
+        border-radius: 20px;
+        border: 1px solid var(--flexy-border);
+        box-shadow: 0 20px 55px rgba(11, 31, 51, 0.10);
+        overflow: hidden;
+    }
+
+    .success-header {
+        background:
+            linear-gradient(
+                135deg,
+                var(--flexy-navy),
+                var(--flexy-navy-light)
+            );
+        padding: 50px 30px 45px;
+        text-align: center;
+        color: #fff;
+    }
+
+    .success-icon {
+        width: 82px;
+        height: 82px;
+        margin: 0 auto 22px;
+        border-radius: 50%;
+        background: var(--flexy-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        box-shadow:
+            0 10px 30px rgba(25, 135, 84, 0.35);
+    }
+
+    .success-header h1 {
+        font-size: clamp(1.8rem, 5vw, 2.5rem);
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .success-header p {
+        max-width: 600px;
+        margin: auto;
+        color: rgba(255, 255, 255, 0.78);
+        line-height: 1.7;
+        font-size: 0.95rem;
+    }
+
+    /* =========================
+       BODY
+    ========================== */
+
+    .success-body {
+        padding: 38px;
+    }
+
+    /* =========================
+       REFERENCE
+    ========================== */
+
+    .reference-section {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .reference-label {
+        color: var(--flexy-muted);
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .reference-number {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        background: #f1f7f4;
+        color: var(--flexy-green-dark);
+        border: 1px solid #d7eadf;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-size: 1.25rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .reference-help {
+        color: var(--flexy-muted);
+        font-size: 0.8rem;
+        margin: 10px auto 0;
+        max-width: 500px;
+        line-height: 1.6;
+    }
+
+    /* =========================
+       PROPERTY
+    ========================== */
+
+    .submitted-property {
+        background: #f8fafb;
+        border: 1px solid var(--flexy-border);
+        border-radius: 13px;
+        padding: 20px;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .property-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 11px;
+        background: rgba(11, 31, 51, 0.08);
+        color: var(--flexy-navy);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .submitted-property small {
+        color: var(--flexy-muted);
+        display: block;
+        margin-bottom: 3px;
+    }
+
+    .submitted-property h5 {
+        color: var(--flexy-navy);
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    /* =========================
+       WHAT HAPPENS NEXT
+    ========================== */
+
+    .next-section {
+        margin-bottom: 35px;
+    }
+
+    .next-section h4 {
+        color: var(--flexy-navy);
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .next-item {
+        display: flex;
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .next-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .next-number {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        border-radius: 50%;
+        background: rgba(25, 135, 84, 0.1);
+        color: var(--flexy-green);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+    .next-item h6 {
+        color: var(--flexy-navy);
+        font-weight: 700;
+        margin: 0 0 4px;
+        font-size: 0.92rem;
+    }
+
+    .next-item p {
+        color: var(--flexy-muted);
+        margin: 0;
+        font-size: 0.82rem;
+        line-height: 1.6;
+    }
+
+    /* =========================
+       WHATSAPP
+    ========================== */
+
+    .whatsapp-section {
+        background: #f3faf6;
+        border: 1px solid #d6ebdf;
+        border-radius: 15px;
+        padding: 26px;
+        text-align: center;
+    }
+
+    .whatsapp-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: #25D366;
+        color: #fff;
+        margin: 0 auto 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.55rem;
+    }
+
+    .whatsapp-section h4 {
+        color: var(--flexy-navy);
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 7px;
+    }
+
+    .whatsapp-section p {
+        color: var(--flexy-muted);
+        max-width: 550px;
+        margin: 0 auto 18px;
+        font-size: 0.84rem;
+        line-height: 1.65;
+    }
+
+    .whatsapp-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        background: #198754;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 9px;
+        padding: 13px 23px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: 0.2s ease;
+    }
+
+    .whatsapp-btn:hover {
+        background: #146c43;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    /* =========================
+       IMPORTANT NOTICE
+    ========================== */
+
+    .review-notice {
+        margin-top: 25px;
+        display: flex;
+        gap: 10px;
+        padding: 15px 17px;
+        border-radius: 10px;
+        background: #fff8e7;
+        border: 1px solid #f2e2b9;
+        color: #745c1f;
+        font-size: 0.8rem;
+        line-height: 1.6;
+    }
+
+    .review-notice i {
+        margin-top: 2px;
+        flex-shrink: 0;
+    }
+
+    /* =========================
+       BOTTOM ACTION
+    ========================== */
+
+    .bottom-actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 25px;
+    }
+
+    .home-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 20px;
+        border-radius: 9px;
+        border: 1px solid #d9e0e6;
+        color: var(--flexy-navy);
+        background: #fff;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: 0.2s ease;
+    }
+
+    .home-btn:hover {
+        border-color: var(--flexy-navy);
+        color: var(--flexy-navy);
+        background: #f8fafb;
+    }
+
+    /* =========================
+       MOBILE
+    ========================== */
+
+    @media (max-width: 600px) {
+
+        .submission-success-page {
+            padding: 35px 13px;
+        }
+
+        .success-header {
+            padding: 40px 20px 35px;
+        }
+
+        .success-icon {
+            width: 70px;
+            height: 70px;
+            font-size: 2rem;
+        }
+
+        .success-body {
+            padding: 25px 18px;
+        }
+
+        .reference-number {
+            font-size: 1.05rem;
+        }
+
+        .submitted-property {
+            align-items: flex-start;
+        }
+
+        .whatsapp-section {
+            padding: 22px 17px;
+        }
+
+        .whatsapp-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+
+{% set whatsapp_message =
+    "Hello Flexy Properties, I recently submitted a property for marketing. "
+    ~ "My submission reference is "
+    ~ submission.reference_number
+    ~ ". Property: "
+    ~ submission.property_title
+    ~ ". I would like to follow up on my submission."
+%}
+
+
+<div class="submission-success-page">
+
+    <div class="success-container">
+
+        <div class="success-card">
+
+
+            <!-- =========================
+                 SUCCESS HEADER
+            ========================== -->
+            <div class="success-header">
+
+                <div class="success-icon">
+                    <i class="bi bi-check-lg"></i>
+                </div>
+
+                <h1>
+                    Property Submitted Successfully
+                </h1>
+
+                <p>
+                    Thank you for choosing Flexy Properties.
+                    We have received your property information
+                    and it is now awaiting review by our team.
+                </p>
+
+            </div>
+
+
+            <!-- =========================
+                 BODY
+            ========================== -->
+            <div class="success-body">
+
+
+                <!-- REFERENCE -->
+                <div class="reference-section">
+
+                    <div class="reference-label">
+                        Your Submission Reference
+                    </div>
+
+                    <div class="reference-number">
+                        <i class="bi bi-hash"></i>
+
+                        {{ submission.reference_number }}
+                    </div>
+
+                    <p class="reference-help">
+                        Please keep this reference number.
+                        It helps our team quickly identify your
+                        property submission when you contact us.
+                    </p>
+
+                </div>
+
+
+                <!-- PROPERTY -->
+                <div class="submitted-property">
+
+                    <div class="property-icon">
+                        <i class="bi bi-house-door"></i>
+                    </div>
+
+                    <div>
+
+                        <small>
+                            Property submitted
+                        </small>
+
+                        <h5>
+                            {{ submission.property_title }}
+                        </h5>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     WHAT HAPPENS NEXT
+                ========================== -->
+                <div class="next-section">
+
+                    <h4>
+                        What Happens Next?
+                    </h4>
+
+
+                    <div class="next-item">
+
+                        <div class="next-number">
+                            1
+                        </div>
+
+                        <div>
+
+                            <h6>
+                                Submission Review
+                            </h6>
+
+                            <p>
+                                Our team will review the property
+                                information and images you provided.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="next-item">
+
+                        <div class="next-number">
+                            2
+                        </div>
+
+                        <div>
+
+                            <h6>
+                                We May Contact You
+                            </h6>
+
+                            <p>
+                                Flexy Properties may contact you
+                                if additional information,
+                                clarification or verification is
+                                required.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="next-item">
+
+                        <div class="next-number">
+                            3
+                        </div>
+
+                        <div>
+
+                            <h6>
+                                Listing Decision
+                            </h6>
+
+                            <p>
+                                Once the review is completed,
+                                we will determine whether the
+                                property can be prepared for
+                                publication on Flexy Properties.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="email-notice my-3">
+                    <i class="bi bi-info-circle"></i>
+
+                    <span>
+                        Can't find our email?
+                        Please check your <strong>Spam or Junk</strong>
+                        folder and mark Flexy Properties as
+                        <strong>Not spam</strong>.
+                    </span>
+                </div>
+
+
+
+                <!-- =========================
+                     WHATSAPP
+                ========================== -->
+                <div class="whatsapp-section">
+
+                    <div class="whatsapp-icon">
+                        <i class="bi bi-whatsapp"></i>
+                    </div>
+
+                    <h4>
+                        Reach Out to Flexy Properties
+                    </h4>
+
+                    <p>
+                        Now that your property has been submitted,
+                        you can contact our team on WhatsApp for
+                        further communication regarding your
+                        submission.
+                    </p>
+
+                    <a
+                        href="https://wa.me/2349017096022?text={{ whatsapp_message|urlencode }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="whatsapp-btn"
+                    >
+                        <i class="bi bi-whatsapp"></i>
+
+                        Contact Flexy Properties
+                    </a>
+
+                </div>
+
+
+                <!-- IMPORTANT NOTICE -->
+                <div class="review-notice">
+
+                    <i class="bi bi-info-circle-fill"></i>
+
+                    <span>
+                        Your property has been
+                        <strong>submitted for review</strong>.
+                        Submission does not mean the property
+                        has automatically been approved or
+                        published on Flexy Properties.
+                    </span>
+
+                </div>
+
+
+                <!-- HOME -->
+                <div class="bottom-actions">
+
+                    <a
+                        href="{{ url_for('main.homepage') }}"
+                        class="home-btn"
+                    >
+                        <i class="bi bi-house"></i>
+                        Return to Home
+                    </a>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

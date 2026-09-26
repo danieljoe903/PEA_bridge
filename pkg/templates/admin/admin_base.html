@@ -1,279 +1,1622 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Admin | PEA-Bridge{% endblock %}</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="utf-8">
 
-  <style>
-    body{
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: linear-gradient(180deg, #08111d 0%, #0b1320 100%);
-      color: #fff;
-    }
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
 
-    .admin-shell{
-      min-height: 100vh;
-    }
+    <title>
+        {% block title %}Admin | Flexy Properties{% endblock %}
+    </title>
 
-    .sidebar{
-      background: rgba(11,19,32,.96);
-      border-right: 1px solid rgba(255,255,255,.06);
-      min-height: 100vh;
-      position: sticky;
-      top: 0;
-      padding: 20px 16px;
-    }
 
-    .brand-logo{
-      font-family: "Changa One", system-ui;
-      font-size: 1.4rem;
-      letter-spacing: .02em;
-      color: #fff;
-      text-decoration: none;
-    }
+    <!-- =====================================================
+         BOOTSTRAP
+    ====================================================== -->
 
-    .sidebar-card{
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 18px;
-      padding: 16px;
-    }
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
 
-    .sidebar .nav-link{
-      color: rgba(255,255,255,.82);
-      border-radius: 14px;
-      padding: 11px 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: .25s ease;
-      font-weight: 500;
-    }
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
 
-    .sidebar .nav-link:hover{
-      background: rgba(122,204,22,.10);
-      color: #fff;
-    }
 
-    .sidebar .nav-link.active{
-      background: rgba(122,204,22,.18);
-      color: #d9ffb2;
-      border: 1px solid rgba(122,204,22,.20);
-    }
+    <!-- =====================================================
+         FONT
+    ====================================================== -->
 
-    .main-panel{
-      padding: 22px;
-    }
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
-    .topbar{
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.06);
-      border-radius: 20px;
-      padding: 14px 18px;
-      margin-bottom: 20px;
-    }
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
 
-    .content-wrap{
-      background: rgba(255,255,255,.02);
-      border: 1px solid rgba(255,255,255,.04);
-      border-radius: 22px;
-      min-height: calc(100vh - 110px);
-      padding: 18px;
-    }
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
 
-    .admin-thumb{
-      width: 56px;
-      height: 56px;
-      object-fit: cover;
-      border-radius: 50%;
-      border: 2px solid rgba(122,204,22,.35);
-      background: rgba(255,255,255,.06);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
 
-    .divider-soft{
-      border-color: rgba(255,255,255,.08);
-    }
+    <!-- =====================================================
+         MAIN CSS
+    ====================================================== -->
 
-    .quick-stat{
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 16px;
-      padding: 10px 12px;
-    }
+    <link
+        href="{{ url_for('static', filename='css/home.css') }}"
+        rel="stylesheet"
+    >
 
-    @media (max-width: 991.98px){
-      .sidebar{
-        min-height: auto;
-        position: static;
-        border-right: 0;
-        border-bottom: 1px solid rgba(255,255,255,.06);
-      }
-      .main-panel{
-        padding: 14px;
-      }
-      .content-wrap{
-        padding: 14px;
-      }
-    }
-  </style>
 
-  {% block extra_css %}{% endblock %}
+    <style>
+
+        :root {
+            --admin-sidebar: #071321;
+            --admin-sidebar-light: #0d1d2e;
+
+            --admin-green: #079455;
+            --admin-green-dark: #067647;
+            --admin-green-light: #4ade80;
+
+            --admin-bg: #f4f7f9;
+            --admin-card: #ffffff;
+
+            --admin-text: #0f172a;
+            --admin-muted: #64748b;
+
+            --admin-border: #e5eaf0;
+
+            --sidebar-width: 260px;
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+
+            font-family:
+                "Inter",
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background: var(--admin-bg);
+
+            color: var(--admin-text);
+        }
+
+
+        body {
+            overflow-x: hidden;
+        }
+
+
+        /* =====================================================
+           ADMIN LAYOUT
+        ====================================================== */
+
+        .admin-layout {
+            display: flex;
+
+            width: 100%;
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ====================================================== */
+
+        .admin-sidebar {
+            position: fixed;
+
+            top: 0;
+            left: 0;
+            bottom: 0;
+
+            z-index: 1040;
+
+            width: var(--sidebar-width);
+
+            display: flex;
+            flex-direction: column;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #071321 0%,
+                    #0a1929 100%
+                );
+
+            border-right:
+                1px solid rgba(255,255,255,.06);
+
+            transition: transform .25s ease;
+        }
+
+
+        /* =====================================================
+           SIDEBAR BRAND
+        ====================================================== */
+
+        .admin-brand {
+            min-height: 76px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 0 20px;
+
+            border-bottom:
+                1px solid rgba(255,255,255,.07);
+
+            color: #ffffff;
+
+            text-decoration: none;
+        }
+
+
+        .admin-brand:hover {
+            color: #ffffff;
+        }
+
+
+        .admin-brand-icon {
+            width: 40px;
+            height: 40px;
+
+            min-width: 40px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 11px;
+
+            background: var(--admin-green);
+
+            color: #ffffff;
+
+            font-size: 1.05rem;
+        }
+
+
+        .admin-brand-name {
+            font-size: 1.03rem;
+            font-weight: 800;
+
+            line-height: 1.1;
+        }
+
+
+        .admin-brand-name span {
+            color: var(--admin-green-light);
+        }
+
+
+        .admin-brand-subtitle {
+            display: block;
+
+            margin-top: 3px;
+
+            color: rgba(255,255,255,.43);
+
+            font-size: .62rem;
+            font-weight: 500;
+        }
+
+
+        /* =====================================================
+           ADMIN PROFILE
+        ====================================================== */
+
+        .admin-sidebar-profile {
+            padding: 18px 16px 13px;
+        }
+
+
+        .admin-profile-card {
+            padding: 13px;
+
+            border:
+                1px solid rgba(255,255,255,.07);
+
+            border-radius: 13px;
+
+            background:
+                rgba(255,255,255,.035);
+        }
+
+
+        .admin-profile-row {
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            min-width: 0;
+        }
+
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+
+            min-width: 40px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                rgba(7,148,85,.15);
+
+            border:
+                1px solid rgba(74,222,128,.18);
+
+            color: var(--admin-green-light);
+
+            font-size: .95rem;
+        }
+
+
+        .admin-profile-info {
+            min-width: 0;
+        }
+
+
+        .admin-profile-title {
+            color: #ffffff;
+
+            font-size: .76rem;
+            font-weight: 700;
+        }
+
+
+        .admin-profile-email {
+            display: block;
+
+            max-width: 155px;
+
+            margin-top: 2px;
+
+            overflow: hidden;
+
+            white-space: nowrap;
+
+            text-overflow: ellipsis;
+
+            color: rgba(255,255,255,.46);
+
+            font-size: .64rem;
+        }
+
+
+        .admin-role {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 4px;
+
+            margin-top: 9px;
+
+            padding: 4px 8px;
+
+            border-radius: 999px;
+
+            background:
+                rgba(7,148,85,.13);
+
+            color: #86efac;
+
+            font-size: .59rem;
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           SIDEBAR NAVIGATION
+        ====================================================== */
+
+        .admin-navigation {
+            flex: 1;
+
+            overflow-y: auto;
+
+            padding: 6px 12px 20px;
+        }
+
+
+        .admin-nav-label {
+            padding: 11px 11px 7px;
+
+            color: rgba(255,255,255,.32);
+
+            font-size: .59rem;
+            font-weight: 800;
+
+            letter-spacing: .8px;
+
+            text-transform: uppercase;
+        }
+
+
+        .admin-nav {
+            display: flex;
+            flex-direction: column;
+
+            gap: 3px;
+
+            margin: 0;
+            padding: 0;
+
+            list-style: none;
+        }
+
+
+        .admin-nav-link {
+            position: relative;
+
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            min-height: 43px;
+
+            padding: 9px 11px;
+
+            border-radius: 9px;
+
+            color: rgba(255,255,255,.63);
+
+            text-decoration: none;
+
+            font-size: .75rem;
+            font-weight: 600;
+
+            transition:
+                background .2s ease,
+                color .2s ease;
+        }
+
+
+        .admin-nav-link i {
+            width: 19px;
+
+            text-align: center;
+
+            color: rgba(255,255,255,.42);
+
+            font-size: .86rem;
+
+            transition: color .2s ease;
+        }
+
+
+        .admin-nav-link:hover {
+            background:
+                rgba(255,255,255,.055);
+
+            color: #ffffff;
+        }
+
+
+        .admin-nav-link:hover i {
+            color: #ffffff;
+        }
+
+
+        .admin-nav-link.active {
+            background:
+                rgba(7,148,85,.14);
+
+            color: #86efac;
+        }
+
+
+        .admin-nav-link.active i {
+            color: #4ade80;
+        }
+
+
+        .admin-nav-link.active::before {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            top: 10px;
+            bottom: 10px;
+
+            width: 3px;
+
+            border-radius: 0 5px 5px 0;
+
+            background: #22c55e;
+        }
+
+
+        .admin-nav-count {
+            margin-left: auto;
+
+            min-width: 20px;
+
+            padding: 2px 6px;
+
+            border-radius: 999px;
+
+            background:
+                rgba(255,255,255,.08);
+
+            color: rgba(255,255,255,.72);
+
+            font-size: .57rem;
+
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           SIDEBAR FOOTER
+        ====================================================== */
+
+        .admin-sidebar-footer {
+            padding: 12px;
+
+            border-top:
+                1px solid rgba(255,255,255,.06);
+        }
+
+
+        .admin-logout {
+            color: #fda4af;
+        }
+
+
+        .admin-logout i {
+            color: #fb7185;
+        }
+
+
+        .admin-logout:hover {
+            background: rgba(244,63,94,.10);
+
+            color: #fecdd3;
+        }
+
+
+        /* =====================================================
+           MAIN AREA
+        ====================================================== */
+
+        .admin-main {
+            width: calc(100% - var(--sidebar-width));
+
+            min-width: 0;
+
+            margin-left: var(--sidebar-width);
+
+            background: var(--admin-bg);
+        }
+
+
+        /* =====================================================
+           TOPBAR
+        ====================================================== */
+
+        .admin-topbar {
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1030;
+
+            min-height: 76px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 12px 26px;
+
+            background:
+                rgba(255,255,255,.96);
+
+            backdrop-filter: blur(10px);
+
+            border-bottom:
+                1px solid var(--admin-border);
+        }
+
+
+        .admin-topbar-left {
+            min-width: 0;
+        }
+
+
+        .admin-topbar-title {
+            margin: 0;
+
+            color: var(--admin-text);
+
+            font-size: .98rem;
+            font-weight: 800;
+        }
+
+
+        .admin-topbar-subtitle {
+            margin-top: 3px;
+
+            color: var(--admin-muted);
+
+            font-size: .68rem;
+        }
+
+
+        .admin-topbar-right {
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .admin-site-link {
+            min-height: 38px;
+
+            display: inline-flex;
+            align-items: center;
+
+            gap: 6px;
+
+            padding: 8px 12px;
+
+            border:
+                1px solid var(--admin-border);
+
+            border-radius: 9px;
+
+            background: #ffffff;
+
+            color: #334155;
+
+            text-decoration: none;
+
+            font-size: .69rem;
+            font-weight: 700;
+
+            transition: .2s ease;
+        }
+
+
+        .admin-site-link:hover {
+            border-color: #079455;
+
+            background: #f0fdf4;
+
+            color: #079455;
+        }
+
+
+        /* =====================================================
+           MOBILE MENU BUTTON
+        ====================================================== */
+
+        .admin-menu-button {
+            width: 39px;
+            height: 39px;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            border:
+                1px solid var(--admin-border);
+
+            border-radius: 9px;
+
+            background: #ffffff;
+
+            color: #0f172a;
+
+            font-size: 1rem;
+        }
+
+
+        /* =====================================================
+           CONTENT
+        ====================================================== */
+
+        .admin-content {
+            width: 100%;
+
+            padding: 25px 26px 45px;
+        }
+
+
+        /* =====================================================
+           FLASH MESSAGES
+        ====================================================== */
+
+        .admin-flash-wrapper {
+            position: fixed;
+
+            top: 90px;
+            right: 22px;
+
+            z-index: 1090;
+
+            width:
+                min(390px, calc(100% - 30px));
+        }
+
+
+        .admin-flash-wrapper .alert {
+            border: 0;
+
+            border-radius: 11px;
+
+            box-shadow:
+                0 12px 35px rgba(15,23,42,.14);
+
+            font-size: .78rem;
+        }
+
+
+        /* =====================================================
+           SIDEBAR OVERLAY
+        ====================================================== */
+
+        .admin-sidebar-overlay {
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 1035;
+
+            display: none;
+
+            background: rgba(2, 6, 23, .55);
+        }
+
+
+        /* =====================================================
+           TABLET / MOBILE
+        ====================================================== */
+
+        @media (max-width: 991.98px) {
+
+            .admin-sidebar {
+                transform: translateX(-100%);
+
+                box-shadow:
+                    20px 0 50px rgba(0,0,0,.20);
+            }
+
+
+            .admin-sidebar.show {
+                transform: translateX(0);
+            }
+
+
+            .admin-sidebar-overlay.show {
+                display: block;
+            }
+
+
+            .admin-main {
+                width: 100%;
+
+                margin-left: 0;
+            }
+
+
+            .admin-menu-button {
+                display: inline-flex;
+            }
+
+
+            .admin-topbar {
+                min-height: 68px;
+
+                padding: 10px 16px;
+            }
+
+
+            .admin-content {
+                padding: 20px 16px 40px;
+            }
+
+        }
+
+
+        @media (max-width: 575.98px) {
+
+            :root {
+                --sidebar-width: 265px;
+            }
+
+
+            .admin-topbar {
+                gap: 10px;
+            }
+
+
+            .admin-topbar-title {
+                font-size: .87rem;
+            }
+
+
+            .admin-topbar-subtitle {
+                display: none;
+            }
+
+
+            .admin-site-link span {
+                display: none;
+            }
+
+
+            .admin-site-link {
+                width: 39px;
+
+                padding: 0;
+
+                justify-content: center;
+            }
+
+
+            .admin-content {
+                padding:
+                    17px 12px 35px;
+            }
+
+
+            .admin-flash-wrapper {
+                top: 78px;
+
+                left: 15px;
+                right: 15px;
+
+                width: auto;
+            }
+
+        }
+        .archive-detail-card {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+    padding: 16px;
+
+    background: #fff7ed;
+
+    border: 1px solid #fed7aa;
+    border-radius: 10px;
+}
+
+
+.archive-detail-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    background: #ffedd5;
+
+    border-radius: 9px;
+
+    color: #c2410c;
+}
+
+
+.archive-detail-content {
+    min-width: 0;
+}
+
+
+.archive-detail-label {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #9a3412;
+
+    font-size: .67rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+
+.archive-detail-content strong {
+    display: block;
+
+    color: #7c2d12;
+
+    font-size: .84rem;
+}
+
+
+.archive-detail-content small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #9a3412;
+
+    font-size: .69rem;
+}
+
+
+.archive-detail-content p {
+    margin: 9px 0 0;
+
+    color: #475467;
+
+    font-size: .75rem;
+    line-height: 1.6;
+}
+
+    </style>
+
+
+    {% block extra_css %}{% endblock %}
+
 </head>
+
+
 <body>
 
-<div class="container-fluid admin-shell">
-  <div class="row g-0">
 
-    <!-- SIDEBAR -->
-    <aside class="col-12 col-lg-3 col-xl-2 sidebar">
-      <div class="d-flex align-items-center justify-content-between mb-4">
-        <a href="{{ url_for('admin.admin_dashboard') }}" class="brand-logo">
-          <span class="text-warning">&lt;/&gt;</span> PEA-Bridge
+<!-- =========================================================
+     ADMIN LAYOUT
+========================================================= -->
+
+<div class="admin-layout">
+
+
+    <!-- =====================================================
+         MOBILE OVERLAY
+    ====================================================== -->
+
+    <div
+        class="admin-sidebar-overlay"
+        id="adminSidebarOverlay"
+    ></div>
+
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside
+        class="admin-sidebar"
+        id="adminSidebar"
+    >
+
+
+        <!-- BRAND -->
+
+        <a
+            href="{{ url_for('admin.admin_dashboard') }}"
+            class="admin-brand"
+        >
+
+            <div class="admin-brand-icon">
+
+                <i class="bi bi-buildings-fill"></i>
+
+            </div>
+
+
+            <div>
+
+                <div class="admin-brand-name">
+
+                    Flexy
+                    <span>Properties</span>
+
+                </div>
+
+                <small class="admin-brand-subtitle">
+                    Administration
+                </small>
+
+            </div>
+
         </a>
 
-        <button class="btn btn-sm btn-outline-light d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#adminSidebarNav">
-          <i class="bi bi-list"></i>
-        </button>
-      </div>
 
-      <div class="collapse d-lg-block" id="adminSidebarNav">
 
-        <div class="sidebar-card mb-4">
-          <div class="d-flex align-items-center gap-3">
-            <div class="admin-thumb">
-              <i class="bi bi-shield-lock-fill fs-4 text-info"></i>
+        <!-- =================================================
+             ADMIN PROFILE
+        ================================================== -->
+
+        <div class="admin-sidebar-profile">
+
+            <div class="admin-profile-card">
+
+                <div class="admin-profile-row">
+
+                    <div class="admin-avatar">
+
+                        <i class="bi bi-shield-check"></i>
+
+                    </div>
+
+
+                    <div class="admin-profile-info">
+
+                        <div class="admin-profile-title">
+                            Administrator
+                        </div>
+
+
+                        <span class="admin-profile-email">
+
+                            {% if admin %}
+
+                                {{ admin.admin_email }}
+
+                            {% else %}
+
+                                Flexy Properties Admin
+
+                            {% endif %}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <span class="admin-role">
+
+                    <i class="bi bi-circle-fill"
+                       style="font-size:.35rem;"></i>
+
+                    Secure Admin Access
+
+                </span>
+
             </div>
 
-            
-          </div>
-
-          <div class="flex-grow-1 mt-2 text-break">
-              <div class="fw-bold">
-                {{ admin.admin_email if admin else "Admin Panel" }}
-              </div>
-              <div class="small text-white-50">Administrator Access</div>
-            </div>
-
-          <hr class="divider-soft my-2">
-
-          <div class="small text-white-50 mb-2">Control Center</div>
-          <div class="d-flex gap-2 flex-wrap">
-            <span class="badge bg-info text-dark">Admin</span>
-            <span class="badge bg-success">Secure Access</span>
-          </div>
         </div>
 
-        <ul class="nav flex-column gap-2">
-          <li class="nav-item">
-            <a class="nav-link {% if active=='dashboard' %}active{% endif %}" href="{{ url_for('admin.admin_dashboard') }}">
-              <i class="bi bi-grid-1x2-fill"></i>
-              <span>Dashboard</span>
-            </a>
-          </li>
 
-          <li class="nav-item">
-            <a class="nav-link {% if active=='verify_properties' %}active{% endif %}" href="{{ url_for('admin.verify_properties') }}">
-              <i class="bi bi-house-check-fill"></i>
-              <span>Property Verification</span>
-            </a>
-          </li>
 
-          <li class="nav-item">
-            <a class="nav-link {% if active=='users' %}active{% endif %}" href="{{ url_for('admin.view_users') }}">
-              <i class="bi bi-people-fill"></i>
-              <span>View Users</span>
-            </a>
-          </li>
+        <!-- =================================================
+             NAVIGATION
+        ================================================== -->
 
-          <li class="nav-item">
-            <a class="nav-link {% if active=='interests' %}active{% endif %}" href="{{ url_for('admin.view_interests') }}">
-              <i class="bi bi-heart-fill"></i>
-              <span>Interest Requests</span>
-            </a>
-          </li>
+        <nav class="admin-navigation">
 
-          <li class="nav-item">
-            <a class="nav-link {% if active=='agents' %}active{% endif %}" href="{{ url_for('admin.view_agents') }}">
-              <i class="bi bi-person-badge-fill"></i>
-              <span>Agents</span>
-            </a>
-          </li>
 
-          <li class="nav-item mt-2">
-            <a class="nav-link" href="{{ url_for('admin.admin_logout') }}">
-              <i class="bi bi-box-arrow-right"></i>
-              <span>Logout</span>
-            </a>
-          </li>
-        </ul>
+            <!-- MAIN -->
 
-      </div>
+            <div class="admin-nav-label">
+                Overview
+            </div>
+
+
+            <ul class="admin-nav">
+
+                <li>
+
+                    <a
+                        href="{{ url_for('admin.admin_dashboard') }}"
+                        class="
+                            admin-nav-link
+                            {% if active == 'dashboard' %}
+                                active
+                            {% endif %}
+                        "
+                    >
+
+                        <i class="bi bi-grid-1x2-fill"></i>
+
+                        <span>
+                            Dashboard
+                        </span>
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+
+
+            <!-- PROPERTY MANAGEMENT -->
+
+            <div class="admin-nav-label mt-2">
+                Property Management
+            </div>
+
+
+            <ul class="admin-nav">
+
+
+                <!--
+                    We will connect this when we build the
+                    new admin property-listing route.
+                -->
+                    <li>
+
+                        <!-- PROPERTY MANAGEMENT -->
+                        <a
+                            href="{{ url_for('admin.verify_properties') }}"
+                            class="
+                                admin-nav-link
+                                {% if active == 'verify_properties' %}
+                                    active
+                                {% endif %}
+                            "
+                        >
+                            <i class="bi bi-buildings"></i>
+
+                            <span>
+                                Property Management
+                            </span>
+                        </a>
+
+
+                        <!-- ARCHIVED PROPERTIES -->
+                        <a
+                            href="{{ url_for('admin.archived_properties') }}"
+                            class="
+                                admin-nav-link
+                                {% if active == 'archived_properties' %}
+                                    active
+                                {% endif %}
+                            "
+                        >
+                            <i class="bi bi-archive"></i>
+
+                            <span>
+                                Archived Properties
+                            </span>
+                        </a>
+
+                    </li>
+                <!--
+                    We will connect this to the new
+                    admin Add Property route.
+                -->
+
+                <li>
+
+                    <a
+                        href="{{ url_for('admin.add_property')}}"
+                        class="
+                            admin-nav-link
+                            {% if active == 'add_property' %}
+                                active
+                            {% endif %}
+                        "
+                    >
+
+                        <i class="bi bi-plus-square"></i>
+
+                        <span>
+                            Add Property
+                        </span>
+
+                    </a>
+
+                </li>
+                <li>
+                    <a
+                        href="{{ url_for('admin.property_submissions') }}"
+                        class="admin-nav-link {% if active == 'property_submissions' %}active{% endif %}"
+                    >
+                        <i class="bi bi-inbox"></i>
+                        <span>Property Submissions</span>
+                    </a>
+                </li>
+
+                <!--
+                    Property videos will get its own
+                    admin management page.
+                -->
+
+                <li>
+
+                    <a
+                        href="#"
+                        class="
+                            admin-nav-link
+                            {% if active == 'property_videos' %}
+                                active
+                            {% endif %}
+                        "
+                    >
+
+                        <i class="bi bi-play-btn-fill"></i>
+
+                        <span>
+                            Property Videos
+                        </span>
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+
+
+            <!-- CUSTOMER MANAGEMENT -->
+
+            <div class="admin-nav-label mt-2">
+                Customers
+            </div>
+
+
+            <ul class="admin-nav">
+
+                <li>
+
+                    <a
+                        href="{{ url_for('admin.view_interests') }}"
+                        class="
+                            admin-nav-link
+                            {% if active == 'interests' %}
+                                active
+                            {% endif %}
+                        "
+                    >
+
+                        <i class="bi bi-heart-fill"></i>
+
+                        <span>
+                            Interest Requests
+                        </span>
+
+                    </a>
+
+                </li>
+
+
+                <li>
+
+                    <a
+                        href="{{ url_for('admin.view_users') }}"
+                        class="
+                            admin-nav-link
+                            {% if active == 'users' %}
+                                active
+                            {% endif %}
+                        "
+                    >
+
+                        <i class="bi bi-people-fill"></i>
+
+                        <span>
+                            Users
+                        </span>
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+
+
+            <!-- SYSTEM -->
+
+            <div class="admin-nav-label mt-2">
+                System
+            </div>
+
+
+            <ul class="admin-nav">
+
+                <!--
+                    We'll connect this if/when we create
+                    an admin settings page.
+                -->
+
+                <li>
+
+                    <a
+                        href="#"
+                        class="
+                            admin-nav-link
+                            {% if active == 'settings' %}
+                                active
+                            {% endif %}
+                        "
+                    >
+
+                        <i class="bi bi-gear-fill"></i>
+
+                        <span>
+                            Settings
+                        </span>
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+
+        </nav>
+
+
+
+        <!-- =================================================
+             LOGOUT
+        ================================================== -->
+
+        <div class="admin-sidebar-footer">
+
+            <a
+                href="{{ url_for('admin.admin_logout') }}"
+                class="admin-nav-link admin-logout"
+            >
+
+                <i class="bi bi-box-arrow-right"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+        </div>
+
+
     </aside>
 
-    <!-- MAIN -->
-    <main class="col-12 col-lg-9 col-xl-10 main-panel">
-      <div class="topbar d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div>
-          <div class="small text-white-50">PEA-Bridge</div>
-          <div class="fw-bold fs-5">Admin Workspace</div>
-        </div>
 
-        <div class="d-flex gap-2 flex-wrap">
-          <div class="quick-stat">
-            <div class="small text-white-50">Role</div>
-            <div class="fw-bold">Administrator</div>
-          </div>
 
-          {% if admin %}
-          <div class="quick-stat">
-            <div class="small text-white-50">Signed in as</div>
-            <div class="fw-bold">{{ admin.admin_email }}</div>
-          </div>
-          {% endif %}
-        </div>
-      </div>
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
 
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          {% for cat, msg in messages %}
-            <div class="alert alert-{{ cat }} alert-dismissible fade show auto-dismiss" role="alert">
-              {{ msg }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <main class="admin-main">
+
+
+        <!-- =================================================
+             TOPBAR
+        ================================================== -->
+
+        <header class="admin-topbar">
+
+
+            <div class="d-flex align-items-center gap-3">
+
+
+                <!-- MOBILE MENU -->
+
+                <button
+                    type="button"
+                    class="admin-menu-button"
+                    id="adminMenuButton"
+                    aria-label="Open admin navigation"
+                >
+
+                    <i class="bi bi-list"></i>
+
+                </button>
+
+
+
+                <!-- PAGE INFORMATION -->
+
+                <div class="admin-topbar-left">
+
+                    <h1 class="admin-topbar-title">
+
+                        {% block page_title %}
+                            Admin Workspace
+                        {% endblock %}
+
+                    </h1>
+
+
+                    <div class="admin-topbar-subtitle">
+
+                        Manage Flexy Properties operations
+
+                    </div>
+
+                </div>
+
+
             </div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
 
-      <div class="content-wrap">
-        {% block content %}{% endblock %}
-      </div>
+
+
+            <!-- RIGHT SIDE -->
+
+            <div class="admin-topbar-right">
+
+
+                <a
+                    href="{{ url_for('main.homepage') }}"
+                    class="admin-site-link"
+                    target="_blank"
+                >
+
+                    <i class="bi bi-box-arrow-up-right"></i>
+
+                    <span>
+                        View Website
+                    </span>
+
+                </a>
+
+
+            </div>
+
+
+        </header>
+
+
+
+        <!-- =================================================
+             FLASH MESSAGES
+        ================================================== -->
+
+        <div class="admin-flash-wrapper">
+
+            {% with messages =
+                get_flashed_messages(
+                    with_categories=true
+                )
+            %}
+
+                {% if messages %}
+
+                    {% for category, message in messages %}
+
+                        <div
+                            class="
+                                alert
+                                alert-{{ category }}
+                                alert-dismissible
+                                fade
+                                show
+                                auto-dismiss
+                            "
+                            role="alert"
+                        >
+
+                            {{ message }}
+
+
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close"
+                            ></button>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+            {% endwith %}
+
+        </div>
+
+
+
+        <!-- =================================================
+             PAGE CONTENT
+        ================================================== -->
+
+        <section class="admin-content">
+
+            {% block content %}{% endblock %}
+
+        </section>
+
+
     </main>
 
-  </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
 
 <script>
-  setTimeout(function () {
-    document.querySelectorAll('.auto-dismiss').forEach(function (alertEl) {
-      let bsAlert = new bootstrap.Alert(alertEl);
-      bsAlert.close();
-    });
-  }, 3000);
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const sidebar =
+            document.getElementById("adminSidebar");
+
+        const menuButton =
+            document.getElementById("adminMenuButton");
+
+        const overlay =
+            document.getElementById("adminSidebarOverlay");
+
+
+        /* =============================================
+           OPEN SIDEBAR
+        ============================================== */
+
+        function openSidebar() {
+
+            sidebar.classList.add("show");
+            overlay.classList.add("show");
+
+        }
+
+
+        /* =============================================
+           CLOSE SIDEBAR
+        ============================================== */
+
+        function closeSidebar() {
+
+            sidebar.classList.remove("show");
+            overlay.classList.remove("show");
+
+        }
+
+
+        if (menuButton) {
+
+            menuButton.addEventListener(
+                "click",
+                function () {
+
+                    if (
+                        sidebar.classList.contains("show")
+                    ) {
+
+                        closeSidebar();
+
+                    } else {
+
+                        openSidebar();
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        if (overlay) {
+
+            overlay.addEventListener(
+                "click",
+                closeSidebar
+            );
+
+        }
+
+
+        /* =============================================
+           CLOSE MOBILE SIDEBAR AFTER LINK CLICK
+        ============================================== */
+
+        document
+            .querySelectorAll(".admin-nav-link")
+            .forEach(function (link) {
+
+                link.addEventListener(
+                    "click",
+                    function () {
+
+                        if (
+                            window.innerWidth < 992
+                        ) {
+
+                            closeSidebar();
+
+                        }
+
+                    }
+                );
+
+            });
+
+
+        /* =============================================
+           CLOSE WHEN SCREEN RETURNS TO DESKTOP
+        ============================================== */
+
+        window.addEventListener(
+            "resize",
+            function () {
+
+                if (window.innerWidth >= 992) {
+
+                    closeSidebar();
+
+                }
+
+            }
+        );
+
+
+        /* =============================================
+           FLASH MESSAGES
+        ============================================== */
+
+        setTimeout(function () {
+
+            document
+                .querySelectorAll(".auto-dismiss")
+                .forEach(function (alertElement) {
+
+                    const alert =
+                        bootstrap.Alert
+                            .getOrCreateInstance(
+                                alertElement
+                            );
+
+                    alert.close();
+
+                });
+
+        }, 3000);
+
+    }
+);
+
 </script>
 
+
 {% block scripts %}{% endblock %}
+
+
 </body>
 </html>

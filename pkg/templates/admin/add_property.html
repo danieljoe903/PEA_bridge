@@ -1,0 +1,1594 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}Add Property | Flexy Properties{% endblock %}
+
+{% block page_title %}Add Property{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    /* =========================================
+       PAGE
+    ========================================= */
+
+    .add-property-page {
+        width: 100%;
+        padding-bottom: 40px;
+    }
+
+
+    .property-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+
+    .property-page-heading h1 {
+        margin: 0 0 6px;
+        color: #0f172a;
+        font-size: 27px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+
+    .property-page-heading p {
+        margin: 0;
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+
+    .back-properties-btn {
+        min-height: 42px;
+        padding: 10px 16px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        background: #ffffff;
+        border: 1px solid #dbe2ea;
+        border-radius: 10px;
+
+        color: #334155;
+        text-decoration: none;
+
+        font-size: 13px;
+        font-weight: 700;
+
+        transition: all .2s ease;
+        white-space: nowrap;
+    }
+
+
+    .back-properties-btn:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        color: #0f172a;
+    }
+
+
+
+    /* =========================================
+       FORM LAYOUT
+    ========================================= */
+
+    .property-form-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 330px;
+        gap: 24px;
+        align-items: start;
+    }
+
+
+    .property-form-main {
+        min-width: 0;
+    }
+
+
+    .property-form-sidebar {
+        min-width: 0;
+    }
+
+
+
+    /* =========================================
+       CARDS
+    ========================================= */
+
+    .property-form-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        margin-bottom: 22px;
+        overflow: hidden;
+        box-shadow: 0 4px 18px rgba(15, 23, 42, .04);
+    }
+
+
+    .form-card-header {
+        padding: 20px 22px;
+        border-bottom: 1px solid #edf1f5;
+        display: flex;
+        align-items: center;
+        gap: 13px;
+    }
+
+
+    .form-card-icon {
+        width: 42px;
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-shrink: 0;
+
+        background: #ecfdf5;
+        border-radius: 11px;
+
+        color: #059669;
+        font-size: 18px;
+    }
+
+
+    .form-card-heading h2 {
+        margin: 0 0 3px;
+        color: #0f172a;
+        font-size: 16px;
+        font-weight: 800;
+    }
+
+
+    .form-card-heading p {
+        margin: 0;
+        color: #94a3b8;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+
+    .form-card-body {
+        padding: 22px;
+    }
+
+
+
+    /* =========================================
+       FORM FIELDS
+    ========================================= */
+
+    .property-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+
+    .property-form-group {
+        min-width: 0;
+    }
+
+
+    .property-form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+
+    .property-form-label {
+        display: block;
+        margin-bottom: 8px;
+
+        color: #334155;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+
+    .required-star {
+        color: #dc2626;
+        margin-left: 2px;
+    }
+
+
+    .property-input,
+    .property-select,
+    .property-textarea {
+        width: 100%;
+        border: 1px solid #dbe2ea;
+        border-radius: 10px;
+
+        background: #ffffff;
+        color: #0f172a;
+
+        font-family: inherit;
+        font-size: 14px;
+
+        outline: none;
+
+        transition:
+            border-color .2s ease,
+            box-shadow .2s ease;
+    }
+
+
+    .property-input,
+    .property-select {
+        min-height: 46px;
+        padding: 10px 13px;
+    }
+
+
+    .property-textarea {
+        padding: 13px;
+        resize: vertical;
+        line-height: 1.65;
+    }
+
+
+    .address-textarea {
+        min-height: 100px;
+    }
+
+
+    .description-textarea {
+        min-height: 180px;
+    }
+
+
+    .property-input:focus,
+    .property-select:focus,
+    .property-textarea:focus {
+        border-color: #10b981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, .10);
+    }
+
+
+    .property-input.is-invalid,
+    .property-select.is-invalid,
+    .property-textarea.is-invalid {
+        border-color: #ef4444;
+    }
+
+
+    .field-help {
+        display: block;
+        margin-top: 7px;
+
+        color: #94a3b8;
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+
+    .field-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+
+        margin-top: 7px;
+
+        color: #dc2626;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+
+
+    /* =========================================
+       PRICE INPUT
+    ========================================= */
+
+    .price-input-wrapper {
+        position: relative;
+    }
+
+
+    .price-symbol {
+        position: absolute;
+        top: 50%;
+        left: 14px;
+
+        transform: translateY(-50%);
+
+        color: #64748b;
+        font-size: 14px;
+        font-weight: 700;
+
+        pointer-events: none;
+    }
+
+
+    .price-input-wrapper .property-input {
+        padding-left: 34px;
+    }
+
+
+
+    /* =========================================
+       IMAGE UPLOAD
+    ========================================= */
+
+    .property-image-input {
+        display: none;
+    }
+
+
+    .property-upload-area {
+        min-height: 190px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        padding: 28px 20px;
+
+        border: 2px dashed #cbd5e1;
+        border-radius: 14px;
+
+        background: #f8fafc;
+
+        text-align: center;
+        cursor: pointer;
+
+        transition: all .2s ease;
+    }
+
+
+    .property-upload-area:hover,
+    .property-upload-area.dragging {
+        border-color: #10b981;
+        background: #f0fdf4;
+    }
+
+
+    .upload-icon {
+        width: 54px;
+        height: 54px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 14px;
+
+        background: #dcfce7;
+        border-radius: 50%;
+
+        color: #059669;
+        font-size: 23px;
+    }
+
+
+    .property-upload-area h3 {
+        margin: 0 0 6px;
+
+        color: #1e293b;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+
+    .property-upload-area p {
+        margin: 0;
+
+        color: #64748b;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+
+    .browse-text {
+        color: #059669;
+        font-weight: 800;
+    }
+
+
+    .upload-formats {
+        display: block;
+        margin-top: 8px;
+
+        color: #94a3b8;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+
+
+    /* =========================================
+       IMAGE PREVIEW
+    ========================================= */
+
+    .image-preview-section {
+        display: none;
+        margin-top: 20px;
+    }
+
+
+    .image-preview-section.show {
+        display: block;
+    }
+
+
+    .preview-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+
+        margin-bottom: 12px;
+    }
+
+
+    .preview-heading h4 {
+        margin: 0;
+
+        color: #334155;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+
+    .preview-count {
+        padding: 4px 9px;
+
+        background: #ecfdf5;
+        border-radius: 20px;
+
+        color: #047857;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+
+    .image-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+
+    .image-preview-item {
+        position: relative;
+
+        height: 130px;
+
+        border-radius: 11px;
+        overflow: hidden;
+
+        background: #e2e8f0;
+        border: 1px solid #e2e8f0;
+    }
+
+
+    .image-preview-item img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+    }
+
+
+    .preview-number {
+        position: absolute;
+        top: 7px;
+        left: 7px;
+
+        min-width: 24px;
+        height: 24px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0 6px;
+
+        background: rgba(15, 23, 42, .78);
+        border-radius: 7px;
+
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+
+    .primary-image-badge {
+        position: absolute;
+        left: 7px;
+        bottom: 7px;
+
+        padding: 5px 8px;
+
+        background: #059669;
+        border-radius: 6px;
+
+        color: #ffffff;
+        font-size: 9px;
+        font-weight: 800;
+    }
+
+
+
+    /* =========================================
+       PUBLISH SIDEBAR
+    ========================================= */
+
+    .publish-card {
+        position: sticky;
+        top: 92px;
+    }
+
+
+    .publish-card-body {
+        padding: 20px;
+    }
+
+
+    .publish-status {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+
+        padding: 13px;
+
+        background: #ecfdf5;
+        border: 1px solid #d1fae5;
+        border-radius: 10px;
+
+        margin-bottom: 18px;
+    }
+
+
+    .publish-status i {
+        color: #059669;
+        font-size: 17px;
+        margin-top: 1px;
+    }
+
+
+    .publish-status strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: #065f46;
+        font-size: 12px;
+    }
+
+
+    .publish-status span {
+        display: block;
+
+        color: #047857;
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+
+    .publish-info-list {
+        margin: 0 0 20px;
+        padding: 0;
+        list-style: none;
+    }
+
+
+    .publish-info-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+
+        padding: 10px 0;
+
+        border-bottom: 1px solid #f1f5f9;
+
+        color: #64748b;
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+
+    .publish-info-list li:last-child {
+        border-bottom: 0;
+    }
+
+
+    .publish-info-list i {
+        color: #10b981;
+        margin-top: 2px;
+    }
+
+
+    .publish-property-btn {
+        width: 100%;
+        min-height: 46px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        border: 0;
+        border-radius: 10px;
+
+        background: #059669;
+        color: #ffffff;
+
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 800;
+
+        cursor: pointer;
+
+        transition: all .2s ease;
+    }
+
+
+    .publish-property-btn:hover {
+        background: #047857;
+        transform: translateY(-1px);
+    }
+
+
+    .publish-property-btn:disabled {
+        opacity: .7;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+
+    .cancel-property-btn {
+        width: 100%;
+        min-height: 43px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-top: 10px;
+
+        border: 1px solid #dbe2ea;
+        border-radius: 10px;
+
+        background: #ffffff;
+        color: #475569;
+
+        text-decoration: none;
+
+        font-size: 12px;
+        font-weight: 700;
+
+        transition: all .2s ease;
+    }
+
+
+    .cancel-property-btn:hover {
+        background: #f8fafc;
+        color: #0f172a;
+    }
+
+
+
+    /* =========================================
+       RESPONSIVE
+    ========================================= */
+
+    @media (max-width: 1100px) {
+
+        .property-form-layout {
+            grid-template-columns: minmax(0, 1fr) 285px;
+        }
+
+        .image-preview-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+    }
+
+
+    @media (max-width: 900px) {
+
+        .property-form-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .publish-card {
+            position: static;
+        }
+
+        .property-form-sidebar {
+            order: 2;
+        }
+
+    }
+
+
+    @media (max-width: 650px) {
+
+        .property-page-header {
+            flex-direction: column;
+        }
+
+        .back-properties-btn {
+            width: 100%;
+        }
+
+        .property-form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .property-form-group.full-width {
+            grid-column: auto;
+        }
+
+        .form-card-header,
+        .form-card-body {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
+        .image-preview-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .image-preview-item {
+            height: 120px;
+        }
+
+    }
+
+
+    @media (max-width: 420px) {
+
+        .property-page-heading h1 {
+            font-size: 23px;
+        }
+
+        .image-preview-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .image-preview-item {
+            height: 105px;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+
+{% block content %}
+
+<div class="add-property-page">
+
+
+    <!-- ======================================
+         PAGE HEADER
+    ======================================= -->
+
+    <div class="property-page-header">
+
+        <div class="property-page-heading">
+
+            <h1>Add Property</h1>
+
+            <p>
+                Create and publish a new property listing
+                on Flexy Properties.
+            </p>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('admin.verify_properties') }}"
+            class="back-properties-btn"
+        >
+            <i class="bi bi-arrow-left"></i>
+            Back to Properties
+        </a>
+
+    </div>
+
+
+
+    <!-- ======================================
+         FORM
+    ======================================= -->
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+        id="propertyForm"
+    >
+
+        {{ form.hidden_tag() }}
+
+
+        <div class="property-form-layout">
+
+
+            <!-- ==================================
+                 LEFT COLUMN
+            =================================== -->
+
+            <div class="property-form-main">
+
+
+                <!-- BASIC INFORMATION -->
+
+                <div class="property-form-card">
+
+                    <div class="form-card-header">
+
+                        <div class="form-card-icon">
+                            <i class="bi bi-house-door"></i>
+                        </div>
+
+                        <div class="form-card-heading">
+
+                            <h2>Property Information</h2>
+
+                            <p>
+                                Enter the main details customers
+                                will see on the listing.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-card-body">
+
+                        <div class="property-form-grid">
+
+
+                            <!-- TITLE -->
+
+                            <div class="property-form-group full-width">
+
+                                <label
+                                    for="{{ form.title.id }}"
+                                    class="property-form-label"
+                                >
+                                    Property Title
+                                    <span class="required-star">*</span>
+                                </label>
+
+
+                                {{ form.title(
+                                    class="property-input" +
+                                    (" is-invalid" if form.title.errors else ""),
+                                    placeholder="e.g. Modern 4 Bedroom Duplex in Lekki"
+                                ) }}
+
+
+                                {% for error in form.title.errors %}
+
+                                    <div class="field-error">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        <span>{{ error }}</span>
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+
+                            <!-- TYPE -->
+
+                            <div class="property-form-group">
+
+                                <label
+                                    for="{{ form.type.id }}"
+                                    class="property-form-label"
+                                >
+                                    Property Type
+                                    <span class="required-star">*</span>
+                                </label>
+
+
+                                {{ form.type(
+                                    class="property-select" +
+                                    (" is-invalid" if form.type.errors else "")
+                                ) }}
+
+
+                                {% for error in form.type.errors %}
+
+                                    <div class="field-error">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        <span>{{ error }}</span>
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+
+                            <!-- PRICE -->
+
+                            <div class="property-form-group">
+
+                                <label
+                                    for="{{ form.price.id }}"
+                                    class="property-form-label"
+                                >
+                                    Price
+                                </label>
+
+
+                                <div class="price-input-wrapper">
+
+                                    <span class="price-symbol">₦</span>
+
+                                    {{ form.price(
+                                        class="property-input" +
+                                        (" is-invalid" if form.price.errors else ""),
+                                        placeholder="0.00",
+                                        min="0",
+                                        step="0.01"
+                                    ) }}
+
+                                </div>
+
+
+                                <span class="field-help">
+                                    Enter the full property price in Naira.
+                                </span>
+
+
+                                {% for error in form.price.errors %}
+
+                                    <div class="field-error">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        <span>{{ error }}</span>
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- LOCATION -->
+
+                <div class="property-form-card">
+
+                    <div class="form-card-header">
+
+                        <div class="form-card-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+
+                        <div class="form-card-heading">
+
+                            <h2>Property Location</h2>
+
+                            <p>
+                                Provide the state and address
+                                of the property.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-card-body">
+
+                        <div class="property-form-grid">
+
+
+                            <!-- STATE -->
+
+                            <div class="property-form-group full-width">
+
+                                <label
+                                    for="{{ form.state.id }}"
+                                    class="property-form-label"
+                                >
+                                    State
+                                    <span class="required-star">*</span>
+                                </label>
+
+
+                                {{ form.state(
+                                    class="property-input" +
+                                    (" is-invalid" if form.state.errors else ""),
+                                    placeholder="e.g. Lagos"
+                                ) }}
+
+
+                                {% for error in form.state.errors %}
+
+                                    <div class="field-error">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        <span>{{ error }}</span>
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+
+                            <!-- ADDRESS -->
+
+                            <div class="property-form-group full-width">
+
+                                <label
+                                    for="{{ form.address.id }}"
+                                    class="property-form-label"
+                                >
+                                    Property Address
+                                    <span class="required-star">*</span>
+                                </label>
+
+
+                                {{ form.address(
+                                    class="property-textarea address-textarea" +
+                                    (" is-invalid" if form.address.errors else ""),
+                                    placeholder="Enter the property's location or full address..."
+                                ) }}
+
+
+                                {% for error in form.address.errors %}
+
+                                    <div class="field-error">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        <span>{{ error }}</span>
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="property-form-card">
+
+                    <div class="form-card-header">
+
+                        <div class="form-card-icon">
+                            <i class="bi bi-card-text"></i>
+                        </div>
+
+                        <div class="form-card-heading">
+
+                            <h2>Property Description</h2>
+
+                            <p>
+                                Describe the property clearly
+                                for prospective customers.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-card-body">
+
+                        <div class="property-form-group">
+
+                            <label
+                                for="{{ form.description.id }}"
+                                class="property-form-label"
+                            >
+                                Description
+                                <span class="required-star">*</span>
+                            </label>
+
+
+                            {{ form.description(
+                                class="property-textarea description-textarea" +
+                                (" is-invalid" if form.description.errors else ""),
+                                placeholder="Describe the property, layout, notable features, nearby amenities and other important information..."
+                            ) }}
+
+
+                            <span class="field-help">
+                                Minimum 20 characters. Maximum 3,000 characters.
+                            </span>
+
+
+                            {% for error in form.description.errors %}
+
+                                <div class="field-error">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    <span>{{ error }}</span>
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- IMAGES -->
+
+                <div class="property-form-card">
+
+                    <div class="form-card-header">
+
+                        <div class="form-card-icon">
+                            <i class="bi bi-images"></i>
+                        </div>
+
+                        <div class="form-card-heading">
+
+                            <h2>Property Images</h2>
+
+                            <p>
+                                Upload clear photographs of
+                                the property.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-card-body">
+
+
+                        {{ form.images(
+                            class="property-image-input",
+                            id="propertyImages",
+                            accept=".jpg,.jpeg,.png,.webp",
+                            multiple=True
+                        ) }}
+
+
+                        <label
+                            for="propertyImages"
+                            class="property-upload-area"
+                            id="propertyUploadArea"
+                        >
+
+                            <div class="upload-icon">
+                                <i class="bi bi-cloud-arrow-up"></i>
+                            </div>
+
+
+                            <h3>
+                                Upload Property Images
+                            </h3>
+
+
+                            <p>
+                                Drag images here or
+                                <span class="browse-text">
+                                    browse your computer
+                                </span>
+                            </p>
+
+
+                            <span class="upload-formats">
+                                JPG, JPEG, PNG or WEBP
+                            </span>
+
+                        </label>
+
+
+                        {% for error in form.images.errors %}
+
+                            <div class="field-error">
+                                <i class="bi bi-exclamation-circle"></i>
+                                <span>{{ error }}</span>
+                            </div>
+
+                        {% endfor %}
+
+
+
+                        <!-- IMAGE PREVIEWS -->
+
+                        <div
+                            class="image-preview-section"
+                            id="imagePreviewSection"
+                        >
+
+                            <div class="preview-heading">
+
+                                <h4>
+                                    Selected Images
+                                </h4>
+
+                                <span
+                                    class="preview-count"
+                                    id="previewCount"
+                                >
+                                    0 images
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="image-preview-grid"
+                                id="imagePreviewGrid"
+                            >
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- ==================================
+                 RIGHT SIDEBAR
+            =================================== -->
+
+            <div class="property-form-sidebar">
+
+
+                <div class="property-form-card publish-card">
+
+
+                    <div class="form-card-header">
+
+                        <div class="form-card-icon">
+                            <i class="bi bi-send-check"></i>
+                        </div>
+
+
+                        <div class="form-card-heading">
+
+                            <h2>Publish Listing</h2>
+
+                            <p>
+                                Review the information before publishing.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="publish-card-body">
+
+
+                        <div class="publish-status">
+
+                            <i class="bi bi-check-circle-fill"></i>
+
+                            <div>
+
+                                <strong>
+                                    Published Immediately
+                                </strong>
+
+                                <span>
+                                    This property will become
+                                    available to customers after
+                                    it is successfully saved.
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <ul class="publish-info-list">
+
+                            <li>
+                                <i class="bi bi-check2-circle"></i>
+
+                                <span>
+                                    The listing will have an
+                                    Available status.
+                                </span>
+                            </li>
+
+
+                            <li>
+                                <i class="bi bi-check2-circle"></i>
+
+                                <span>
+                                    Customers can view the property
+                                    from Explore Properties.
+                                </span>
+                            </li>
+
+
+                            <li>
+                                <i class="bi bi-check2-circle"></i>
+
+                                <span>
+                                    Customers can submit interest
+                                    requests for the property.
+                                </span>
+                            </li>
+
+                        </ul>
+
+
+
+                        {{ form.submit(
+                            class="publish-property-btn",
+                            id="publishPropertyBtn"
+                        ) }}
+
+
+                        <a
+                            href="{{ url_for('admin.verify_properties') }}"
+                            class="cancel-property-btn"
+                        >
+                            Cancel
+                        </a>
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const imageInput =
+        document.getElementById("propertyImages");
+
+    const uploadArea =
+        document.getElementById("propertyUploadArea");
+
+    const previewSection =
+        document.getElementById("imagePreviewSection");
+
+    const previewGrid =
+        document.getElementById("imagePreviewGrid");
+
+    const previewCount =
+        document.getElementById("previewCount");
+
+    const propertyForm =
+        document.getElementById("propertyForm");
+
+    const publishButton =
+        document.getElementById("publishPropertyBtn");
+
+
+    /* =========================================
+       IMAGE PREVIEW
+    ========================================= */
+
+    function showImagePreviews(files) {
+
+        previewGrid.innerHTML = "";
+
+        const imageFiles = Array.from(files).filter(
+            file => file.type.startsWith("image/")
+        );
+
+
+        if (imageFiles.length === 0) {
+
+            previewSection.classList.remove("show");
+
+            previewCount.textContent = "0 images";
+
+            return;
+        }
+
+
+        previewSection.classList.add("show");
+
+
+        previewCount.textContent =
+            imageFiles.length === 1
+                ? "1 image"
+                : imageFiles.length + " images";
+
+
+        imageFiles.forEach((file, index) => {
+
+            const reader = new FileReader();
+
+
+            reader.onload = function (event) {
+
+                const previewItem =
+                    document.createElement("div");
+
+                previewItem.className =
+                    "image-preview-item";
+
+
+                const image =
+                    document.createElement("img");
+
+                image.src = event.target.result;
+
+                image.alt =
+                    "Property image preview";
+
+
+                const number =
+                    document.createElement("span");
+
+                number.className =
+                    "preview-number";
+
+                number.textContent =
+                    index + 1;
+
+
+                previewItem.appendChild(image);
+
+                previewItem.appendChild(number);
+
+
+                if (index === 0) {
+
+                    const primaryBadge =
+                        document.createElement("span");
+
+                    primaryBadge.className =
+                        "primary-image-badge";
+
+                    primaryBadge.textContent =
+                        "Cover Image";
+
+                    previewItem.appendChild(
+                        primaryBadge
+                    );
+
+                }
+
+
+                previewGrid.appendChild(
+                    previewItem
+                );
+
+            };
+
+
+            reader.readAsDataURL(file);
+
+        });
+
+    }
+
+
+    imageInput.addEventListener(
+        "change",
+        function () {
+
+            showImagePreviews(
+                this.files
+            );
+
+        }
+    );
+
+
+
+    /* =========================================
+       DRAG EFFECT
+    ========================================= */
+
+    ["dragenter", "dragover"].forEach(
+        eventName => {
+
+            uploadArea.addEventListener(
+                eventName,
+                function (event) {
+
+                    event.preventDefault();
+
+                    uploadArea.classList.add(
+                        "dragging"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    ["dragleave", "drop"].forEach(
+        eventName => {
+
+            uploadArea.addEventListener(
+                eventName,
+                function (event) {
+
+                    event.preventDefault();
+
+                    uploadArea.classList.remove(
+                        "dragging"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+
+    /* =========================================
+       SUBMIT BUTTON
+    ========================================= */
+
+    propertyForm.addEventListener(
+        "submit",
+        function () {
+
+            publishButton.disabled = true;
+
+            publishButton.innerHTML =
+                '<span class="spinner-border spinner-border-sm" ' +
+                'aria-hidden="true"></span> Publishing...';
+
+        }
+    );
+
+});
+
+</script>
+
+{% endblock %}

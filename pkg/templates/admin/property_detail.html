@@ -1,98 +1,2374 @@
 {% extends "admin/admin_base.html" %}
-{% block title %}Property Details{% endblock %}
+
+{% block title %}Property Details | Flexy Properties{% endblock %}
+
+{% block page_title %}Property Details{% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+/* =========================================================
+   PROPERTY DETAILS PAGE
+========================================================= */
+
+.admin-property-detail {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   TOP NAVIGATION
+========================================================= */
+
+.property-detail-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.property-back-link {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    color: #64748b;
+
+    text-decoration: none;
+
+    font-size: .68rem;
+    font-weight: 700;
+
+    transition: .2s ease;
+}
+
+.property-back-link:hover {
+    color: #079455;
+}
+
+.property-public-link {
+    min-height: 36px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 7px 11px;
+
+    border: 1px solid #dce2e8;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #475569;
+
+    text-decoration: none;
+
+    font-size: .65rem;
+    font-weight: 700;
+
+    transition: .2s ease;
+}
+
+.property-public-link:hover {
+    border-color: #079455;
+
+    background: #f0fdf4;
+    color: #079455;
+}
+
+
+/* =========================================================
+   PROPERTY HEADER
+========================================================= */
+
+.property-detail-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    gap: 18px;
+
+    padding: 22px;
+
+    margin-bottom: 18px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5eaf0;
+    border-radius: 16px;
+
+    box-shadow:
+        0 5px 20px rgba(15,23,42,.04);
+}
+
+.property-detail-heading {
+    flex: 1 1 420px;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.property-detail-label {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    margin-bottom: 9px;
+
+    color: #079455;
+
+    font-size: .61rem;
+    font-weight: 800;
+
+    letter-spacing: .4px;
+
+    text-transform: uppercase;
+}
+
+.property-detail-heading h2 {
+    margin: 0 0 7px;
+    overflow-wrap: anywhere;
+
+    color: #0f172a;
+
+    font-size: 1.45rem;
+    font-weight: 800;
+
+    letter-spacing: -.4px;
+}
+
+.property-detail-address {
+    display: flex;
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    align-items: flex-start;
+
+    gap: 5px;
+
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: .7rem;
+}
+
+.property-detail-address i {
+    margin-top: 1px;
+
+    color: #079455;
+}
+
+
+/* =========================================================
+   HEADER STATUS
+========================================================= */
+
+.property-header-status {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 7px 10px;
+
+    border-radius: 999px;
+
+    font-size: .61rem;
+    font-weight: 750;
+}
+
+.property-header-status i {
+    font-size: .38rem;
+}
+
+.property-header-status.available {
+    background: #dcfae6;
+    color: #067647;
+}
+
+.property-header-status.sold {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.property-header-status.disabled {
+    background: #fee4e2;
+    color: #b42318;
+}
+
+.property-header-status.pending {
+    background: #fff7d6;
+    color: #9a6700;
+}
+
+.property-header-status.rented {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.property-header-status.archived {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.property-header-status.other {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+
+/* =========================================================
+   INFO CARDS
+========================================================= */
+
+.property-info-card {
+    height: 100%;
+
+    padding: 16px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5eaf0;
+    border-radius: 13px;
+
+    box-shadow:
+        0 3px 12px rgba(15,23,42,.025);
+}
+
+.property-info-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 11px;
+
+    border-radius: 8px;
+
+    background: #ecfdf3;
+    color: #079455;
+
+    font-size: .78rem;
+}
+
+.property-info-label {
+    margin-bottom: 3px;
+
+    color: #94a3b8;
+
+    font-size: .59rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: .3px;
+}
+
+.property-info-value {
+    color: #0f172a;
+
+    font-size: .78rem;
+    font-weight: 750;
+}
+
+.property-info-value.price {
+    color: #067647;
+
+    font-size: .9rem;
+}
+
+
+/* =========================================================
+   MAIN CARD
+========================================================= */
+
+.property-content-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin-top: 18px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5eaf0;
+    border-radius: 16px;
+
+    box-shadow:
+        0 5px 20px rgba(15,23,42,.04);
+
+    overflow: hidden;
+}
+
+.property-section {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 20px;
+}
+
+.property-section + .property-section {
+    border-top: 1px solid #edf0f3;
+}
+
+.property-section-heading {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 16px;
+}
+
+.property-section-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: #ecfdf3;
+    color: #079455;
+
+    font-size: .75rem;
+}
+
+.property-section-heading h4 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: .82rem;
+    font-weight: 800;
+}
+
+.property-section-heading p {
+    margin: 2px 0 0;
+
+    color: #94a3b8;
+
+    font-size: .6rem;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.property-description {
+    margin: 0;
+
+    color: #475569;
+
+    font-size: .72rem;
+
+    line-height: 1.8;
+
+    white-space: pre-line;
+}
+
+
+/* =========================================================
+   IMAGE GALLERY
+========================================================= */
+
+.admin-property-image-card {
+    position: relative;
+
+    width: 100%;
+    height: 230px;
+
+    overflow: hidden;
+
+    border-radius: 11px;
+
+    background: #f1f5f9;
+
+    border: 1px solid #e5eaf0;
+}
+
+.admin-property-image-card img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition: transform .3s ease;
+}
+
+.admin-property-image-card:hover img {
+    transform: scale(1.03);
+}
+
+.property-image-number {
+    position: absolute;
+
+    right: 9px;
+    bottom: 9px;
+
+    padding: 4px 7px;
+
+    border-radius: 6px;
+
+    background: rgba(15,23,42,.78);
+    color: #ffffff;
+
+    font-size: .56rem;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   NO IMAGES
+========================================================= */
+
+.property-no-images {
+    padding: 40px 20px;
+
+    border: 1px dashed #dce2e8;
+    border-radius: 11px;
+
+    background: #f8fafc;
+
+    text-align: center;
+}
+
+.property-no-images i {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #94a3b8;
+
+    font-size: 1.4rem;
+}
+
+.property-no-images strong {
+    display: block;
+
+    color: #475569;
+
+    font-size: .72rem;
+}
+
+.property-no-images span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #94a3b8;
+
+    font-size: .61rem;
+}
+
+
+/* =========================================================
+   MANAGEMENT ACTIONS
+========================================================= */
+
+.property-management-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+.property-management-actions form {
+    margin: 0;
+}
+
+.property-manage-btn {
+    min-height: 36px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 7px 11px;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    font-size: .63rem;
+    font-weight: 700;
+
+    transition: .2s ease;
+}
+
+
+/* INTEREST */
+
+.manage-interest {
+    border: 1px solid #dce2e8;
+
+    background: #ffffff;
+    color: #475569;
+}
+
+.manage-interest:hover {
+    border-color: #079455;
+
+    background: #f0fdf4;
+    color: #079455;
+}
+
+
+/* MARK SOLD */
+
+.manage-sold {
+    border: 1px solid #bfdbfe;
+
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.manage-sold:hover {
+    border-color: #2563eb;
+
+    background: #2563eb;
+    color: #ffffff;
+}
+
+
+/* DISABLE */
+
+.manage-disable {
+    border: 1px solid #fecaca;
+
+    background: #fff5f5;
+    color: #b42318;
+}
+
+.manage-disable:hover {
+    border-color: #b42318;
+
+    background: #b42318;
+    color: #ffffff;
+}
+
+
+/* RELIST */
+
+.manage-relist {
+    border: 1px solid #a7f3d0;
+
+    background: #ecfdf3;
+    color: #067647;
+}
+
+.manage-relist:hover {
+    border-color: #079455;
+
+    background: #079455;
+    color: #ffffff;
+}
+
+
+
+/* =========================================================
+   LISTING PURPOSE
+========================================================= */
+
+.property-listing-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: .68rem;
+    font-weight: 800;
+}
+
+.property-listing-value.sale {
+    background: #ecfdf3;
+    color: #067647;
+}
+
+.property-listing-value.rent {
+    background: #f5f3ff;
+    color: #6d28d9;
+}
+
+.property-listing-value.other {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+
+/* =========================================================
+   ARCHIVE DETAILS
+========================================================= */
+
+.archive-detail-card {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid #fed7aa;
+    border-radius: 11px;
+    background: #fff7ed;
+}
+
+.archive-detail-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 9px;
+    background: #ffedd5;
+    color: #c2410c;
+}
+
+.archive-detail-content {
+    min-width: 0;
+}
+
+.archive-detail-label {
+    display: block;
+    margin-bottom: 3px;
+    color: #9a3412;
+    font-size: .58rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+}
+
+.archive-detail-content strong {
+    display: block;
+    color: #7c2d12;
+    font-size: .76rem;
+}
+
+.archive-detail-content small {
+    display: block;
+    margin-top: 3px;
+    color: #9a3412;
+    font-size: .62rem;
+}
+
+.archive-detail-content p {
+    margin: 8px 0 0;
+    color: #7c2d12;
+    font-size: .68rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   PROPERTY RECORD NAVIGATION
+========================================================= */
+
+.property-record-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+    padding: 14px 16px;
+    border: 1px solid #e5eaf0;
+    border-radius: 13px;
+    background: #ffffff;
+    box-shadow: 0 3px 12px rgba(15,23,42,.025);
+}
+
+.property-record-pagination-info {
+    color: #64748b;
+    font-size: .65rem;
+}
+
+.property-record-pagination-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.property-record-page-btn {
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border: 1px solid #dce2e8;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #475569;
+    text-decoration: none;
+    font-size: .62rem;
+    font-weight: 700;
+    transition: .2s ease;
+}
+
+.property-record-page-btn:hover {
+    border-color: #079455;
+    background: #f0fdf4;
+    color: #067647;
+}
+
+.property-record-page-btn.disabled {
+    background: #f8fafc;
+    color: #cbd5e1;
+    pointer-events: none;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .property-detail-header {
+        padding: 18px;
+    }
+
+    .property-detail-heading h2 {
+        font-size: 1.2rem;
+    }
+
+    .admin-property-image-card {
+        height: 210px;
+    }
+
+}
+
+
+@media (max-width: 575.98px) {
+
+    .property-detail-nav {
+        align-items: stretch;
+    }
+
+    .property-public-link {
+        width: 100%;
+    }
+
+    .property-management-actions {
+        align-items: stretch;
+    }
+
+    .property-manage-btn,
+    .property-management-actions form {
+        width: 100%;
+    }
+
+    .property-management-actions form button {
+        width: 100%;
+    }
+
+    .admin-property-image-card {
+        height: 220px;
+    }
+
+    .property-record-pagination {
+        align-items: stretch;
+    }
+
+    .property-record-pagination-info {
+        width: 100%;
+        text-align: center;
+    }
+
+    .property-record-pagination-actions {
+        width: 100%;
+    }
+
+    .property-record-page-btn {
+        flex: 1;
+    }
+
+}
+/* =========================================================
+   PROPERTY DETAIL SOURCE
+========================================================= */
+
+.property-source-detail {
+    margin-top: 18px;
+}
+
+
+.source-detail-box {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    margin-top: 7px;
+
+    padding: 12px 14px;
+
+    background: #f9fafb;
+
+    border: 1px solid #eaecf0;
+    border-radius: 9px;
+}
+
+
+.source-detail-icon {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 8px;
+}
+
+
+.landlord-detail
+.source-detail-icon {
+    background: #ecfdf3;
+
+    color: #079455;
+}
+
+
+.admin-detail
+.source-detail-icon {
+    background: #f2f4f7;
+
+    color: #475467;
+}
+
+
+.source-detail-box strong {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #344054;
+
+    font-size: .78rem;
+}
+
+
+.source-detail-box a {
+    color: #079455;
+
+    font-size: .72rem;
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+
+.source-detail-box a:hover {
+    color: #067647;
+
+    text-decoration: underline;
+}
+
+
+.source-detail-box span {
+    display: block;
+
+    color: #98a2b3;
+
+    font-size: .7rem;
+}
+
+</style>
+{% endblock %}
+
+
 
 {% block content %}
 
-<div class="container-fluid">
+<div class="admin-property-detail">
 
-  <h3 class="text-white mb-3">Property Details</h3>
 
-  <div class="card shadow-lg p-4"
-       style="background:#0f172a;border:none;border-radius:14px;color:white;">
+    <!-- =====================================================
+         TOP NAVIGATION
+    ====================================================== -->
 
-    <!-- PROPERTY INFO -->
-    <h4 class="mb-2">{{ prop.property_title or "Untitled Property" }}</h4>
+    <div class="property-detail-nav">
 
-    <p class="mb-1 text-white-50">
-      {{ prop.adress }}
-    </p>
+        <a
+            href="{{ url_for('admin.verify_properties') }}"
+            class="property-back-link"
+        >
 
-    <p class="mb-2">
-      State:
-      {{ prop.state.state_name if prop.state else "No State" }}
-    </p>
+            <i class="bi bi-arrow-left"></i>
 
-    <p class="mb-2">
-      Type: {{ prop.property_type|title }}
-    </p>
+            Back to Properties
 
-    <p class="mb-2">
-      Price: ₦ {{ "{:,.0f}".format(prop.price or 0) }}
-    </p>
+        </a>
 
-    <p class="mb-3">
-      Status:
-      <span class="badge bg-success text-light">
-        {{ prop.property_status|replace("_"," ")|title }}
-      </span>
-    </p>
 
-    <hr>
-
-    <!-- IMAGES -->
-    <h5 class="mb-3">Property Images</h5>
-
-    {% if prop.images and prop.images|length > 0 %}
-      <div class="row g-3">
-        {% for img in prop.images %}
-          <div class="col-md-4">
-            <img src="{{ url_for('static', filename=img.image_url) }}"
-                 class="img-fluid rounded"
-                 style="height:220px;width:100%;object-fit:cover;">
-          </div>
-        {% endfor %}
-      </div>
-    {% else %}
-      <p class="text-white-50">No images uploaded for this property.</p>
-    {% endif %}
-
-    <hr>
-
-    <!-- OWNER -->
-    <h5>Owner</h5>
-    <p>
-      {{ prop.owner.user_fname }} {{ prop.owner.users_lname }}
-      <br>
-      {{ prop.owner.email }}
-    </p>
-
-    <!-- AGENT -->
-    <h5>Agent</h5>
-    <p>
-      {% if prop.agent and prop.agent.user %}
-        {{ prop.agent.user.user_fname }} {{ prop.agent.user.users_lname }}
-      {% else %}
-        No Agent Assigned
-      {% endif %}
-    </p>
-    <div class="row">
-        <div class="col-12 col-lg-6">
-               <div class="">
-                <a href="{{url_for('admin.view_interests')}}" class="text-decoration-none fw-bold
-                border border-2px p-2 mt-2 btn btn-outline-light "
-                >View Interest</a>
-              </div>
-        
-        </div>
-        <div class="col-12 col-lg-6">
-                    <div class="text-end">
-                        <a href="{{url_for('admin.verify_properties')}}" class="text-decoration-none fw-bold
-                        border border-2px p-2 mt-2 btn btn-outline-light"
-                        >View Properties</a>
-                    </div> 
-        </div>
     </div>
-  </div>
+
+
+
+    <!-- =====================================================
+         PROPERTY HEADER
+    ====================================================== -->
+
+    <div class="property-detail-header">
+
+        <div class="property-detail-heading">
+
+            <div class="property-detail-label">
+
+                <i class="bi bi-building"></i>
+
+                Property #{{ prop.property_id }}
+
+            </div>
+
+
+            <h2>
+                {{ prop.property_title or "Untitled Property" }}
+            </h2>
+
+
+            <p class="property-detail-address">
+
+                <i class="bi bi-geo-alt-fill"></i>
+
+                <span>
+
+                    {{ prop.adress or "No address provided" }}
+
+                    {% if prop.state %}
+
+                        · {{ prop.state.state_name }}
+
+                    {% endif %}
+
+                </span>
+
+            </p>
+
+        </div>
+
+
+
+        <!-- STATUS -->
+
+        <div>
+
+            {% if prop.property_status == "available" %}
+
+                <span class="
+                    property-header-status
+                    available
+                ">
+
+                    <i class="bi bi-circle-fill"></i>
+
+                    Available
+
+                </span>
+
+
+            {% elif prop.property_status == "sold" %}
+
+                <span class="
+                    property-header-status
+                    sold
+                ">
+
+                    <i class="bi bi-circle-fill"></i>
+
+                    Sold
+
+                </span>
+
+
+            {% elif prop.property_status == "rejected" %}
+
+                <span class="
+                    property-header-status
+                    disabled
+                ">
+
+                    <i class="bi bi-circle-fill"></i>
+
+                    Disabled
+
+                </span>
+
+
+            {% elif prop.property_status == "under_verification" %}
+
+                <span class="
+                    property-header-status
+                    pending
+                ">
+
+                    <i class="bi bi-circle-fill"></i>
+
+                    Under Verification
+
+                </span>
+
+
+            {% elif prop.property_status == "rented" %}
+
+                <span class="
+                    property-header-status
+                    rented
+                ">
+
+                    <i class="bi bi-circle-fill"></i>
+
+                    Rented
+
+                </span>
+
+
+            {% elif prop.property_status == "archived" %}
+
+                <span class="
+                    property-header-status
+                    archived
+                ">
+
+                    <i class="bi bi-circle-fill"></i>
+
+                    Archived
+
+                </span>
+
+
+            {% else %}
+
+                <span class="
+                    property-header-status
+                    other
+                ">
+
+                    <i class="bi bi-circle-fill"></i>
+
+                    {{
+                        prop.property_status
+                        |replace("_", " ")
+                        |title
+                        if prop.property_status
+                        else "Unknown"
+                    }}
+
+                </span>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+    <div class="property-source-detail">
+
+            <span class="detail-label">
+                Listing Source
+            </span>
+
+
+            {% if prop.source_submission %}
+
+                <div class="source-detail-box landlord-detail">
+
+
+                    <div class="source-detail-icon">
+
+                        <i class="bi bi-person-check"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            Landlord Submission
+                        </strong>
+
+                        <a
+                            href="{{ url_for(
+                                'admin.view_property_submission',
+                                submission_id=prop.source_submission.submission_id
+                            ) }}"
+                        >
+
+                            {{ prop.source_submission.reference_number }}
+
+                            <i class="bi bi-arrow-up-right"></i>
+
+                        </a>
+
+                    </div>
+
+
+                </div>
+
+
+            {% else %}
+
+
+                <div class="source-detail-box admin-detail">
+
+
+                    <div class="source-detail-icon">
+
+                        <i class="bi bi-shield-check"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            Admin Added
+                        </strong>
+
+                        <span>
+                            This property was added directly
+                            by an administrator.
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+            {% endif %}
+
+        </div>
+
+
+    <!-- =====================================================
+         PROPERTY SUMMARY
+    ====================================================== -->
+
+    <div class="row g-3">
+
+
+        <!-- PRICE -->
+
+        <div class="col-6 col-lg">
+
+            <div class="property-info-card">
+
+                <div class="property-info-icon">
+
+                    <i class="bi bi-cash-stack"></i>
+
+                </div>
+
+
+                <div class="property-info-label">
+                    Price
+                </div>
+
+
+                <div class="property-info-value price">
+
+                    ₦{{
+                        "{:,.0f}".format(
+                            prop.price or 0
+                        )
+                    }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TYPE -->
+
+        <div class="col-6 col-lg">
+
+            <div class="property-info-card">
+
+                <div class="property-info-icon">
+
+                    <i class="bi bi-house-door"></i>
+
+                </div>
+
+
+                <div class="property-info-label">
+                    Property Type
+                </div>
+
+
+                <div class="property-info-value">
+
+                    {{
+                        prop.property_type
+                        |replace("_", " ")
+                        |title
+                        if prop.property_type
+                        else "Not specified"
+                    }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+
+        <!-- LISTING PURPOSE -->
+
+        <div class="col-6 col-lg">
+
+            <div class="property-info-card">
+
+                <div class="property-info-icon">
+
+                    {% if prop.property_listing|upper == "RENT" %}
+                        <i class="bi bi-key"></i>
+                    {% else %}
+                        <i class="bi bi-tag"></i>
+                    {% endif %}
+
+                </div>
+
+
+                <div class="property-info-label">
+                    Listing Purpose
+                </div>
+
+
+                <div class="property-info-value">
+
+                    {% if prop.property_listing|upper == "SALE" %}
+
+                        <span class="property-listing-value sale">
+                            <i class="bi bi-tag-fill"></i>
+                            For Sale
+                        </span>
+
+                    {% elif prop.property_listing|upper == "RENT" %}
+
+                        <span class="property-listing-value rent">
+                            <i class="bi bi-key-fill"></i>
+                            For Rent
+                        </span>
+
+                    {% else %}
+
+                        <span class="property-listing-value other">
+                            Not specified
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- STATE -->
+
+        <div class="col-6 col-lg">
+
+            <div class="property-info-card">
+
+                <div class="property-info-icon">
+
+                    <i class="bi bi-geo-alt"></i>
+
+                </div>
+
+
+                <div class="property-info-label">
+                    State
+                </div>
+
+
+                <div class="property-info-value">
+
+                    {{
+                        prop.state.state_name
+                        if prop.state
+                        else "Not specified"
+                    }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- CREATED -->
+
+        <div class="col-6 col-lg">
+
+            <div class="property-info-card">
+
+                <div class="property-info-icon">
+
+                    <i class="bi bi-calendar3"></i>
+
+                </div>
+
+
+                <div class="property-info-label">
+                    Added
+                </div>
+
+
+                <div class="property-info-value">
+
+                    {{
+                        prop.created_at.strftime(
+                            "%d %b %Y"
+                        )
+                        if prop.created_at
+                        else "Not available"
+                    }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         PROPERTY CONTENT
+    ====================================================== -->
+
+    <div class="property-content-card">
+
+
+        <!-- =================================================
+             DESCRIPTION
+        ================================================== -->
+
+        <section class="property-section">
+
+            <div class="property-section-heading">
+
+                <div class="property-section-icon">
+
+                    <i class="bi bi-card-text"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h4>
+                        Property Description
+                    </h4>
+
+                    <p>
+                        Listing information shown to customers
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {% if prop.description %}
+
+                <p class="property-description">
+
+                    {{ prop.description }}
+
+                </p>
+
+            {% else %}
+
+                <p class="property-description text-secondary">
+
+                    No description has been provided
+                    for this property.
+
+                </p>
+
+            {% endif %}
+
+        </section>
+
+        
+        <!-- =================================================
+             IMAGES
+        ================================================== -->
+
+        <section class="property-section">
+
+            <div class="property-section-heading">
+
+                <div class="property-section-icon">
+
+                    <i class="bi bi-images"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h4>
+                        Property Images
+                    </h4>
+
+                    <p>
+
+                        {% if prop.images %}
+
+                            {{ prop.images|length }}
+                            image{% if prop.images|length != 1 %}s{% endif %}
+                            uploaded
+
+                        {% else %}
+
+                            Property gallery
+
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            {% if prop.images and prop.images|length > 0 %}
+
+                <div class="row g-3">
+
+
+                    {% for img in prop.images %}
+
+                        <div class="
+                            col-12
+                            col-sm-6
+                            col-lg-4
+                        ">
+
+                            <div class="
+                                admin-property-image-card
+                            ">
+
+                                <img
+                                    src="{{ url_for(
+                                        'static',
+                                        filename=img.image_url
+                                    ) }}"
+                                    alt="{{
+                                        prop.property_title
+                                        or 'Property image'
+                                    }}"
+                                    loading="{{
+                                        'eager'
+                                        if loop.first
+                                        else 'lazy'
+                                    }}"
+                                >
+
+
+                                <span class="
+                                    property-image-number
+                                ">
+
+                                    {{ loop.index }}
+                                    /
+                                    {{ prop.images|length }}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            {% else %}
+
+                <div class="property-no-images">
+
+                    <i class="bi bi-image"></i>
+
+                    <strong>
+                        No property images
+                    </strong>
+
+                    <span>
+                        Images added to this property
+                        will appear here.
+                    </span>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+
+        <!-- =================================================
+             PROPERTY MANAGEMENT
+        ================================================== -->
+
+        <section class="property-section">
+
+            <div class="property-section-heading">
+
+                <div class="property-section-icon">
+
+                    <i class="bi bi-sliders"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h4>
+                        Property Management
+                    </h4>
+
+                    <p>
+                        Manage this listing and its customer requests
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="property-management-actions">
+
+
+                <!-- INTEREST REQUESTS -->
+                {% if prop.property_status == "archived" %}
+
+                <div class="archive-detail-card">
+
+                    <div class="archive-detail-icon">
+
+                        <i class="bi bi-archive"></i>
+
+                    </div>
+
+
+                    <div class="archive-detail-content">
+
+                        <span class="archive-detail-label">
+                            Archived Property
+                        </span>
+
+
+                        <strong>
+
+                            {% if prop.archive_reason %}
+
+                                {{ archive_reasons.get(
+                                    prop.archive_reason,
+                                    prop.archive_reason
+                                ) }}
+
+                            {% else %}
+
+                                Reason Not Recorded
+
+                            {% endif %}
+
+                        </strong>
+
+
+                        {% if prop.archived_at %}
+
+                            <small>
+
+                                Archived
+                                {{ prop.archived_at.strftime(
+                                    "%d %b %Y, %I:%M %p"
+                                ) }}
+
+                            </small>
+
+                        {% endif %}
+
+
+                        {% if prop.archive_note %}
+
+                            <p>
+                                {{ prop.archive_note }}
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                {% else %}
+                    <a
+                        href="{{ url_for(
+                            'admin.view_interests'
+                        ) }}"
+                        class="
+                            property-manage-btn
+                            manage-interest
+                        "
+                    >
+
+                        <i class="bi bi-heart"></i>
+
+                        View Interest Requests
+
+                    </a>
+                {% endif %}
+
+
+
+                <!-- =========================================
+                     AVAILABLE
+                ========================================== -->
+
+                {% if prop.property_status == "available" %}
+
+
+                    <!-- MARK SOLD -->
+                    {% if prop.property_listing|upper == "SALE" %}
+
+                        <button
+                            type="button"
+                            class="btn btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#completePropertyModal"
+                        >
+                            <i class="bi bi-check-circle me-1"></i>
+                            Mark as Sold
+                        </button>
+
+
+                    {% elif prop.property_listing|upper == "RENT" %}
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-success btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#completePropertyModal"
+                        >
+                            <i class="bi bi-check-circle me-1"></i>
+                            Mark as Rented
+                        </button>
+
+                    {% endif %}
+                    <!-- EDIT PROPERTY -->
+                    <div>
+                         <a
+                            href="{{ url_for(
+                                'admin.edit_property',
+                                property_id=prop.property_id
+                            ) }}"
+                            class="btn btn-sm btn-outline-warning rounded"
+                        >
+                            <i class="bi bi-pencil-square"></i>
+                            Edit Property
+                        </a>
+                    </div>
+                    <!-- DISABLE -->
+
+                    <form
+                        action="{{ url_for(
+                            'admin.disable_property',
+                            property_id=prop.property_id
+                        ) }}"
+                        method="POST"
+                    >
+
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}"
+                        >
+
+
+                        <button
+                            type="submit"
+                            class="
+                                property-manage-btn
+                                manage-disable
+                            "
+                            onclick="
+                                return confirm(
+                                    'Disable this property listing?'
+                                );
+                            "
+                        >
+
+                            <i class="bi bi-slash-circle"></i>
+
+                            Disable Property
+
+                        </button>
+
+                    </form>
+
+                <!-- =========================================
+                     ARCHIVED
+                ========================================== -->
+
+                    <button
+                        type="button"
+                        class="btn btn-outline-danger btn-sm rounded"
+                        data-bs-toggle="modal"
+                        data-bs-target="#archivePropertyModal"
+                    >
+                        <i class="bi bi-archive"></i>
+                        Archive Property
+                    </button>
+
+                <!-- =========================================
+                     DISABLED
+                ========================================== -->
+
+                {% elif prop.property_status == "rejected" %}
+
+
+                    <form
+                        action="{{ url_for(
+                            'admin.approve_property',
+                            property_id=prop.property_id
+                        ) }}"
+                        method="POST"
+                    >
+
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}"
+                        >
+
+
+                        <button
+                            type="submit"
+                            class="
+                                property-manage-btn
+                                manage-relist
+                            "
+                            onclick="
+                                return confirm(
+                                    'Make this property available again?'
+                                );
+                            "
+                        >
+
+                            <i class="bi bi-arrow-repeat"></i>
+
+                            Re-List Property
+
+                        </button>
+
+                    </form>
+
+
+
+                <!-- =========================================
+                     SOLD
+                ========================================== -->
+
+                {% elif prop.property_status == "sold" %}
+
+
+                    <form
+                        action="{{ url_for(
+                            'admin.relist_property',
+                            property_id=prop.property_id
+                        ) }}"
+                        method="POST"
+                    >
+
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}"
+                        >
+
+
+                        <button
+                            type="submit"
+                            class="
+                                property-manage-btn
+                                manage-relist
+                            "
+                            onclick="
+                                return confirm(
+                                    'Re-list this sold property as available?'
+                                );
+                            "
+                        >
+
+                            <i class="bi bi-arrow-repeat"></i>
+
+                            Re-List Property
+
+                        </button>
+
+                    </form>
+
+
+
+                <!-- =========================================
+                     OLD UNDER VERIFICATION RECORD
+                ========================================== -->
+
+                {% elif prop.property_status ==
+                        "under_verification" %}
+
+
+                    <form
+                        action="{{ url_for(
+                            'admin.approve_property',
+                            property_id=prop.property_id
+                        ) }}"
+                        method="POST"
+                    >
+
+                        <input
+                            type="hidden"
+                            name="csrf_token"
+                            value="{{ csrf_token() }}"
+                        >
+
+
+                        <button
+                            type="submit"
+                            class="
+                                property-manage-btn
+                                manage-relist
+                            "
+                        >
+
+                            <i class="bi bi-check-lg"></i>
+
+                            Publish Property
+
+                        </button>
+
+                    </form>
+
+
+                {% endif %}
+                  
+
+            </div>
+
+        </section>
+
+
+    </div>
+
+    {% if prop.property_status != "archived" %}
+
+                <div
+                    class="modal fade"
+                    id="archivePropertyModal"
+                    tabindex="-1"
+                    aria-labelledby="archivePropertyModalLabel"
+                    aria-hidden="true"
+                >
+
+                    <div class="modal-dialog modal-dialog-centered">
+
+                        <div class="modal-content border-0 rounded-4 shadow">
+
+
+                            <form
+                                method="POST"
+                                action="{{ url_for(
+                                    'admin.archive_property',
+                                    property_id=prop.property_id
+                                ) }}"
+                            >
+
+                                <input
+                                    type="hidden"
+                                    name="csrf_token"
+                                    value="{{ csrf_token() }}"
+                                >
+
+
+                                <div class="modal-body p-4">
+
+
+                                    <div
+                                        class="
+                                            d-flex
+                                            align-items-center
+                                            justify-content-center
+                                            mx-auto
+                                            mb-3
+                                            rounded-circle
+                                        "
+                                        style="
+                                            width:56px;
+                                            height:56px;
+                                            background:#fff7ed;
+                                            color:#c2410c;
+                                            font-size:1.3rem;
+                                        "
+                                    >
+
+                                        <i class="bi bi-archive"></i>
+
+                                    </div>
+
+
+                                    <div class="text-center mb-4">
+
+                                        <h5
+                                            class="fw-bold mb-2"
+                                            id="archivePropertyModalLabel"
+                                        >
+                                            Archive Property
+                                        </h5>
+
+
+                                        <p class="text-muted small mb-0">
+
+                                            This property will be removed
+                                            from active listings but its
+                                            history will be preserved.
+
+                                        </p>
+
+                                    </div>
+
+
+                                    <div class="mb-3">
+
+                                        <label
+                                            for="archive_reason"
+                                            class="form-label fw-semibold"
+                                        >
+                                            Why is this property being archived?
+                                            <span class="text-danger">*</span>
+                                        </label>
+
+
+                                        <select
+                                            name="archive_reason"
+                                            id="archive_reason"
+                                            class="form-select"
+                                            required
+                                        >
+
+                                            <option value="">
+                                                Select archive reason
+                                            </option>
+
+                                            <option value="landlord_withdrew">
+                                                Landlord Withdrew Property
+                                            </option>
+
+                                             {% if prop.property_listing|upper == "SALE" %}
+
+                                                <option value="sold_elsewhere">
+                                                    Sold Elsewhere
+                                                </option>
+
+                                            {% elif prop.property_listing|upper == "RENT" %}
+
+                                                <option value="rented_elsewhere">
+                                                    Rented Elsewhere
+                                                </option>
+
+                                            {% endif %}
+
+                                            <option value="duplicate">
+                                                Duplicate Listing
+                                            </option>
+
+                                            <option value="listing_error">
+                                                Listing Information Incorrect
+                                            </option>
+
+                                            <option value="admin_removed">
+                                                Removed by Administrator
+                                            </option>
+
+                                            <option value="other">
+                                                Other
+                                            </option>
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <div class="mb-3">
+
+                                        <label
+                                            for="archive_note"
+                                            class="form-label fw-semibold"
+                                        >
+                                            Additional Note
+                                        </label>
+
+
+                                        <textarea
+                                            name="archive_note"
+                                            id="archive_note"
+                                            class="form-control"
+                                            rows="4"
+                                            maxlength="1000"
+                                            placeholder="Add any additional information about why this property is being archived..."
+                                        ></textarea>
+
+
+                                        <div class="form-text">
+                                            Optional — maximum 1000 characters.
+                                        </div>
+
+                                    </div>
+
+
+                                    <div
+                                        class="alert alert-warning small"
+                                        role="alert"
+                                    >
+
+                                        <i class="bi bi-info-circle me-1"></i>
+
+                                        Archiving does not permanently
+                                        delete the property. It can be
+                                        restored later.
+
+                                    </div>
+
+
+                                    <div
+                                        class="
+                                            d-flex
+                                            gap-2
+                                            mt-4
+                                        "
+                                    >
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-light flex-fill"
+                                            data-bs-dismiss="modal"
+                                        >
+                                            Cancel
+                                        </button>
+
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-danger flex-fill"
+                                        >
+                                            <i class="bi bi-archive me-1"></i>
+                                            Archive Property
+                                        </button>
+
+                                    </div>
+
+
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+                {% if prop.property_status == "available" %}
+
+                    <div
+                        class="modal fade"
+                        id="completePropertyModal"
+                        tabindex="-1"
+                        aria-hidden="true"
+                    >
+
+                        <div class="modal-dialog modal-dialog-centered">
+
+                            <div
+                                class="
+                                    modal-content
+                                    border-0
+                                    rounded-4
+                                    shadow
+                                "
+                            >
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'admin.complete_property',
+                                        property_id=prop.property_id
+                                    ) }}"
+                                >
+
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="{{ csrf_token() }}"
+                                    >
+
+
+                                    <div class="modal-body p-4 text-center">
+
+
+                                        <div
+                                            class="
+                                                d-flex
+                                                align-items-center
+                                                justify-content-center
+                                                mx-auto
+                                                mb-3
+                                                rounded-circle
+                                            "
+                                            style="
+                                                width:56px;
+                                                height:56px;
+                                                background:#ecfdf3;
+                                                color:#079455;
+                                                font-size:1.4rem;
+                                            "
+                                        >
+
+                                            <i class="bi bi-check-lg"></i>
+
+                                        </div>
+
+
+                                        {% if prop.property_listing|upper == "SALE" %}
+
+                                            <h5 class="fw-bold">
+                                                Mark Property as Sold?
+                                            </h5>
+
+                                            <p class="text-muted small">
+
+                                                Confirm that this property
+                                                was sold through
+                                                Flexy Properties.
+
+                                            </p>
+
+
+                                        {% elif prop.property_listing|upper == "RENT" %}
+
+                                            <h5 class="fw-bold">
+                                                Mark Property as Rented?
+                                            </h5>
+
+                                            <p class="text-muted small">
+
+                                                Confirm that this property
+                                                was rented through
+                                                Flexy Properties.
+
+                                            </p>
+
+                                        {% endif %}
+
+
+                                        <div
+                                            class="
+                                                alert
+                                                alert-warning
+                                                text-start
+                                                small
+                                                mt-3
+                                            "
+                                        >
+
+                                            <i
+                                                class="
+                                                    bi
+                                                    bi-exclamation-triangle
+                                                    me-1
+                                                "
+                                            ></i>
+
+                                            {% if prop.property_listing|upper == "SALE" %}
+
+                                                If the landlord sold this
+                                                property somewhere else,
+                                                do not mark it as sold.
+                                                Archive it and select
+                                                <strong>Sold Elsewhere</strong>.
+
+                                            {% else %}
+
+                                                If the property was rented
+                                                somewhere else, do not mark
+                                                it as rented. Archive it and
+                                                select
+                                                <strong>Rented Elsewhere</strong>.
+
+                                            {% endif %}
+
+                                        </div>
+
+
+                                        <div class="d-flex gap-2 mt-4">
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-light flex-fill"
+                                                data-bs-dismiss="modal"
+                                            >
+                                                Cancel
+                                            </button>
+
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-success flex-fill"
+                                            >
+
+                                                {% if prop.property_listing|upper == "SALE" %}
+
+                                                    Confirm Sold
+
+                                                {% else %}
+
+                                                    Confirm Rented
+
+                                                {% endif %}
+
+                                            </button>
+
+                                        </div>
+
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+
+
+    <!-- =====================================================
+         PROPERTY RECORD NAVIGATION
+         Requires previous_property and next_property from route
+    ====================================================== -->
+
+    <div class="property-record-pagination">
+
+        <div class="property-record-pagination-info">
+            Browse property records without returning to the management table.
+        </div>
+
+        <div class="property-record-pagination-actions">
+
+            {% if previous_property %}
+
+                <a
+                    href="{{ url_for(
+                        'admin.view_property',
+                        property_id=previous_property.property_id
+                    ) }}"
+                    class="property-record-page-btn"
+                >
+                    <i class="bi bi-chevron-left"></i>
+                    Previous
+                </a>
+
+            {% else %}
+
+                <span class="property-record-page-btn disabled">
+                    <i class="bi bi-chevron-left"></i>
+                    Previous
+                </span>
+
+            {% endif %}
+
+
+            <a
+                href="{{ url_for('admin.verify_properties') }}"
+                class="property-record-page-btn"
+            >
+                <i class="bi bi-grid"></i>
+                All Properties
+            </a>
+
+
+            {% if next_property %}
+
+                <a
+                    href="{{ url_for(
+                        'admin.view_property',
+                        property_id=next_property.property_id
+                    ) }}"
+                    class="property-record-page-btn"
+                >
+                    Next
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+
+            {% else %}
+
+                <span class="property-record-page-btn disabled">
+                    Next
+                    <i class="bi bi-chevron-right"></i>
+                </span>
+
+            {% endif %}
+
+        </div>
+
+    </div>
 
 </div>
 

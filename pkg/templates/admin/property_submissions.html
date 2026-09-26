@@ -1,0 +1,319 @@
+{% extends "admin/admin_base.html" %}
+
+{% block extra_css %}
+<style>
+.property-submissions-page{width:100%;max-width:100%;min-width:0;overflow-x:hidden;padding-bottom:36px}
+.submissions-card{width:100%;max-width:100%;min-width:0;overflow:hidden;border:1px solid #e2e8f0!important;border-radius:16px;box-shadow:0 4px 18px rgba(15,23,42,.04)!important}
+.submissions-card .card-body{min-width:0;padding:0}
+.submissions-table-wrapper{display:block;width:100%;max-width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.submissions-table-wrapper::-webkit-scrollbar{height:7px}.submissions-table-wrapper::-webkit-scrollbar-track{background:#f8fafc}.submissions-table-wrapper::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px}
+.submissions-table{width:100%;min-width:1050px;margin:0;border-collapse:collapse}
+.submissions-table thead th{padding:13px 15px;background:#f8fafc;border-bottom:1px solid #e2e8f0;color:#64748b;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.55px;white-space:nowrap}
+.submissions-table tbody td{padding:14px 15px;border-bottom:1px solid #f1f5f9;color:#475569;font-size:11px;vertical-align:middle}
+.submissions-table tbody tr:hover{background:#fafcfd}
+.listing-pill,.status-pill{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border-radius:999px;font-size:9px;font-weight:800;white-space:nowrap}
+.listing-pill.sale,.status-pill.approved{background:#ecfdf3;color:#067647}.listing-pill.rent{background:#f5f3ff;color:#6d28d9}.status-pill.pending{background:#fffaeb;color:#b54708}.status-pill.rejected{background:#fef3f2;color:#b42318}
+.properties-pagination{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:15px 18px;border-top:1px solid #edf1f5;background:#fff}
+.pagination-info{color:#64748b;font-size:10px}.pagination-info strong{color:#334155;font-weight:800}
+.pagination-list{display:flex;align-items:center;gap:5px;margin:0;padding:0;list-style:none}
+.pagination-btn,.pagination-number{min-width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:0 9px;border:1px solid #e2e8f0;border-radius:7px;background:#fff;color:#475569;text-decoration:none;font-size:10px;font-weight:700;transition:.2s}
+.pagination-number{width:32px;padding:0}.pagination-btn:hover,.pagination-number:hover{border-color:#079455;background:#f0fdf4;color:#067647}.pagination-number.active{border-color:#079455;background:#079455;color:#fff}.pagination-btn.disabled{background:#f8fafc;color:#cbd5e1;pointer-events:none}.pagination-dots{min-width:24px;text-align:center;color:#98a2b3;font-size:11px;font-weight:700}
+@media(max-width:767.98px){.submissions-table{min-width:980px}.properties-pagination{flex-direction:column;align-items:stretch;padding:14px}.pagination-info{text-align:center}.pagination-nav{width:100%;overflow-x:auto}.pagination-list{width:max-content;min-width:100%;justify-content:center}.pagination-btn span{display:none}.pagination-btn{width:32px;padding:0}}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid property-submissions-page">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">
+                Property Submissions
+            </h2>
+
+            <p class="text-muted mb-0">
+                Review properties submitted by registered users
+                for marketing.
+            </p>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm submissions-card">
+
+        <div class="card-body">
+
+            <div class="table-responsive submissions-table-wrapper">
+
+                <table class="table align-middle submissions-table">
+
+                    <thead>
+                        <tr>
+                            <th>Reference</th>
+                            <th>Property</th>
+                            <th>Owner</th>
+                            <th>Listing</th>
+                            <th>State</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for submission in submissions %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ submission.reference_number }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ submission.property_title }}
+                            </td>
+
+                            <td>
+                                {{ submission.landlord_name }}
+                            </td>
+
+                            <td>
+                                {% if submission.listing_type == "SALE" %}
+                                    <span class="listing-pill sale"><i class="bi bi-tag-fill"></i> For Sale</span>
+                                {% elif submission.listing_type == "RENT" %}
+                                    <span class="listing-pill rent"><i class="bi bi-key-fill"></i> For Rent</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ submission.state }}
+                            </td>
+
+                            <td>
+                                {% if submission.price %}
+                                    ₦{{ "{:,.2f}".format(submission.price) }}
+                                {% else %}
+                                    Negotiable
+                                {% endif %}
+                            </td>
+
+                            <td>
+
+                                {% if submission.submission_status == "pending" %}
+
+                                    <span class="status-pill pending"><i class="bi bi-clock"></i> Pending</span>
+
+                                {% elif submission.submission_status == "approved" %}
+
+                                    <span class="status-pill approved"><i class="bi bi-check-circle"></i> Approved</span>
+
+                                {% else %}
+
+                                    <span class="status-pill rejected"><i class="bi bi-x-circle"></i> Rejected</span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ submission.created_at.strftime("%d %b %Y") }}
+                            </td>
+
+                            <td>
+
+                                <a
+                                    href="{{ url_for(
+                                        'admin.view_property_submission',
+                                        submission_id=submission.submission_id
+                                    ) }}"
+                                    class="btn btn-sm btn-outline-dark"
+                                >
+                                    <i class="bi bi-eye"></i>
+                                    Review
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td
+                                colspan="9"
+                                class="text-center py-5 text-muted"
+                            >
+                                No property submissions found.
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% if pagination and pagination.pages > 1 %}
+
+            <div class="properties-pagination">
+
+                <div class="pagination-info">
+
+                    Showing
+
+                    <strong>
+                        {{
+                            ((pagination.page - 1) * pagination.per_page) + 1
+                        }}
+                    </strong>
+
+                    to
+
+                    <strong>
+                        {{
+                            [
+                                pagination.page * pagination.per_page,
+                                pagination.total
+                            ] | min
+                        }}
+                    </strong>
+
+                    of
+
+                    <strong>
+                        {{ pagination.total }}
+                    </strong>
+
+                    properties
+
+                </div>
+
+
+                <nav
+                    aria-label="Property pagination"
+                    class="pagination-nav"
+                >
+
+                    <ul class="pagination-list">
+
+                        <li>
+                            {% if pagination.has_prev %}
+
+                                <a
+                                    href="{{ url_for(
+                                        'admin.property_submissions',
+                                        page=pagination.prev_num
+                                    ) }}"
+                                    class="pagination-btn"
+                                    aria-label="Previous page"
+                                >
+                                    <i class="bi bi-chevron-left"></i>
+                                    <span>Previous</span>
+                                </a>
+
+                            {% else %}
+
+                                <span class="pagination-btn disabled">
+                                    <i class="bi bi-chevron-left"></i>
+                                    <span>Previous</span>
+                                </span>
+
+                            {% endif %}
+                        </li>
+
+
+                        {% for page_num in pagination.iter_pages(
+                            left_edge=1,
+                            right_edge=1,
+                            left_current=2,
+                            right_current=2
+                        ) %}
+
+                            {% if page_num %}
+
+                                {% if page_num == pagination.page %}
+
+                                    <li>
+                                        <span
+                                            class="pagination-number active"
+                                            aria-current="page"
+                                        >
+                                            {{ page_num }}
+                                        </span>
+                                    </li>
+
+                                {% else %}
+
+                                    <li>
+                                        <a
+                                            href="{{ url_for(
+                                                'admin.property_submissions',
+                                                page=page_num
+                                            ) }}"
+                                            class="pagination-number"
+                                        >
+                                            {{ page_num }}
+                                        </a>
+                                    </li>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <li>
+                                    <span class="pagination-dots">
+                                        ...
+                                    </span>
+                                </li>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+
+                        <li>
+                            {% if pagination.has_next %}
+
+                                <a
+                                    href="{{ url_for(
+                                        'admin.property_submissions',
+                                        page=pagination.next_num
+                                    ) }}"
+                                    class="pagination-btn"
+                                    aria-label="Next page"
+                                >
+                                    <span>Next</span>
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+
+                            {% else %}
+
+                                <span class="pagination-btn disabled">
+                                    <span>Next</span>
+                                    <i class="bi bi-chevron-right"></i>
+                                </span>
+
+                            {% endif %}
+                        </li>
+
+                    </ul>
+
+                </nav>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

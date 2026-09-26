@@ -1,38 +1,706 @@
 {% extends "admin/admin_base.html" %}
-{% block title %}Admin Dashboard | PEA_bridge{% endblock %}
 
-{% block content %}
-<h3 class="text-dark-50 fw-bold mb-3">Overview</h3>
+{% block title %}Admin Dashboard | Flexy Properties{% endblock %}
 
-<div class="row g-3">
-  <div class="col-12 col-md-3">
-    <div class="card p-3">
-      <div class="text-dark-50 fw-bold">Total Users</div>
-      <div class="fs-3 fw-bold">{{ total_users }}</div>
-    </div>
-  </div>
+{% block page_title %}Dashboard{% endblock %}
 
-  <div class="col-12 col-md-3">
-    <div class="card p-3">
-      <div class="text-dark-50 fw-bold">Total Properties</div>
-      <div class="fs-3 fw-bold">{{ total_properties }}</div>
-    </div>
-  </div>
 
-  <div class="col-12 col-md-3">
-    <div class="card p-3">
-      <div class="text-dark-50 fw-bold">Pending Properties</div>
-      <div class="fs-3 fw-bold">{{ pending_properties }}</div>
-    </div>
-  </div>
+{% block extra_css %}
 
-  <div class="col-12 col-md-3">
-    <div class="card p-3">
-      <div class="text-dark-50 fw-bold">Pending Agents</div>
-      <div class="fs-3 fw-bold">{{ pending_agents or 0 }}</div>
-    </div>
-  </div>
-</div>
+<style>
+
+/* =========================================================
+   DASHBOARD HEADER
+========================================================= */
+
+.dashboard-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+
+    gap: 15px;
+
+    margin-bottom: 24px;
+}
+
+.dashboard-header h2 {
+    margin: 0 0 5px;
+
+    color: #0f172a;
+
+    font-size: 1.45rem;
+    font-weight: 800;
+
+    letter-spacing: -.4px;
+}
+
+.dashboard-header p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: .78rem;
+}
+
+
+/* =========================================================
+   STAT CARDS
+========================================================= */
+
+.dashboard-stat-card {
+    position: relative;
+
+    height: 100%;
+
+    padding: 20px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #e5eaf0;
+    border-radius: 15px;
+
+    box-shadow:
+        0 4px 15px rgba(15,23,42,.035);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.dashboard-stat-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 25px rgba(15,23,42,.07);
+}
+
+
+/* =========================================================
+   STAT TOP
+========================================================= */
+
+.dashboard-stat-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+}
+
+.dashboard-stat-icon {
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    font-size: 1rem;
+}
+
+
+/* PROPERTY */
+
+.stat-property {
+    background: #ecfdf3;
+    color: #079455;
+}
+
+
+/* AVAILABLE */
+
+.stat-available {
+    background: #ecfdf3;
+    color: #067647;
+}
+
+
+/* USERS */
+
+.stat-users {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+
+/* INTEREST */
+
+.stat-interest {
+    background: #fff7ed;
+    color: #ea580c;
+}
+
+
+/* =========================================================
+   STAT LABEL
+========================================================= */
+
+.dashboard-stat-label {
+    color: #64748b;
+
+    font-size: .72rem;
+    font-weight: 650;
+}
+
+
+/* =========================================================
+   STAT NUMBER
+========================================================= */
+
+.dashboard-stat-number {
+    margin-bottom: 4px;
+
+    color: #0f172a;
+
+    font-size: 1.75rem;
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
+   STAT DESCRIPTION
+========================================================= */
+
+.dashboard-stat-description {
+    color: #94a3b8;
+
+    font-size: .65rem;
+}
+
+
+/* =========================================================
+   SMALL STATUS
+========================================================= */
+
+.dashboard-status {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 4px 7px;
+
+    border-radius: 999px;
+
+    background: #f1f5f9;
+
+    color: #64748b;
+
+    font-size: .58rem;
+    font-weight: 700;
+}
+
+.dashboard-status i {
+    font-size: .35rem;
+    color: #079455;
+}
+
+
+/* =========================================================
+   SECTION BELOW STATS
+========================================================= */
+
+.dashboard-section {
+    margin-top: 28px;
+}
+
+.dashboard-section-title {
+    margin-bottom: 15px;
+}
+
+.dashboard-section-title h3 {
+    margin: 0 0 3px;
+
+    color: #0f172a;
+
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.dashboard-section-title p {
+    margin: 0;
+
+    color: #94a3b8;
+
+    font-size: .7rem;
+}
+
+
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
+
+.dashboard-action-card {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    height: 100%;
+
+    padding: 16px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5eaf0;
+    border-radius: 13px;
+
+    color: #0f172a;
+
+    text-decoration: none;
+
+    transition: .2s ease;
+}
+
+.dashboard-action-card:hover {
+    border-color: rgba(7,148,85,.35);
+
+    box-shadow:
+        0 7px 20px rgba(15,23,42,.05);
+
+    color: #079455;
+
+    transform: translateY(-2px);
+}
+
+.dashboard-action-icon {
+    width: 39px;
+    height: 39px;
+
+    min-width: 39px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #f0fdf4;
+
+    color: #079455;
+}
+
+.dashboard-action-content strong {
+    display: block;
+
+    margin-bottom: 2px;
+
+    font-size: .75rem;
+}
+
+.dashboard-action-content span {
+    display: block;
+
+    color: #94a3b8;
+
+    font-size: .63rem;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 575.98px) {
+
+    .dashboard-header {
+        margin-bottom: 18px;
+    }
+
+    .dashboard-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .dashboard-stat-card {
+        padding: 17px;
+    }
+
+    .dashboard-stat-number {
+        font-size: 1.55rem;
+    }
+
+}
+
+</style>
 
 {% endblock %}
 
+
+
+{% block content %}
+
+
+<!-- =========================================================
+     DASHBOARD HEADER
+========================================================= -->
+
+<div class="dashboard-header">
+
+    <div>
+
+        <h2>
+            Overview
+        </h2>
+
+        <p>
+            Monitor and manage Flexy Properties from one place.
+        </p>
+
+    </div>
+
+
+    <span class="dashboard-status">
+
+        <i class="bi bi-circle-fill"></i>
+
+        Admin Workspace
+
+    </span>
+
+</div>
+
+
+
+<!-- =========================================================
+     STATISTICS
+========================================================= -->
+
+<div class="row g-3">
+
+
+    <!-- TOTAL PROPERTIES -->
+
+    <div class="col-12 col-sm-6 col-xl-3">
+
+        <div class="dashboard-stat-card">
+
+            <div class="dashboard-stat-top">
+
+                <div class="dashboard-stat-icon stat-property">
+
+                    <i class="bi bi-buildings-fill"></i>
+
+                </div>
+
+                <span class="dashboard-stat-label">
+                    Properties
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-stat-number">
+
+                {{ total_properties or 0 }}
+
+            </div>
+
+
+            <div class="dashboard-stat-description">
+
+                Total property listings
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- AVAILABLE PROPERTIES -->
+
+    <div class="col-12 col-sm-6 col-xl-3">
+
+        <div class="dashboard-stat-card">
+
+            <div class="dashboard-stat-top">
+
+                <div class="dashboard-stat-icon stat-available">
+
+                    <i class="bi bi-house-check-fill"></i>
+
+                </div>
+
+                <span class="dashboard-stat-label">
+                    Available
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-stat-number">
+
+                {{ available_properties or 0 }}
+
+            </div>
+
+
+            <div class="dashboard-stat-description">
+
+                Properties currently available
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- TOTAL USERS -->
+
+    <div class="col-12 col-sm-6 col-xl-3">
+
+        <div class="dashboard-stat-card">
+
+            <div class="dashboard-stat-top">
+
+                <div class="dashboard-stat-icon stat-users">
+
+                    <i class="bi bi-people-fill"></i>
+
+                </div>
+
+                <span class="dashboard-stat-label">
+                    Users
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-stat-number">
+
+                {{ total_users or 0 }}
+
+            </div>
+
+
+            <div class="dashboard-stat-description">
+
+                Registered customer accounts
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- INTEREST REQUESTS -->
+
+    <div class="col-12 col-sm-6 col-xl-3">
+
+        <div class="dashboard-stat-card">
+
+            <div class="dashboard-stat-top">
+
+                <div class="dashboard-stat-icon stat-interest">
+
+                    <i class="bi bi-heart-fill"></i>
+
+                </div>
+
+                <span class="dashboard-stat-label">
+                    Interests
+                </span>
+
+            </div>
+
+
+            <div class="dashboard-stat-number">
+
+                {{ total_interests or 0 }}
+
+            </div>
+
+
+            <div class="dashboard-stat-description">
+
+                Property interest requests
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     QUICK ACTIONS
+========================================================= -->
+
+<div class="dashboard-section">
+
+    <div class="dashboard-section-title">
+
+        <h3>
+            Quick Actions
+        </h3>
+
+        <p>
+            Common administrative tasks.
+        </p>
+
+    </div>
+
+
+    <div class="row g-3">
+
+
+        <!-- ADD PROPERTY -->
+
+        <div class="col-12 col-md-6 col-xl-3">
+
+            <a
+                href="#"
+                class="dashboard-action-card"
+            >
+
+                <div class="dashboard-action-icon">
+
+                    <i class="bi bi-plus-lg"></i>
+
+                </div>
+
+
+                <div class="dashboard-action-content">
+
+                    <strong>
+                        Add Property
+                    </strong>
+
+                    <span>
+                        Publish a new listing
+                    </span>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- PROPERTIES -->
+
+        <div class="col-12 col-md-6 col-xl-3">
+
+            <a
+                href="#"
+                class="dashboard-action-card"
+            >
+
+                <div class="dashboard-action-icon">
+
+                    <i class="bi bi-buildings"></i>
+
+                </div>
+
+
+                <div class="dashboard-action-content">
+
+                    <strong>
+                        Manage Properties
+                    </strong>
+
+                    <span>
+                        View and update listings
+                    </span>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- INTEREST REQUESTS -->
+
+        <div class="col-12 col-md-6 col-xl-3">
+
+            <a
+                href="{{ url_for('admin.view_interests') }}"
+                class="dashboard-action-card"
+            >
+
+                <div class="dashboard-action-icon">
+
+                    <i class="bi bi-heart"></i>
+
+                </div>
+
+
+                <div class="dashboard-action-content">
+
+                    <strong>
+                        Interest Requests
+                    </strong>
+
+                    <span>
+                        Review customer interests
+                    </span>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- USERS -->
+
+        <div class="col-12 col-md-6 col-xl-3">
+
+            <a
+                href="{{ url_for('admin.view_users') }}"
+                class="dashboard-action-card"
+            >
+
+                <div class="dashboard-action-icon">
+
+                    <i class="bi bi-people"></i>
+
+                </div>
+
+
+                <div class="dashboard-action-content">
+
+                    <strong>
+                        Users
+                    </strong>
+
+                    <span>
+                        Manage registered users
+                    </span>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+{% endblock %}

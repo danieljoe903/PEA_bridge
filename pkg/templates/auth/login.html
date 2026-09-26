@@ -1,106 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PEA-bridge | Secure Property Exchange</title>
-  <link href="/static/https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
-  <link rel="stylesheet" href="/static/animate.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="/static/https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-   
-  </style>
+  <title>Sign In | Flexy Properties</title>
+
+  <meta
+    name="description"
+    content="Sign in to Flexy Properties to explore property listings, view property details, manage your interests, and update your profile."
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    href="{{ url_for('static', filename='css/style.css') }}"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='animate.min.css') }}"
+  >
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
 </head>
+
 <body>
-  
-        <!-- section1 -->
-    <section class="container-fluid">
-    <div class="row mara justify-content-center">
-        <div class="col-md-5 cara">
-            <h4 class=" ps-3 pt-5 animate__animated animate__fadeInLeft"><a class="icon-link icon-link-hover text-decoration-none fw-bolder pea"  href="{{url_for('main.homepage')}}">
-  
-            <svg xmlns="http://www.w3.org/2000/svg" width="50px" height="50px" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
-            </svg>PEA-bridge
-            </a></h4>
-            <h2 class="fw-bolder text-white ps-3 pt-4 animate__animated animate__fadeInLeft ">Secured Property<br>Transaction Made Easy</h2>
-            <p class="ps-3 text-secondary animate__animated animate__fadeInLeft">A trusted and bridge between property owners,buyers,and verified agents. 
-                Transparency.verification and security first
-            </p>
-            <div class="features animate__animated animate__fadeInLeft">
-                <span>✓</span><div>Verified Property Listing</div>
-            </div>
-            <div class="features animate__animated animate__fadeInLeft">
-                <span>✓</span><div>Trusted Estate Agents</div>
-            </div>
-            <div class="features animate__animated animate__fadeInLeft">
-                <span>✓</span><div>Secured Transaction</div>
-            </div>
-        </div>
-        <div class="col-md-5 cara">
-            <h3 class="text-white para mt-5 ps-4 animate__animated animate__fadeInDown ">Sign in</h3>
-            <p class="text-secondary ps-4 s animate__animated animate__fadeInDown">Access your PEA-bridge account</p>
-            
-            <form action="{{ url_for('auth.login') }}" method="post" class="email ps-4 animate__animated animate__fadeInUpBig">
-                {{form.csrf_token}}
 
-                {% with messages=get_flashed_messages(with_categories=True) %}
-                {% if messages %}
-                {% for cat,msg in messages %}
-                    <div class="alert alert-{{cat}} alert-dismissible fade show auto-dismiss" role="alert">
-                        {{msg}}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                 {% endfor %}
-                 {% endif %}
-                {% endwith %}
-                     <div>
-                        {{ form.username(class_="form-control", placeholder="Enter your username") }}
-                        {% if form.username.errors %}
-                        {% for error in form.username.errors %}
-                        <small class="text-danger">{{ error }}</small>
-                        {% endfor %}
-                        {% endif %}
-                    </div>
+<!-- =====================================================
+     LOGIN PAGE
+====================================================== -->
+<section class="container-fluid">
 
-                    <div class="my-3">
-                        {{ form.password(class_="form-control", placeholder="Enter Your Password") }}
-                        {% if form.password.errors %}
-                        {% for error in form.password.errors %}
-                        <small class="text-danger">{{ error }}</small>
-                        {% endfor %}
-                        {% endif %}
-                    </div>
+  <div class="row mara justify-content-center">
 
-                    <div class=" col-12 mt-3 ">
-                        {{ form.login(class_="login main w-100") }}
+    <!-- =================================================
+         LEFT SIDE
+    ================================================== -->
+    <div class="col-md-5 cara">
 
-                        <div class="auth-links text-center">
-                            <a href="{{ url_for('auth.forgot_password') }}" class="text-decoration-none pea">Forgot Password?</a>
-                            <p class="text-light fw-bold">Don't have an account <a href="{{ url_for('auth.register') }}" class="text-decoration-none pea">Create one</a></p>
-                        </div>
-                    </div>
-            </form>
-                
-        </div>
+      <h4 class="ps-3 pt-5 animate__animated animate__fadeInLeft">
+
+        <a
+          class="icon-link icon-link-hover text-decoration-none fw-bolder pea"
+          href="{{ url_for('main.homepage') }}"
+        >
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="50"
+            height="50"
+            fill="currentColor"
+            class="bi bi-arrow-left-circle"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"
+            />
+          </svg>
+
+          Flexy Properties
+
+        </a>
+
+      </h4>
+
+
+      <h2
+        class="fw-bolder text-white ps-3 pt-4 animate__animated animate__fadeInLeft"
+      >
+        Find Properties<br>
+        That Match Your Needs
+      </h2>
+
+
+      <p
+        class="ps-3 text-secondary animate__animated animate__fadeInLeft"
+      >
+        Explore available houses, apartments, land and commercial
+        properties in one convenient property marketplace.
+      </p>
+
+
+      <div class="features animate__animated animate__fadeInLeft">
+        <span>✓</span>
+        <div>Admin-Managed Property Listings</div>
+      </div>
+
+
+      <div class="features animate__animated animate__fadeInLeft">
+        <span>✓</span>
+        <div>Detailed Property Information</div>
+      </div>
+
+
+      <div class="features animate__animated animate__fadeInLeft">
+        <span>✓</span>
+        <div>Request Interest in Properties</div>
+      </div>
+
     </div>
+
+
+    <!-- =================================================
+         RIGHT SIDE - LOGIN
+    ================================================== -->
+    <div class="col-md-5 cara">
+
+      <h3
+        class="text-white para mt-5 ps-4 animate__animated animate__fadeInDown"
+      >
+        Welcome Back
+      </h3>
+
+      <p
+        class="text-secondary ps-4 s animate__animated animate__fadeInDown"
+      >
+        Sign in to your Flexy Properties account
+      </p>
+
+
+      <form
+        action="{{ url_for('auth.login') }}"
+        method="post"
+        class="email ps-4 animate__animated animate__fadeInUpBig"
+      >
+
+        {{ form.csrf_token }}
+
+
+        <!-- FLASH MESSAGES -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+
+          {% if messages %}
+
+            {% for cat, msg in messages %}
+
+              <div
+                class="alert alert-{{ cat }} alert-dismissible fade show auto-dismiss"
+                role="alert"
+              >
+
+                {{ msg }}
+
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                ></button>
+
+              </div>
+
+            {% endfor %}
+
+          {% endif %}
+
+        {% endwith %}
+
+
+        <!-- USERNAME -->
+        <div>
+
+          {{ form.username(
+              class_="form-control",
+              placeholder="Enter your username",
+              autocomplete="username"
+          ) }}
+
+          {% if form.username.errors %}
+
+            {% for error in form.username.errors %}
+              <small class="text-danger">
+                {{ error }}
+              </small>
+            {% endfor %}
+
+          {% endif %}
+
+        </div>
+
+
+        <!-- PASSWORD -->
+        <div class="my-3">
+
+          {{ form.password(
+              class_="form-control",
+              placeholder="Enter your password",
+              autocomplete="current-password"
+          ) }}
+
+          {% if form.password.errors %}
+
+            {% for error in form.password.errors %}
+              <small class="text-danger">
+                {{ error }}
+              </small>
+            {% endfor %}
+
+          {% endif %}
+
+        </div>
+
+
+        <!-- LOGIN -->
+        <div class="col-12 mt-3">
+
+          {{ form.login(
+              class_="login main w-100"
+          ) }}
+
+
+          <div class="auth-links text-center">
+
+            <a
+              href="{{ url_for('auth.forgot_password') }}"
+              class="text-decoration-none pea"
+            >
+              Forgot Password?
+            </a>
+
+
+            <p class="text-light fw-bold mt-2">
+
+              Don't have an account?
+
+              <a
+                href="{{ url_for('auth.register') }}"
+                class="text-decoration-none pea"
+              >
+                Create one
+              </a>
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
 </section>
 
-   
- <script src="/static/jquery-4.0.0.min.js"></script>
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
- <script>
-            setTimeout(function(){
-        document.querySelectorAll('.auto-dismiss').forEach(function(alert){
-          let bsAlert =new bootstrap.Alert(alert);
-          bsAlert.close();
-        });
-      }, 3000);
 
-      
- </script>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+<script>
+  setTimeout(function () {
+
+    document
+      .querySelectorAll('.auto-dismiss')
+      .forEach(function (alert) {
+
+        const bsAlert = new bootstrap.Alert(alert);
+        bsAlert.close();
+
+      });
+
+  }, 3000);
+</script>
+
 </body>
 </html>

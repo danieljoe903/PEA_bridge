@@ -1,344 +1,1371 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}PEA-Bridge{% endblock %}</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Changa+One&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="utf-8">
 
-  <style>
-    body{
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: linear-gradient(180deg, #08111d 0%, #0b1320 100%);
-      color: #fff;
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+
+    <!-- =====================================================
+         PAGE TITLE / SEO
+    ====================================================== -->
+
+    <title>
+        {% block title %}Flexy Properties{% endblock %}
+    </title>
+
+    <meta
+        name="description"
+        content="{% block meta_description %}Explore houses, apartments, land and commercial properties available through Flexy Properties.{% endblock %}"
+    >
+
+    <meta name="robots" content="index, follow">
+
+    <meta name="theme-color" content="#0b1320">
+
+
+    <!-- =====================================================
+         FAVICON
+    ====================================================== -->
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="{{ url_for(
+            'static',
+            filename='image/favicon.png'
+        ) }}"
+    >
+
+
+    <!-- =====================================================
+         BOOTSTRAP
+    ====================================================== -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         FONT
+    ====================================================== -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         YOUR CSS
+    ====================================================== -->
+
+    <link
+        href="{{ url_for(
+            'static',
+            filename='css/home.css',
+            v='5'
+        ) }}"
+        rel="stylesheet"
+    >
+
+
+    {% block extra_css %}{% endblock %}
+
+
+    <style>
+
+        :root {
+            --flexy-dark: #0b1320;
+            --flexy-dark-2: #111d2d;
+            --flexy-green: #198754;
+            --flexy-green-light: #78d89b;
+            --flexy-bg: #f7f8fa;
+            --flexy-border: #e5e7eb;
+            --flexy-text: #111827;
+            --flexy-muted: #6b7280;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            margin: 0;
+
+            font-family:
+                "Inter",
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background: var(--flexy-bg);
+            color: var(--flexy-text);
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ====================================================== */
+
+        .flexy-navbar {
+            min-height: 74px;
+
+            background:
+                rgba(11, 19, 32, .98);
+
+            border-bottom:
+                1px solid rgba(255,255,255,.07);
+
+            box-shadow:
+                0 5px 25px rgba(0,0,0,.08);
+        }
+
+
+        .flexy-brand {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            color: #fff !important;
+
+            text-decoration: none;
+
+            font-size: 1.18rem;
+            font-weight: 800;
+        }
+
+
+        .flexy-brand-icon {
+            width: 39px;
+            height: 39px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            background: var(--flexy-green);
+
+            border-radius: 10px;
+
+            color: #fff;
+
+            font-size: 1.1rem;
+        }
+
+
+        .flexy-brand-green {
+            color: var(--flexy-green-light);
+        }
+
+
+        /* =====================================================
+           NAV LINKS
+        ====================================================== */
+
+        .flexy-navbar .nav-link {
+            position: relative;
+
+            color: rgba(255,255,255,.72);
+
+            font-size: .86rem;
+            font-weight: 600;
+
+            padding: 10px 11px !important;
+
+            transition: .2s ease;
+        }
+
+
+        .flexy-navbar .nav-link:hover {
+            color: #fff;
+        }
+
+
+        .flexy-navbar .nav-link.active {
+            color: var(--flexy-green-light);
+        }
+
+
+        .flexy-navbar .nav-link.active::after {
+            content: "";
+
+            position: absolute;
+
+            left: 11px;
+            right: 11px;
+            bottom: 2px;
+
+            height: 2px;
+
+            border-radius: 10px;
+
+            background: var(--flexy-green);
+        }
+
+
+        /* =====================================================
+           VIDEO NAV
+        ====================================================== */
+
+        .video-nav-link i {
+            color: #ff6b6b;
+        }
+
+
+        /* =====================================================
+           PROFILE
+        ====================================================== */
+
+        .flexy-user-link {
+            display: flex !important;
+            align-items: center;
+
+            gap: 8px;
+
+            padding:
+                5px 8px !important;
+
+            border:
+                1px solid rgba(255,255,255,.10);
+
+            border-radius: 50px;
+        }
+
+
+        .flexy-user-image {
+            width: 36px;
+            height: 36px;
+
+            object-fit: cover;
+
+            border-radius: 50%;
+
+            border:
+                2px solid rgba(120,216,155,.35);
+        }
+
+
+        .flexy-user-name {
+            max-width: 100px;
+
+            overflow: hidden;
+
+            white-space: nowrap;
+
+            text-overflow: ellipsis;
+
+            color: #fff;
+        }
+
+
+        /* =====================================================
+           DROPDOWN
+        ====================================================== */
+
+        .flexy-dropdown {
+            min-width: 230px;
+
+            border: 0;
+
+            border-radius: 14px;
+
+            padding: 8px;
+
+            box-shadow:
+                0 15px 40px rgba(0,0,0,.15);
+        }
+
+
+        .flexy-dropdown .dropdown-item {
+            border-radius: 8px;
+
+            padding: 9px 11px;
+
+            font-size: .86rem;
+        }
+
+
+        /* =====================================================
+           PAGE CONTENT
+        ====================================================== */
+
+        .flexy-main {
+            min-height:
+                calc(100vh - 74px);
+
+            background: var(--flexy-bg);
+        }
+
+
+        /* =====================================================
+           FLASH MESSAGES
+        ====================================================== */
+
+        .flexy-flash-wrapper {
+            position: fixed;
+
+            top: 88px;
+            right: 20px;
+
+            width:
+                min(420px, calc(100% - 30px));
+
+            z-index: 1080;
+        }
+
+
+        .flexy-flash-wrapper .alert {
+            border: 0;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 12px 35px rgba(0,0,0,.14);
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ====================================================== */
+
+        @media (max-width: 991.98px) {
+
+            .flexy-navbar {
+                min-height: 68px;
+            }
+
+
+            .flexy-navbar .navbar-collapse {
+                margin-top: 12px;
+
+                padding:
+                    10px 0 16px;
+
+                border-top:
+                    1px solid rgba(255,255,255,.07);
+            }
+
+
+            .flexy-navbar .nav-link {
+                padding:
+                    11px 5px !important;
+            }
+
+
+            .flexy-navbar .nav-link.active::after {
+                display: none;
+            }
+
+
+            .flexy-user-link {
+                width: fit-content;
+
+                margin-top: 8px;
+
+                padding:
+                    5px 10px !important;
+            }
+
+        }
+
+
+        @media (max-width: 575.98px) {
+
+            .flexy-brand {
+                font-size: 1.02rem;
+            }
+
+
+            .flexy-brand-icon {
+                width: 35px;
+                height: 35px;
+            }
+
+
+            .flexy-flash-wrapper {
+                top: 78px;
+
+                left: 15px;
+                right: 15px;
+
+                width: auto;
+            }
+
+        }
+        /* =========================================================
+            PROPERTY ACTION BUTTONS
+          ========================================================= */
+
+          .property-actions {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 10px;
+
+              margin-top: auto;
+          }
+
+          .property-actions .btn {
+              width: 100%;
+              min-height: 44px;
+
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              border-radius: 8px;
+
+              font-size: .78rem;
+              font-weight: 700;
+
+              white-space: nowrap;
+
+              transition:
+                  background .2s ease,
+                  border-color .2s ease,
+                  color .2s ease,
+                  transform .2s ease;
+          }
+
+
+          /* VIEW DETAILS */
+
+          .property-actions .btn-outline-dark {
+              background: #ffffff;
+
+              border: 1px solid #9ca3af;
+
+              color: #111827;
+          }
+
+          .property-actions .btn-outline-dark:hover {
+              background: #111827;
+              border-color: #111827;
+
+              color: white;
+          }
+
+
+          /* REQUEST PROPERTY */
+
+          .btn-request-property {
+              background: #079455 !important;
+
+              border: 1px solid #079455 !important;
+
+              color: #ffffff !important;
+          }
+
+          .btn-request-property:hover {
+              background: #067647 !important;
+
+              border-color: #067647 !important;
+
+              color: white !important;
+
+              transform: translateY(-1px);
+          }
+
+
+          /* REQUESTED / RETRY */
+
+          .btn-request-disabled {
+              background: #aeb5bd !important;
+
+              border: 1px solid #aeb5bd !important;
+
+              color: #ffffff !important;
+
+              cursor: not-allowed;
+          }
+
+
+          /* FORM MUST FILL ITS GRID COLUMN */
+
+          .property-request-form {
+              width: 100%;
+              margin: 0;
+          }
+
+          .property-request-form .btn {
+              width: 100%;
+              height: 100%;
+          }
+
+
+          /* MOBILE */
+
+          @media (max-width: 400px) {
+
+              .property-actions {
+                  grid-template-columns: 1fr;
+              }
+          }
+          /* =========================================================
+              POPULAR SEARCH CHIPS
+            ========================================================= */
+
+              .popular-searches {
+                  display: flex;
+                  align-items: center;
+                  flex-wrap: wrap;
+                  gap: 7px;
+
+                  margin-top: 12px;
+              }
+
+              .popular-label {
+                  color: rgba(255, 255, 255, 0.65);
+                  font-size: 0.75rem;
+                  font-weight: 500;
+
+                  margin-right: 2px;
+              }
+
+              .popular-chip {
+                  appearance: none;
+
+                  background: rgba(255, 255, 255, 0.08);
+
+                  border: 1px solid rgba(255, 255, 255, 0.18);
+
+                  color: rgba(255, 255, 255, 0.88);
+
+                  padding: 5px 11px;
+
+                  border-radius: 999px;
+
+                  font-size: 0.7rem;
+                  font-weight: 600;
+
+                  line-height: 1;
+
+                  cursor: pointer;
+
+                  transition:
+                      background-color 0.2s ease,
+                      border-color 0.2s ease,
+                      color 0.2s ease,
+                      transform 0.2s ease;
+              }
+
+              .popular-chip:hover {
+                  background: #079455;
+                  border-color: #079455;
+                  color: #ffffff;
+
+                  transform: translateY(-1px);
+              }
+
+              .popular-chip:focus-visible {
+                  outline: 2px solid #34d399;
+                  outline-offset: 2px;
+              }
+
+
+              /* MOBILE */
+
+              @media (max-width: 576px) {
+
+                  .popular-searches {
+                      gap: 6px;
+                  }
+
+                  .popular-label {
+                      width: 100%;
+                      margin-bottom: 2px;
+                  }
+
+                  .popular-chip {
+                      font-size: 0.68rem;
+                      padding: 6px 10px;
+                  }
+              }
+/* 
+      ============================
+          FLEXY PROPERTY FOOTER
+      ============================ */
+              
+        .flexy-footer {
+            width: 100%;
+            max-width: 100%;
+
+            background: #081525;
+            color: #ffffff;
+
+            padding: 65px 0 25px;
+
+            border-top: 1px solid rgba(255,255,255,.07);
+
+            overflow-x: hidden;
+        }
+
+
+        /* =========================================================
+          BRAND
+        ========================================================= */
+
+        .flexy-footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            width: fit-content;
+            max-width: 100%;
+
+            color: #ffffff;
+
+            font-size: 1.25rem;
+            font-weight: 700;
+
+            text-decoration: none;
+        }
+
+        .flexy-footer-brand:hover {
+            color: #ffffff;
+        }
+
+        .flexy-footer-brand strong {
+            color: #4ade80;
+        }
+
+        .flexy-footer-logo {
+            width: 39px;
+            height: 39px;
+
+            min-width: 39px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background: #079455;
+            color: #ffffff;
+
+            font-size: 1rem;
+        }
+
+        .flexy-footer-description {
+            width: 100%;
+            max-width: 440px;
+
+            margin-top: 18px;
+            margin-bottom: 0;
+
+            color: #94a3b8;
+
+            font-size: .88rem;
+            line-height: 1.75;
+
+            overflow-wrap: break-word;
+        }
+
+
+        /* =========================================================
+          HEADINGS
+        ========================================================= */
+
+        .flexy-footer-heading {
+            color: #ffffff;
+
+            font-size: .85rem;
+            font-weight: 800;
+
+            margin-bottom: 17px;
+        }
+
+
+        /* =========================================================
+          LINKS
+        ========================================================= */
+
+        .flexy-footer-links {
+            display: flex;
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+        .flexy-footer-links a {
+            width: fit-content;
+            max-width: 100%;
+
+            color: #94a3b8;
+
+            font-size: .84rem;
+
+            text-decoration: none;
+
+            overflow-wrap: anywhere;
+
+            transition: color .2s ease;
+        }
+
+        .flexy-footer-links a:hover {
+            color: #4ade80;
+        }
+
+
+        /* =========================================================
+          SUPPORT
+        ========================================================= */
+
+        .flexy-footer-support-text {
+            color: #94a3b8;
+
+            font-size: .84rem;
+            line-height: 1.6;
+
+            margin-bottom: 13px;
+        }
+
+        .flexy-support-email {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 7px;
+
+            max-width: 100%;
+
+            color: #4ade80;
+
+            font-size: .82rem;
+            font-weight: 600;
+
+            text-decoration: none;
+
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .flexy-support-email:hover {
+            color: #86efac;
+        }
+
+
+        /* =========================================================
+          DIVIDER
+        ========================================================= */
+
+        .flexy-footer-divider {
+            width: 100%;
+            height: 1px;
+
+            background: rgba(255,255,255,.08);
+
+            margin: 45px 0 22px;
+        }
+
+
+        /* =========================================================
+          BOTTOM
+        ========================================================= */
+
+        .flexy-footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            flex-wrap: wrap;
+
+            gap: 15px;
+
+            color: #64748b;
+
+            font-size: .76rem;
+        }
+
+        .flexy-footer-legal {
+            display: flex;
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 18px;
+        }
+
+        .flexy-footer-legal a {
+            color: #94a3b8;
+
+            text-decoration: none;
+
+            transition: color .2s ease;
+        }
+
+        .flexy-footer-legal a:hover {
+            color: #4ade80;
+        }
+
+
+        /* =========================================================
+          TABLET
+        ========================================================= */
+
+        @media (max-width: 991.98px) {
+
+            .flexy-footer {
+                padding: 55px 0 24px;
+            }
+
+        }
+
+
+        /* =========================================================
+          MOBILE
+        ========================================================= */
+
+        @media (max-width: 767.98px) {
+
+            .flexy-footer {
+                padding: 45px 0 22px;
+            }
+
+            .flexy-footer-description {
+                max-width: 100%;
+            }
+
+            .flexy-footer-divider {
+                margin: 32px 0 20px;
+            }
+
+            .flexy-footer-bottom {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+        }
+
+
+        /* =========================================================
+          SMALL MOBILE
+        ========================================================= */
+
+        @media (max-width: 575.98px) {
+
+            .flexy-footer-brand {
+                font-size: 1.08rem;
+            }
+
+            .flexy-footer-logo {
+                width: 36px;
+                height: 36px;
+
+                min-width: 36px;
+            }
+
+            .flexy-footer-description {
+                font-size: .82rem;
+            }
+
+            .flexy-support-email {
+                font-size: .78rem;
+            }
+
+        }
+
+        /* =====================================================
+   MARKET PROPERTY NAVIGATION
+===================================================== */
+
+.market-property-nav {
+    color: #86efac !important;
+}
+
+.market-property-nav i {
+    color: #4ade80;
+}
+
+.market-property-nav:hover {
+    color: #ffffff !important;
+}
+
+.market-property-nav.active {
+    color: #86efac !important;
+}
+
+
+/* =====================================================
+   LOGIN BUTTON
+===================================================== */
+
+.flexy-login-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    min-height: 40px;
+
+    padding: 8px 17px;
+
+    background: #079455;
+    border: 1px solid #079455;
+
+    border-radius: 9px;
+
+    color: #ffffff;
+    text-decoration: none;
+
+    font-size: .84rem;
+    font-weight: 700;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        transform .2s ease;
+}
+
+.flexy-login-btn:hover {
+    background: #067647;
+    border-color: #067647;
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   NAVBAR MOBILE
+===================================================== */
+
+@media (max-width: 991.98px) {
+
+    .flexy-login-btn {
+        width: 100%;
+
+        margin-top: 10px;
+
+        padding: 11px 16px;
     }
 
-    .app-shell{
-      min-height: 100vh;
-    }
+}
 
-    .sidebar{
-      background: rgba(11,19,32,.95);
-      border-right: 1px solid rgba(255,255,255,.06);
-      min-height: 100vh;
-      position: sticky;
-      top: 0;
-      padding: 20px 16px;
-    }
+    </style>
 
-    .brand-logo{
-      font-family: "Changa One", system-ui;
-      font-size: 1.4rem;
-      letter-spacing: .02em;
-      color: #fff;
-      text-decoration: none;
-    }
-
-    .sidebar-card{
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 18px;
-      padding: 16px;
-    }
-
-    .sidebar .nav-link{
-      color: rgba(255,255,255,.82);
-      border-radius: 14px;
-      padding: 11px 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: .25s ease;
-      font-weight: 500;
-    }
-
-    .sidebar .nav-link:hover{
-      background: rgba(122,204,22,.10);
-      color: #fff;
-    }
-
-    .sidebar .nav-link.active{
-      background: rgba(122,204,22,.18);
-      color: #d9ffb2;
-      border: 1px solid rgba(122,204,22,.20);
-    }
-
-    .sidebar .status-link{
-      border-radius: 14px;
-      padding: 11px 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 600;
-      background: rgba(255,255,255,.04);
-    }
-
-    .main-panel{
-      padding: 22px;
-    }
-
-    .topbar{
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.06);
-      border-radius: 20px;
-      padding: 14px 18px;
-      margin-bottom: 20px;
-    }
-
-    .content-wrap{
-      background: rgba(255,255,255,.02);
-      border: 1px solid rgba(255,255,255,.04);
-      border-radius: 22px;
-      min-height: calc(100vh - 110px);
-      padding: 18px;
-    }
-
-    .profile-thumb{
-      width: 56px;
-      height: 56px;
-      object-fit: cover;
-      border-radius: 50%;
-      border: 2px solid rgba(122,204,22,.35);
-    }
-
-    .divider-soft{
-      border-color: rgba(255,255,255,.08);
-    }
-
-    .mobile-brand{
-      font-family: "Changa One", system-ui;
-      color: #fff;
-      text-decoration: none;
-    }
-
-    @media (max-width: 991.98px){
-      .sidebar{
-        min-height: auto;
-        position: static;
-        border-right: 0;
-        border-bottom: 1px solid rgba(255,255,255,.06);
-      }
-      .main-panel{
-        padding: 14px;
-      }
-      .content-wrap{
-        padding: 14px;
-      }
-    }
-  </style>
-
-  {% block extra_css %}{% endblock %}
 </head>
+
+
 <body>
 
-<div class="container-fluid app-shell">
-  <div class="row g-0">
 
-    <!-- SIDEBAR -->
-    <aside class="col-12 col-lg-3 col-xl-2 sidebar">
-      <div class="d-flex align-items-center justify-content-between mb-4">
-        <a href="{{ url_for('main.homepage') }}" class="brand-logo">
-          <span class="text-warning">&lt;/&gt;</span> PEA-Bridge
+<!-- =========================================================
+     NAVIGATION
+========================================================= -->
+
+<nav
+    class="navbar navbar-expand-lg navbar-dark flexy-navbar sticky-top"
+>
+
+    <div class="container">
+
+
+        <!-- BRAND -->
+
+        <a
+            href="{{ url_for('main.homepage') }}"
+            class="flexy-brand"
+        >
+
+            <span class="flexy-brand-icon">
+
+                <i class="bi bi-buildings"></i>
+
+            </span>
+
+            <span>
+
+                Flexy
+                <span class="flexy-brand-green">
+                    Properties
+                </span>
+
+            </span>
+
         </a>
 
-        <button class="btn btn-sm btn-outline-light d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#appSidebarNav">
-          <i class="bi bi-list"></i>
+
+
+        <!-- MOBILE TOGGLER -->
+
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#flexyNavbar"
+            aria-controls="flexyNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+
+            <span class="navbar-toggler-icon"></span>
+
         </button>
-      </div>
 
-      <div class="collapse d-lg-block" id="appSidebarNav">
 
-        <div class="sidebar-card mb-4">
-          <div class="d-flex align-items-center gap-1 ">
-            <div>
-              
-              {% if current_user %}
-                <img
-                  src="{{ url_for('static', filename=current_user.image_url or 'uploads/default.png') }}"
-                  alt="user"
-                  class="profile-thumb"
-                >
-              {% else %}
-                <div class="profile-thumb d-flex align-items-center justify-content-center bg-white bg-opacity-10">
-                  <i class="bi bi-person-fill fs-3 text-light"></i>
-                </div>
-              {% endif %}
-            </div>
 
-           
-          </div>
-               <div class="flex-grow-1 mt-2 text-break ">
-              {% if current_user %}
-                <div class="fw-bold ">{{ current_user.user_fname }} {{ current_user.users_lname }}</div>
-                <div class="small text-white-50">{{ current_user.email }}</div>
-              {% else %}
-                <div class="fw-bold">Guest User</div>
-                <div class="small text-white-50">Please login</div>
-              {% endif %}
-            </div>
-          {% if current_user %}
-            <hr class="divider-soft my-2">
+        <div
+            class="collapse navbar-collapse"
+            id="flexyNavbar"
+        >
 
-            <div class="small text-white-50 mb-2">Account Status</div>
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
 
-            <div class="d-flex gap-2 flex-wrap">
-              {% if current_user.is_verified %}
-                <span class="badge bg-success">Verified User</span>
-              {% else %}
-                <span class="badge bg-warning text-dark">Not Verified</span>
-              {% endif %}
-
-              {% if agent_profile %}
-                {% if agent_profile.agency_status == "active" %}
-                  <span class="badge bg-info text-dark">Verified Agent</span>
-                {% elif agent_profile.agency_status == "pending" %}
-                  <span class="badge bg-warning text-dark">Agent Pending</span>
-                {% elif agent_profile.agency_status == "suspended" %}
-                  <span class="badge bg-danger">Agent Suspended</span>
+    <!-- HOME -->
+    <li class="nav-item">
+        <a
+            href="{{ url_for('main.homepage') }}"
+            class="
+                nav-link
+                {% if active == 'home' %}
+                    active
                 {% endif %}
-              {% endif %}
-            </div>
-          {% endif %}
-        </div>
+            "
+        >
+            <i class="bi bi-house-door me-1"></i>
+            Home
+        </a>
+    </li>
 
-        <ul class="nav flex-column gap-2">
-          <li class="nav-item">
-            <a class="nav-link {% if active=='dashboard' %}active{% endif %}" href="{{ url_for('user.dashboard') }}">
-              <i class="bi bi-grid-1x2-fill"></i>
-              <span>Dashboard</span>
+
+    <!-- EXPLORE PROPERTIES -->
+    <li class="nav-item">
+        <a
+            href="{{ url_for('property.explore_properties') }}"
+            class="
+                nav-link
+                {% if active == 'explore' %}
+                    active
+                {% endif %}
+            "
+        >
+            <i class="bi bi-search me-1"></i>
+            Explore Properties
+        </a>
+    </li>
+
+
+    <!-- MARKET YOUR PROPERTY -->
+    {% if current_user %}
+
+        <li class="nav-item">
+            <a
+                href="{{ url_for('property.market_property') }}"
+                class="
+                    nav-link
+                    market-property-nav
+                    {% if active == 'market_property' %}
+                        active
+                    {% endif %}
+                "
+            >
+                <i class="bi bi-building-add me-1"></i>
+                Market Your Property
             </a>
-          </li>
+        </li>
 
-          <li class="nav-item">
-            <a class="nav-link {% if active=='properties' %}active{% endif %}" href="{{ url_for('property.list_properties') }}">
-              <i class="bi bi-house-door-fill"></i>
-              <span>My Properties</span>
+    {% endif %}
+
+
+    <!-- PROPERTY VIDEOS -->
+
+    <!-- MY INTERESTS -->
+    {% if current_user %}
+
+        <li class="nav-item">
+            <a
+                href="{{ url_for('interest.my_interest') }}"
+                class="
+                    nav-link
+                    {% if active == 'interests' %}
+                        active
+                    {% endif %}
+                "
+            >
+                <i class="bi bi-heart me-1"></i>
+                My Interests
             </a>
-          </li>
+        </li>
 
-          <li class="nav-item">
-            <a class="nav-link {% if active=='explore' %}active{% endif %}" href="{{ url_for('property.explore_properties') }}">
-              <i class="bi bi-search"></i>
-              <span>Explore Properties</span>
-            </a>
-          </li>
+    {% endif %}
 
-          <li class="nav-item">
-            <a class="nav-link {% if active=='interests' %}active{% endif %}" href="{{ url_for('interest.my_interest') }}">
-              <i class="bi bi-heart-fill"></i>
-              <span>My Interest</span>
-            </a>
-          </li>
 
-          <li class="nav-item">
-            <a class="nav-link {% if active=='profile' %}active{% endif %}" href="{{ url_for('user.profile') }}">
-              <i class="bi bi-person-fill"></i>
-              <span>Profile</span>
-            </a>
-          </li>
+    <!-- USER ACCOUNT -->
+    {% if current_user %}
 
-          <li class="nav-item">
-            {% if not agent_profile %}
-              <a class="nav-link {% if active=='agent' %}active{% endif %}" href="{{ url_for('agent.apply') }}">
-                <i class="bi bi-patch-check-fill"></i>
-                <span>Become an Agent</span>
-              </a>
-            {% elif agent_profile.agency_status == "pending" %}
-              <div class="status-link text-warning">
-                <i class="bi bi-hourglass-split"></i>
-                <span>Agent Pending</span>
-              </div>
-            {% elif agent_profile.agency_status == "suspended" %}
-              <div class="status-link text-danger">
-                <i class="bi bi-slash-circle-fill"></i>
-                <span>Agent Suspended</span>
-              </div>
-            {% elif agent_profile.agency_status == "active" %}
-              <div class="status-link text-success">
-                <i class="bi bi-patch-check-fill"></i>
-                <span>Agent Active</span>
-              </div>
-            {% endif %}
-          </li>
+        <li class="nav-item dropdown ms-lg-2">
 
-          <li class="nav-item mt-2">
-            <a class="nav-link" href="{{ url_for('auth.logout') }}">
-              <i class="bi bi-box-arrow-right"></i>
-              <span>Logout</span>
-            </a>
-          </li>
-        </ul>
+            <a
+                href="#"
+                class="
+                    nav-link
+                    dropdown-toggle
+                    flexy-user-link
+                "
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+            >
 
-      </div>
-    </aside>
+                <img
+                    src="{{ url_for(
+                        'static',
+                        filename=current_user.image_url
+                        or 'uploads/default.png'
+                    ) }}"
+                    alt="{{ current_user.user_fname }} profile"
+                    class="flexy-user-image"
+                >
 
-    <!-- MAIN -->
-    <main class="col-12 col-lg-9 col-xl-10 main-panel">
-      <div class="topbar d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <div>
-          <div class="small text-white-50">Welcome to</div>
-          <div class="fw-bold fs-5">PEA-Bridge Workspace</div>
-        </div>
+                <span class="flexy-user-name">
+                    {{ current_user.user_fname }}
+                </span>
 
-        <div class="d-flex gap-2 flex-wrap">
-          <a href="{{ url_for('main.homepage') }}" class="btn btn-outline-light btn-sm">
-            <i class="bi bi-house"></i> Homepage
-          </a>
-
-            <a class="nav-link {% if active=='owner_requests' %}active{% endif %}"
-              href="{{ url_for('interest.owner_requests') }}">
-              Property Requests
-              {% if total_owner_requests and total_owner_requests > 0 %}
-                <span class="badge bg-danger ms-1">{{ total_owner_requests }}</span>
-              {% endif %}
             </a>
 
-          {% if agent_profile and agent_profile.agency_status == "active" %}
-            <a href="{{ url_for('property.add_property') }}" class="btn btn-success btn-sm fw-bold">
-              + Add Property
-            </a>
-          {% endif %}
-        </div>
-      </div>
 
-      {% with messages = get_flashed_messages(with_categories=true) %}
+            <ul
+                class="
+                    dropdown-menu
+                    dropdown-menu-end
+                    flexy-dropdown
+                "
+            >
+
+                <!-- USER DETAILS -->
+                <li class="px-2 py-2 border-bottom mb-1">
+
+                    <div class="fw-bold small">
+                        {{ current_user.user_fname }}
+                        {{ current_user.users_lname }}
+                    </div>
+
+                    <small class="text-muted">
+                        {{ current_user.email }}
+                    </small>
+
+                </li>
+
+
+                <!-- PROFILE -->
+                <li>
+                    <a
+                        href="{{ url_for('user.profile') }}"
+                        class="dropdown-item"
+                    >
+                        <i class="bi bi-person me-2"></i>
+                        My Profile
+                    </a>
+                </li>
+
+
+                <!-- MY INTERESTS -->
+                <li>
+                    <a
+                        href="{{ url_for('interest.my_interest') }}"
+                        class="dropdown-item"
+                    >
+                        <i class="bi bi-heart me-2"></i>
+                        My Interests
+                    </a>
+                </li>
+
+
+                <!-- MARKET PROPERTY -->
+                <li>
+                    <a
+                        href="{{ url_for('property.market_property') }}"
+                        class="dropdown-item"
+                    >
+                        <i class="bi bi-building-add me-2"></i>
+                        Market Your Property
+                    </a>
+                </li>
+
+
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+
+
+                <!-- LOGOUT -->
+                <li>
+                    <a
+                        href="{{ url_for('auth.logout') }}"
+                        class="dropdown-item text-danger"
+                    >
+                        <i class="bi bi-box-arrow-right me-2"></i>
+                        Logout
+                    </a>
+                </li>
+
+            </ul>
+
+        </li>
+
+
+    {% else %}
+
+        <!-- LOGIN -->
+        <li class="nav-item ms-lg-2">
+
+            <a
+                href="{{ url_for('auth.login') }}"
+                class="flexy-login-btn"
+            >
+                <i class="bi bi-person me-1"></i>
+                Login
+            </a>
+
+        </li>
+
+    {% endif %}
+
+</ul>
+
+    </div>
+
+</nav>
+
+
+
+<!-- =========================================================
+     FLASH MESSAGES
+========================================================= -->
+
+<div class="flexy-flash-wrapper">
+
+    {% with messages =
+        get_flashed_messages(
+            with_categories=true
+        )
+    %}
+
         {% if messages %}
-          {% for cat, msg in messages %}
-            <div class="alert alert-{{ cat }} alert-dismissible fade show auto-dismiss" role="alert">
-              {{ msg }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-          {% endfor %}
+
+            {% for category, message in messages %}
+
+                <div
+                    class="
+                        alert
+                        alert-{{ category }}
+                        alert-dismissible
+                        fade
+                        show
+                        auto-dismiss
+                    "
+                    role="alert"
+                >
+
+                    {{ message }}
+
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close"
+                    ></button>
+
+                </div>
+
+            {% endfor %}
+
         {% endif %}
-      {% endwith %}
 
-      <div class="content-wrap">
-        {% block content %}{% endblock %}
-      </div>
-    </main>
+    {% endwith %}
 
-  </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+
+<!-- =========================================================
+     PAGE CONTENT
+========================================================= -->
+
+<main class="flexy-main">
+
+    {% block content %}{% endblock %}
+
+</main>
+<!-- 
+FOOTER SECTION -->
+{% include "footer.html" %}
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+
+<script
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+></script>
 
 
 <script>
-  setTimeout(function () {
-    document.querySelectorAll('.auto-dismiss').forEach(function (alertEl) {
-      let bsAlert = new bootstrap.Alert(alertEl);
-      bsAlert.close();
-    });
-  }, 3000);
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        setTimeout(function () {
+
+            document
+                .querySelectorAll(".auto-dismiss")
+                .forEach(function (alertElement) {
+
+                    const alert =
+                        bootstrap.Alert
+                            .getOrCreateInstance(
+                                alertElement
+                            );
+
+                    alert.close();
+
+                });
+
+        }, 3000);
+
+    }
+);
+
 </script>
 
+
 {% block scripts %}{% endblock %}
+
+
 </body>
+
 </html>

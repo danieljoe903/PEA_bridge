@@ -9,6 +9,7 @@ from pkg.auth import forms
 from pkg.auth import auth_bp
 from pkg.extension import db
 from pkg.model import User
+from markupsafe import escape
 
 
 def get_current_user():
@@ -50,40 +51,6 @@ def verify_reset_token(token, max_age=1800):
         return None, "used"
     
     return user,None
-
-def welcome_email_user(app, user_email, username):
-    with app.app_context():
-        try:
-            msg = Message(
-                subject="Welcome to PEA-Bridge",
-                recipients=[user_email],
-                # sender can be removed if MAIL_DEFAULT_SENDER is configured
-            )
-
-            msg.html = f"""
-            <div style="margin:0; padding:0; background-color:#f4f6f9; font-family:Arial, Helvetica, sans-serif;">
-                <div style="max-width:620px; margin:30px auto; background-color:#ffffff; border-radius:12px; overflow:hidden; border:1px solid #e5e7eb;">
-                    <div style="background:#0b1320; padding:24px 30px; text-align:center;">
-                        <h1 style="margin:0; font-size:28px; color:#7acc16; font-weight:700;">PEA-Bridge</h1>
-                        <p style="margin:8px 0 0; color:#d1d5db; font-size:14px;">Trusted, Reliable and Secure</p>
-                    </div>
-
-                    <div style="padding:32px 30px;">
-                        <h3 style="margin-bottom:5px;">Hello {username}</h3>
-                        <h4>Welcome to PEA-Bridge</h4>
-                        <p>Your account was created successfully. Thank you for joining us.</p>
-                    </div>
-                </div>
-            </div>
-            """
-
-            mail.send(msg)
-            print("WELCOME EMAIL SENT SUCCESSFULLY")
-
-        except Exception as e:
-            print("WELCOME EMAIL ERROR:", e)
-    
-
 
 ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "webp"}
 
@@ -162,6 +129,8 @@ def register():
 @auth_bp.route("/login/", methods=["GET", "POST"])
 def login():
 
+    if "admin_id" in session:
+        return redirect(url_for("admin.admin_dashboard"))
 
     if "user_id" in session:
         return redirect(url_for("main.homepage"))
@@ -286,66 +255,868 @@ def check_box():
 
     return render_template("auth/check_inbox.html")
 
-def send_reset_email(user):
-    token = generate_reset_token(user)
-    reset_url = url_for("auth.reset_password", token=token, _external=True)
 
-    msg = Message(
-        subject="PEA-Bridge Password Reset",
-        recipients=[user.email],
-        sender="support@peabridge.com"
+def send_reset_email(user):
+
+    token = generate_reset_token(user)
+
+    reset_url = url_for(
+        "auth.reset_password",
+        token=token,
+        _external=True
     )
 
+    msg = Message(
+        subject="Reset Your Flexy Properties Password",
+        recipients=[user.email],
+        sender=current_app.config["MAIL_DEFAULT_SENDER"]
+    )
+
+
+    # ==========================
+    # PLAIN TEXT VERSION
+    # ==========================
+
     msg.body = f"""
-            Hello {user.user_fname},
+                Hello {user.user_fname},
 
-            Use the link below to reset your password:
+                We received a request to reset the password for your
+                Flexy Properties account.
 
-            {reset_url}
+                Use the link below to create a new password:
 
-            This link will expire in 30 minutes.
-            """
+                {reset_url}
+
+                This password reset link will expire in 30 minutes.
+
+                If you did not request a password reset, you can safely
+                ignore this email. Your password will remain unchanged.
+
+                Flexy Properties
+                """
+
+
+                    # ==========================
+                    # HTML VERSION
+                    # ==========================
 
     msg.html = f"""
-    <div style="margin:0; padding:0; background-color:#f4f6f9; font-family:Arial, Helvetica, sans-serif;">
-      <div style="max-width:620px; margin:30px auto; background-color:#ffffff; border-radius:12px; overflow:hidden; border:1px solid #e5e7eb;">
-        <div style="background:#0b1320; padding:24px 30px; text-align:center;">
-          <h1 style="margin:0; font-size:28px; color:#7acc16; font-weight:700;">PEA-Bridge</h1>
-          <p style="margin:8px 0 0; color:#d1d5db; font-size:14px;">Trusted, Reliable and Secure</p>
-        </div>
+                <!DOCTYPE html>
 
-        <div style="padding:32px 30px;">
-          <h2 style="margin:0 0 14px; color:#0f172a; font-size:22px;">Password Reset Request</h2>
+                <html lang="en">
 
-          <p style="margin:0 0 14px; color:#374151; font-size:15px; line-height:1.7;">
-            Hello <strong>{user.user_fname}</strong>,
-          </p>
+                <head>
 
-          <p style="margin:0 0 20px; color:#374151; font-size:15px; line-height:1.7;">
-            Click the button below to reset your password.
-          </p>
+                    <meta charset="UTF-8">
 
-          <div style="text-align:center; margin:28px 0;">
-            <a href="{reset_url}"
-               style="display:inline-block; background-color:#7acc16; color:#08110a; text-decoration:none; padding:14px 28px; border-radius:8px; font-size:15px; font-weight:700;">
-              Reset Password
-            </a>
-          </div>
+                    <meta
+                        name="viewport"
+                        content="width=device-width, initial-scale=1.0"
+                    >
 
-          <p style="margin:0 0 12px; color:#374151; font-size:14px; line-height:1.7;">
-            This link will expire in <strong>30 minutes</strong>.
-          </p>
+                    <title>
+                        Reset Your Flexy Properties Password
+                    </title>
 
-          <p style="margin:0 0 12px; color:#374151; font-size:14px; line-height:1.7;">
-            If the button does not work, copy this link:
-          </p>
+                </head>
 
-          <p style="margin:0 0 20px; word-break:break-word;">
-            <a href="{reset_url}" style="color:#2563eb; text-decoration:none; font-size:14px;">{reset_url}</a>
-          </p>
-        </div>
-      </div>
-    </div>
-    """
+
+                <body style="
+                    margin:0;
+                    padding:0;
+                    background-color:#f4f7f6;
+                    font-family:Arial, Helvetica, sans-serif;
+                    color:#334155;
+                ">
+
+                <table
+                    role="presentation"
+                    width="100%"
+                    cellspacing="0"
+                    cellpadding="0"
+                    border="0"
+                    style="
+                        width:100%;
+                        background-color:#f4f7f6;
+                        padding:40px 15px;
+                    "
+                >
+
+                    <tr>
+
+        <td align="center">
+
+
+            <!-- EMAIL CONTAINER -->
+
+            <table
+                role="presentation"
+                width="100%"
+                cellspacing="0"
+                cellpadding="0"
+                border="0"
+                style="
+                    width:100%;
+                    max-width:620px;
+                    background:#ffffff;
+                    border:1px solid #e2e8f0;
+                    border-radius:12px;
+                    overflow:hidden;
+                "
+            >
+
+
+                <!-- HEADER -->
+
+                <tr>
+
+                    <td
+                        align="center"
+                        style="
+                            background:#0f172a;
+                            padding:30px 25px;
+                        "
+                    >
+
+                        <div style="
+                            font-size:27px;
+                            font-weight:700;
+                            color:#ffffff;
+                        ">
+
+                            Flexy
+
+                            <span style="
+                                color:#22c55e;
+                            ">
+                                Properties
+                            </span>
+
+                        </div>
+
+
+                        <p style="
+                            margin:8px 0 0;
+                            color:#cbd5e1;
+                            font-size:13px;
+                        ">
+                            Account Security
+                        </p>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- CONTENT -->
+
+                <tr>
+
+                    <td style="
+                        padding:38px 35px;
+                    ">
+
+
+                        <h1 style="
+                            margin:0 0 20px;
+                            color:#0f172a;
+                            font-size:25px;
+                            line-height:1.3;
+                        ">
+                            Reset Your Password
+                        </h1>
+
+
+                        <p style="
+                            margin:0 0 16px;
+                            color:#475569;
+                            font-size:15px;
+                            line-height:1.7;
+                        ">
+
+                            Hello
+
+                            <strong>
+                                {user.user_fname}
+                            </strong>,
+
+                        </p>
+
+
+                        <p style="
+                            margin:0 0 20px;
+                            color:#475569;
+                            font-size:15px;
+                            line-height:1.7;
+                        ">
+                            We received a request to reset
+                            the password for your
+                            Flexy Properties account.
+                        </p>
+
+
+                        <p style="
+                            margin:0 0 25px;
+                            color:#475569;
+                            font-size:15px;
+                            line-height:1.7;
+                        ">
+                            Click the button below to create
+                            a new password.
+                        </p>
+
+
+                        <!-- RESET BUTTON -->
+
+                        <table
+                            role="presentation"
+                            cellspacing="0"
+                            cellpadding="0"
+                            border="0"
+                            align="center"
+                            style="
+                                margin:28px auto;
+                            "
+                        >
+
+                            <tr>
+
+                                <td
+                                    align="center"
+                                    bgcolor="#16a34a"
+                                    style="
+                                        border-radius:7px;
+                                    "
+                                >
+
+                                    <a
+                                        href="{reset_url}"
+                                        style="
+                                            display:inline-block;
+                                            padding:14px 28px;
+                                            color:#ffffff;
+                                            text-decoration:none;
+                                            font-size:15px;
+                                            font-weight:700;
+                                        "
+                                    >
+                                        Reset Password
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+
+                        <!-- EXPIRY NOTICE -->
+
+                        <table
+                            role="presentation"
+                            width="100%"
+                            cellspacing="0"
+                            cellpadding="0"
+                            border="0"
+                            style="
+                                width:100%;
+                                margin:28px 0;
+                                background:#f0fdf4;
+                                border:1px solid #bbf7d0;
+                                border-radius:8px;
+                            "
+                        >
+
+                            <tr>
+
+                                <td style="
+                                    padding:17px 18px;
+                                    color:#166534;
+                                    font-size:14px;
+                                    line-height:1.6;
+                                ">
+
+                                    <strong>
+                                        Security notice
+                                    </strong>
+
+                                    <br>
+
+                                    This password reset link
+                                    will expire in
+                                    <strong>
+                                        30 minutes.
+                                    </strong>
+
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+
+                        <!-- FALLBACK LINK -->
+
+                        <p style="
+                            margin:0 0 8px;
+                            color:#64748b;
+                            font-size:13px;
+                            line-height:1.7;
+                        ">
+                            If the button doesn't work,
+                            copy and paste this link into
+                            your browser:
+                        </p>
+
+
+                        <div style="
+                            background:#f8fafc;
+                            border:1px solid #e2e8f0;
+                            border-radius:7px;
+                            padding:13px;
+                            word-break:break-all;
+                        ">
+
+                            <a
+                                href="{reset_url}"
+                                style="
+                                    color:#16a34a;
+                                    text-decoration:none;
+                                    font-size:12px;
+                                    line-height:1.6;
+                                "
+                            >
+                                {reset_url}
+                            </a>
+
+                        </div>
+
+
+                        <!-- DID NOT REQUEST -->
+
+                        <p style="
+                            margin:28px 0 0;
+                            color:#64748b;
+                            font-size:13px;
+                            line-height:1.7;
+                        ">
+                            If you did not request a password
+                            reset, you can safely ignore this
+                            email. Your password will remain
+                            unchanged.
+                        </p>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- FOOTER -->
+
+                <tr>
+
+                    <td
+                        align="center"
+                        style="
+                            background:#f8fafc;
+                            border-top:1px solid #e2e8f0;
+                            padding:24px 25px;
+                        "
+                    >
+
+                        <p style="
+                            margin:0 0 6px;
+                            color:#64748b;
+                            font-size:12px;
+                            font-weight:600;
+                        ">
+                            Flexy Properties
+                        </p>
+
+
+                        <p style="
+                            margin:0;
+                            color:#94a3b8;
+                            font-size:11px;
+                            line-height:1.6;
+                        ">
+                            This is an automated account
+                            security email. Please do not
+                            share your password reset link
+                            with anyone.
+                        </p>
+
+                    </td>
+
+                </tr>
+
+
+            </table>
+
+        </td>
+
+    </tr>
+
+</table>
+
+</body>
+
+</html>
+"""
 
     mail.send(msg)
+
+
+
+def welcome_email_user(
+    app,
+    user_email,
+    username
+):
+
+    with app.app_context():
+
+        try:
+
+            safe_username = escape(username)
+
+            msg = Message(
+                subject="Welcome to Flexy Properties",
+                recipients=[user_email],
+                sender=current_app.config[
+                    "MAIL_DEFAULT_SENDER"
+                ]
+            )
+
+
+            # ==========================
+            # PLAIN TEXT VERSION
+            # ==========================
+
+            msg.body = f"""
+                Hello {safe_username},
+
+                Welcome to Flexy Properties.
+
+                Your account has been created successfully.
+
+                You can now explore available houses, apartments,
+                land and commercial properties and submit an
+                interest request when you find a property that
+                interests you.
+
+                Thank you for joining Flexy Properties.
+
+                Flexy Properties
+                """
+
+
+            # ==========================
+            # HTML VERSION
+            # ==========================
+
+            msg.html = f"""
+            <!DOCTYPE html>
+
+            <html lang="en">
+
+            <head>
+
+                <meta charset="UTF-8">
+
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1.0"
+                >
+
+                <title>
+                    Welcome to Flexy Properties
+                </title>
+
+            </head>
+
+
+            <body style="
+                margin:0;
+                padding:0;
+                background-color:#f4f7f6;
+                font-family:Arial, Helvetica, sans-serif;
+                color:#334155;
+            ">
+
+            <table
+                role="presentation"
+                width="100%"
+                cellspacing="0"
+                cellpadding="0"
+                border="0"
+                style="
+                    width:100%;
+                    background-color:#f4f7f6;
+                    padding:40px 15px;
+                "
+            >
+
+                <tr>
+
+                    <td align="center">
+
+
+                        <!-- EMAIL CONTAINER -->
+
+                        <table
+                            role="presentation"
+                            width="100%"
+                            cellspacing="0"
+                            cellpadding="0"
+                            border="0"
+                            style="
+                                width:100%;
+                                max-width:620px;
+                                background:#ffffff;
+                                border:1px solid #e2e8f0;
+                                border-radius:12px;
+                                overflow:hidden;
+                            "
+                        >
+
+
+                <!-- HEADER -->
+
+                <tr>
+
+                    <td
+                        align="center"
+                        style="
+                            background:#0f172a;
+                            padding:30px 25px;
+                        "
+                    >
+
+                        <div style="
+                            font-size:27px;
+                            font-weight:700;
+                            color:#ffffff;
+                        ">
+
+                            Flexy
+
+                            <span style="
+                                color:#22c55e;
+                            ">
+                                Properties
+                            </span>
+
+                        </div>
+
+
+                        <p style="
+                            margin:8px 0 0;
+                            color:#cbd5e1;
+                            font-size:13px;
+                        ">
+                            Find your next property
+                            with confidence
+                        </p>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- CONTENT -->
+
+                <tr>
+
+                    <td style="
+                        padding:38px 35px;
+                    ">
+
+
+                        <h1 style="
+                            margin:0 0 20px;
+                            color:#0f172a;
+                            font-size:25px;
+                            line-height:1.3;
+                        ">
+                            Welcome to Flexy Properties
+                        </h1>
+
+
+                        <p style="
+                            margin:0 0 16px;
+                            color:#475569;
+                            font-size:15px;
+                            line-height:1.7;
+                        ">
+
+                            Hello
+
+                            <strong>
+                                {safe_username}
+                            </strong>,
+
+                        </p>
+
+
+                        <p style="
+                            margin:0 0 18px;
+                            color:#475569;
+                            font-size:15px;
+                            line-height:1.7;
+                        ">
+                            Your Flexy Properties account
+                            has been created successfully.
+                            We're glad to have you with us.
+                        </p>
+
+
+                        <p style="
+                            margin:0 0 25px;
+                            color:#475569;
+                            font-size:15px;
+                            line-height:1.7;
+                        ">
+                            You can now explore available
+                            houses, apartments, land and
+                            commercial properties and submit
+                            an interest request when you find
+                            a property that interests you.
+                        </p>
+
+
+                        <!-- ACCOUNT READY BOX -->
+
+                        <table
+                            role="presentation"
+                            width="100%"
+                            cellspacing="0"
+                            cellpadding="0"
+                            border="0"
+                            style="
+                                width:100%;
+                                margin:25px 0;
+                                background:#f0fdf4;
+                                border:1px solid #bbf7d0;
+                                border-radius:8px;
+                            "
+                        >
+
+                            <tr>
+
+                                <td style="
+                                    padding:18px;
+                                    color:#166534;
+                                    font-size:14px;
+                                    line-height:1.7;
+                                ">
+
+                                    <strong>
+                                        Your account is ready
+                                    </strong>
+
+                                    <br>
+
+                                    Sign in to Flexy Properties
+                                    and start exploring available
+                                    properties.
+
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+
+                        <!-- FEATURES -->
+
+                        <table
+                            role="presentation"
+                            width="100%"
+                            cellspacing="0"
+                            cellpadding="0"
+                            border="0"
+                            style="
+                                width:100%;
+                                margin-top:28px;
+                            "
+                        >
+
+                            <tr>
+
+                                <td style="
+                                    padding:16px 0;
+                                    border-bottom:
+                                        1px solid #e2e8f0;
+                                ">
+
+                                    <strong style="
+                                        display:block;
+                                        color:#0f172a;
+                                        font-size:14px;
+                                        margin-bottom:4px;
+                                    ">
+                                        Explore Properties
+                                    </strong>
+
+                                    <span style="
+                                        color:#64748b;
+                                        font-size:13px;
+                                        line-height:1.6;
+                                    ">
+                                        Browse available houses,
+                                        apartments, land and
+                                        commercial properties.
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td style="
+                                    padding:16px 0;
+                                    border-bottom:
+                                        1px solid #e2e8f0;
+                                ">
+
+                                    <strong style="
+                                        display:block;
+                                        color:#0f172a;
+                                        font-size:14px;
+                                        margin-bottom:4px;
+                                    ">
+                                        Request Interest
+                                    </strong>
+
+                                    <span style="
+                                        color:#64748b;
+                                        font-size:13px;
+                                        line-height:1.6;
+                                    ">
+                                        Submit an interest request
+                                        for a property you would
+                                        like to know more about.
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td style="
+                                    padding:16px 0;
+                                ">
+
+                                    <strong style="
+                                        display:block;
+                                        color:#0f172a;
+                                        font-size:14px;
+                                        margin-bottom:4px;
+                                    ">
+                                        Track Your Interests
+                                    </strong>
+
+                                    <span style="
+                                        color:#64748b;
+                                        font-size:13px;
+                                        line-height:1.6;
+                                    ">
+                                        View the status of your
+                                        property interest requests
+                                        from your account.
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+
+                        <p style="
+                            margin:30px 0 0;
+                            color:#475569;
+                            font-size:14px;
+                            line-height:1.7;
+                        ">
+                            Thank you for choosing
+                            <strong>
+                                Flexy Properties
+                            </strong>.
+                        </p>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- FOOTER -->
+
+                <tr>
+
+                    <td
+                        align="center"
+                        style="
+                            background:#f8fafc;
+                            border-top:
+                                1px solid #e2e8f0;
+                            padding:24px 25px;
+                        "
+                    >
+
+                        <p style="
+                            margin:0 0 6px;
+                            color:#64748b;
+                            font-size:12px;
+                            font-weight:600;
+                        ">
+                            Flexy Properties
+                        </p>
+
+
+                        <p style="
+                            margin:0;
+                            color:#94a3b8;
+                            font-size:11px;
+                            line-height:1.6;
+                        ">
+                            This email was sent because
+                            an account was created using
+                            this email address.
+                        </p>
+
+                    </td>
+
+                </tr>
+
+
+            </table>
+
+        </td>
+
+    </tr>
+
+</table>
+
+</body>
+
+</html>
+"""
+
+            mail.send(msg)
+
+            current_app.logger.info(
+                "Welcome email sent successfully."
+            )
+
+
+        except Exception:
+
+            current_app.logger.exception(
+                "WELCOME EMAIL ERROR"
+            )

@@ -1,503 +1,1604 @@
 {% extends "app_base.html" %}
-{% block title %}My Interest | PEA-bridge{% endblock %}
+{% block title %}My Interests | Flexy Properties{% endblock %}
 
 {% block content %}
+
 <style>
-  .dash-card {
-    background:#0f172a;
-    border:none;
-    border-radius:14px;
-    color:white;
-  }
+/* =========================================================
+   MY INTERESTS
+========================================================= */
 
-  .page-tools {
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:16px;
-  }
+.interests-page {
+    background: #f5f7fa;
+    min-height: calc(100vh - 80px);
+}
 
-  .page-tools .form-control,
-  .page-tools .form-select {
-    background:#111827;
-    color:white;
-    border:1px solid rgba(255,255,255,0.15);
-  }
 
-  .page-tools .form-control::placeholder {
-    color:rgba(255,255,255,0.45);
-  }
+/* =========================================================
+   HERO
+========================================================= */
 
-  .mobile-card {
-    background:#111827;
-    border:1px solid rgba(255,255,255,0.08);
-    border-radius:12px;
-    padding:14px;
-    margin-bottom:12px;
-    animation: fadeUp .35s ease both;
-    transition:transform .25s ease, box-shadow .25s ease;
-  }
+.interests-hero {
+    background:
+        radial-gradient(
+            circle at 85% 30%,
+            rgba(16, 185, 129, .16),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #071426 0%,
+            #102338 55%,
+            #0c3434 100%
+        );
 
-  .mobile-card:hover {
-    transform:translateY(-3px);
-    box-shadow:0 10px 24px rgba(0,0,0,.25);
-  }
+    padding: 70px 0 65px;
+    color: #fff;
+}
 
-  @keyframes fadeUp {
-    from {
-      opacity:0;
-      transform:translateY(14px);
+.interests-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 7px 14px;
+    border-radius: 999px;
+
+    background: rgba(16, 185, 129, .10);
+    border: 1px solid rgba(52, 211, 153, .25);
+
+    color: #4ade80;
+    font-size: .78rem;
+    font-weight: 700;
+
+    margin-bottom: 18px;
+}
+
+.interests-hero h1 {
+    font-size: clamp(2rem, 5vw, 3.3rem);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 12px;
+}
+
+.interests-hero p {
+    color: rgba(255,255,255,.65);
+    max-width: 600px;
+    margin: 0;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.interests-content {
+    padding: 55px 0 80px;
+}
+
+.interests-heading {
+    margin-bottom: 28px;
+}
+
+.interests-heading small {
+    color: #079455;
+    font-weight: 800;
+    letter-spacing: .8px;
+    font-size: .73rem;
+}
+
+.interests-heading h2 {
+    color: #0f172a;
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 4px 0 5px;
+}
+
+.interests-heading p {
+    color: #64748b;
+    margin: 0;
+}
+
+
+/* =========================================================
+   FILTERS
+========================================================= */
+
+.interest-tools {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+
+    padding: 13px;
+    margin-bottom: 25px;
+
+    box-shadow: 0 5px 20px rgba(15,23,42,.04);
+}
+
+.interest-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    flex: 1;
+    min-width: 240px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+
+    padding: 0 13px;
+    background: #f8fafc;
+}
+
+.interest-search i {
+    color: #64748b;
+}
+
+.interest-search input {
+    width: 100%;
+    height: 44px;
+
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+    color: #0f172a;
+}
+
+.interest-search input::placeholder {
+    color: #94a3b8;
+}
+
+.interest-filter {
+    height: 44px;
+    min-width: 190px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+
+    padding: 0 38px 0 13px;
+
+    background-color: #f8fafc;
+    color: #334155;
+
+    outline: none;
+}
+
+/* =========================================================
+   MY INTEREST PROPERTY CARD
+========================================================= */
+
+.interest-property-card {
+    height: 100%;
+
+    background: #ffffff;
+
+    border: 1px solid #e5eaf0;
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 5px 18px rgba(15, 23, 42, 0.05);
+
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+}
+
+
+.interest-property-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 16px 35px rgba(15, 23, 42, 0.11);
+}
+
+
+/* =========================================================
+   PROPERTY IMAGE
+========================================================= */
+
+.interest-property-image {
+    position: relative;
+
+    width: 100%;
+    height: 235px;
+
+    overflow: hidden;
+
+    background: #e5e7eb;
+}
+
+
+.interest-property-image img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition: transform .4s ease;
+}
+
+
+.interest-property-card:hover
+.interest-property-image img {
+
+    transform: scale(1.035);
+}
+
+
+/* =========================================================
+   IMAGE BADGES
+========================================================= */
+
+.property-availability {
+    position: absolute;
+
+    top: 14px;
+    left: 14px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    background: #079455;
+
+    color: #ffffff;
+
+    font-size: .68rem;
+    font-weight: 800;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, .15);
+}
+
+
+.property-type-badge {
+    position: absolute;
+
+    top: 14px;
+    right: 14px;
+
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    background: rgba(15, 23, 42, .88);
+
+    backdrop-filter: blur(5px);
+
+    color: #ffffff;
+
+    font-size: .68rem;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   CARD BODY
+========================================================= */
+
+.interest-property-body {
+    padding: 18px;
+}
+
+
+.interest-location {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    color: #64748b;
+
+    font-size: .76rem;
+    font-weight: 600;
+
+    margin-bottom: 6px;
+}
+
+
+.interest-location i {
+    color: #079455;
+}
+
+
+.interest-property-title {
+    color: #0f172a;
+
+    font-size: 1.08rem;
+    font-weight: 800;
+
+    line-height: 1.35;
+
+    margin: 0 0 11px;
+}
+
+
+/* =========================================================
+   PROPERTY TAGS
+========================================================= */
+
+.interest-property-tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    margin-bottom: 16px;
+}
+
+
+.interest-property-tags span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    background: #f1f5f9;
+
+    color: #475569;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    font-size: .68rem;
+    font-weight: 600;
+}
+
+
+.interest-property-tags i {
+    color: #475569;
+}
+
+
+/* =========================================================
+   PRICE
+========================================================= */
+
+.interest-price-label {
+    color: #94a3b8;
+
+    font-size: .62rem;
+    font-weight: 800;
+
+    letter-spacing: .7px;
+
+    margin-bottom: 1px;
+}
+
+
+.interest-property-price {
+    color: #079455;
+
+    font-size: 1.15rem;
+    font-weight: 850;
+}
+
+
+/* =========================================================
+   REQUEST INFORMATION
+========================================================= */
+
+.request-divider {
+    height: 1px;
+
+    background: #edf0f3;
+
+    margin: 18px 0 14px;
+}
+
+
+.request-information {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: flex-end;
+
+    gap: 15px;
+
+    margin-bottom: 17px;
+}
+
+
+.request-information > div {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.request-info-label {
+    color: #94a3b8;
+
+    font-size: .65rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+
+.request-status {
+    display: inline-flex;
+    align-items: center;
+
+    width: fit-content;
+
+    gap: 5px;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    font-size: .69rem;
+    font-weight: 800;
+}
+
+
+.request-status.requested {
+    background: #fff7d6;
+    color: #9a6700;
+}
+
+
+.request-status.approved {
+    background: #dcfae6;
+    color: #067647;
+}
+
+
+.request-status.declined {
+    background: #fee4e2;
+    color: #b42318;
+}
+
+
+.request-date {
+    text-align: right;
+}
+
+
+.request-date strong {
+    color: #334155;
+
+    font-size: .76rem;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.interest-property-actions {
+    display: flex;
+
+    align-items: stretch;
+
+    gap: 8px;
+}
+
+
+.interest-view-btn,
+.interest-cancel-btn {
+
+    min-height: 40px;
+
+    display: inline-flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 6px;
+
+    border-radius: 9px;
+
+    padding: 9px 12px;
+
+    font-size: .73rem;
+    font-weight: 750;
+
+    transition: .2s ease;
+}
+
+
+.interest-view-btn {
+    flex: 1;
+
+    border: 1px solid #d7dde5;
+
+    background: #ffffff;
+
+    color: #1e293b;
+
+    text-decoration: none;
+}
+
+
+.interest-view-btn:hover {
+    background: #f0fdf4;
+
+    border-color: #079455;
+
+    color: #079455;
+}
+
+
+.interest-cancel-form {
+    flex: 1;
+
+    margin: 0;
+}
+
+
+.interest-cancel-btn {
+    width: 100%;
+
+    border: 1px solid #fecaca;
+
+    background: #fff5f5;
+
+    color: #b42318;
+
+    cursor: pointer;
+}
+
+
+.interest-cancel-btn:hover {
+    background: #b42318;
+
+    border-color: #b42318;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 575px) {
+
+    .interest-property-image {
+        height: 220px;
     }
-    to {
-      opacity:1;
-      transform:translateY(0);
-    }
-  }
 
-  .mobile-row {
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-    padding:6px 0;
-    border-bottom:1px solid rgba(255,255,255,0.06);
-  }
 
-  .mobile-row:last-child {
-    border-bottom:0;
-  }
-
-  .mobile-label {
-    color:rgba(255,255,255,0.6);
-    font-size:13px;
-    flex:0 0 auto;
-  }
-
-  .mobile-value {
-    font-size:14px;
-    font-weight:600;
-    text-align:right;
-    word-break:break-word;
-  }
-
-  .pagination .page-link {
-    background:#111827;
-    color:white;
-    border-color:rgba(255,255,255,0.15);
-  }
-
-  .pagination .page-item.active .page-link {
-    background:#198754;
-    border-color:#198754;
-  }
-
-  .pagination .page-item.disabled .page-link {
-    background:#0b1220;
-    color:rgba(255,255,255,0.35);
-    border-color:rgba(255,255,255,0.08);
-  }
-
-  @media (max-width: 767px) {
-    .desktop-table {
-      display:none;
+    .interest-property-actions {
+        flex-direction: column;
     }
 
-    .page-tools {
-      display:block;
+
+    .interest-view-btn,
+    .interest-cancel-form {
+        width: 100%;
     }
 
-    .page-tools .form-control,
-    .page-tools .form-select {
-      margin-bottom:10px;
-    }
-  }
 
-  @media (min-width: 768px) {
-    .mobile-list {
-      display:none;
+    .request-information {
+        align-items: flex-start;
     }
-  }
+
+
+    .request-date {
+        text-align: right;
+    }
+
+}
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.interest-empty {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+
+    padding: 70px 20px;
+    text-align: center;
+
+    box-shadow: 0 5px 20px rgba(15,23,42,.04);
+}
+
+.empty-icon {
+    width: 65px;
+    height: 65px;
+
+    margin: 0 auto 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #ecfdf3;
+    color: #079455;
+
+    font-size: 1.5rem;
+}
+
+.interest-empty h4 {
+    color: #0f172a;
+    font-weight: 800;
+}
+
+.interest-empty p {
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+.explore-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    background: #079455;
+    color: #fff;
+
+    padding: 10px 18px;
+    border-radius: 9px;
+
+    font-size: .85rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.explore-btn:hover {
+    background: #067647;
+    color: #fff;
+}
+
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+#interestPagination {
+    gap: 5px;
+}
+
+#interestPagination .page-link {
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+
+    background: #fff;
+    color: #334155;
+
+    font-size: .8rem;
+}
+
+#interestPagination .page-item.active .page-link {
+    background: #079455;
+    border-color: #079455;
+    color: #fff;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767px) {
+
+    .interests-hero {
+        padding: 50px 0;
+    }
+
+    .interests-content {
+        padding: 38px 0 60px;
+    }
+
+    .interest-tools {
+        align-items: stretch;
+    }
+
+    .interest-search,
+    .interest-filter {
+        width: 100%;
+        min-width: 100%;
+    }
+}
+
+
+/* New property card mobile design */
+
+@media (max-width: 575px) {
+
+    .interest-property-image {
+        height: 220px;
+    }
+
+    .interest-property-actions {
+        flex-direction: column;
+    }
+
+    .interest-view-btn,
+    .interest-cancel-form {
+        width: 100%;
+    }
+
+    .request-information {
+        align-items: flex-start;
+    }
+
+    .request-date {
+        text-align: right;
+    }
+}
 </style>
 
-<div class="container-fluid">
-  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-    <h3 class="text-white mb-0">My Interest</h3>
-  </div>
 
-  <div class="card shadow-lg mb-4 dash-card">
-    <div class="card-body">
+<div class="interests-page">
 
-      <div class="page-tools">
-        <input type="search"
-               id="interestSearch"
-               class="form-control form-control-sm"
-               style="max-width:300px;"
-               placeholder="Search property, owner, agent...">
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+    <section class="interests-hero">
 
-        <select id="statusFilter"
-                class="form-select form-select-sm"
-                style="max-width:220px;">
-          <option value="all">All Status</option>
-          <option value="requested">Requested</option>
-          <option value="approved">Approved</option>
-          <option value="declined">Declined</option>
-        </select>
-      </div>
+        <div class="container">
 
-      <!-- DESKTOP TABLE -->
-      <div class="table-responsive desktop-table">
-        <table class="table table-dark table-striped align-middle mb-0">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Property</th>
-              <th>Owner</th>
-              <th>Agent</th>
-              <th>Date Requested</th>
-              <th>Status</th>
-              <th class="text-end">Action</th>
-            </tr>
-          </thead>
+            <div class="interests-badge">
+                <i class="bi bi-heart"></i>
+                Property Requests
+            </div>
 
-          <tbody id="interestTableBody">
-            {% if my_clientinterest and my_clientinterest|length > 0 %}
-              {% for it in my_clientinterest %}
-                <tr class="interest-item"
-                    data-status="{{ it.interest_status }}"
-                    data-search="
-                      {{ it.property.property_title if it.property else 'Property' }}
-                      {% if it.property and it.property.owner %}
-                        {{ it.property.owner.user_fname }} {{ it.property.owner.users_lname }}
-                      {% endif %}
-                      {% if it.property and it.property.agent and it.property.agent.user %}
-                        {{ it.property.agent.user.user_fname }} {{ it.property.agent.user.users_lname }}
-                      {% endif %}
-                    ">
-                  <td>{{ it.interest_id }}</td>
+            <h1>My Interests</h1>
 
-                  <td>{{ it.property.property_title if it.property else "Property" }}</td>
+            <p>
+                Keep track of properties you have requested and
+                view the current status of each request.
+            </p>
 
-                  <td>
-                    {% if it.property and it.property.owner %}
-                      {{ it.property.owner.user_fname }} {{ it.property.owner.users_lname }}
-                    {% else %}
-                      -
-                    {% endif %}
-                  </td>
+        </div>
 
-                  <td>
-                    {% if it.property and it.property.agent and it.property.agent.user %}
-                      {{ it.property.agent.user.user_fname }} {{ it.property.agent.user.users_lname }}
-                    {% else %}
-                      No Agent
-                    {% endif %}
-                  </td>
+    </section>
 
-                  <td>{{ it.created_at.strftime('%d %b %Y') if it.created_at else "-" }}</td>
 
-                  <td>
-                    {% if it.interest_status == "requested" %}
-                      <span class="badge bg-warning text-dark">Requested</span>
-                    {% elif it.interest_status == "approved" %}
-                      <span class="badge bg-success">Approved</span>
-                    {% elif it.interest_status == "declined" %}
-                      <span class="badge bg-danger">Declined</span>
-                    {% else %}
-                      <span class="badge bg-danger">{{ it.interest_status }}</span>
-                    {% endif %}
-                  </td>
+    <!-- =====================================================
+         CONTENT
+    ====================================================== -->
+    <section class="interests-content">
 
-                  <td class="text-end">
-                    <div class="d-flex gap-2 justify-content-end flex-wrap">
-                      {% if it.property %}
-                        <a class="btn btn-sm btn-outline-light"
-                           href="{{ url_for('property.public_property_detail', property_id=it.property.property_id, next='my_interest') }}">
-                          View
-                        </a>
-                      {% endif %}
+        <div class="container">
 
-                      {% if it.interest_status == "requested" %}
-                        <form action="{{ url_for('interest.cancel_request', interest_id=it.interest_id) }}"
-                              method="post"
-                              onsubmit="return confirm('Are you sure you want to cancel this request?');">
-                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                          <button class="btn btn-sm btn-danger fw-bold">
-                            Cancel
-                          </button>
-                        </form>
-                      {% endif %}
+            <div class="d-flex justify-content-between
+                        align-items-end flex-wrap gap-3 interests-heading">
+
+                <div>
+                    <small>YOUR REQUESTS</small>
+
+                    <h2>Interested Properties</h2>
+
+                    <p>
+                        Manage and review your property interest requests.
+                    </p>
+                </div>
+
+                {% if my_clientinterest %}
+                    <div class="text-muted small">
+                        <i class="bi bi-heart-fill text-success me-1"></i>
+
+                        {{ my_clientinterest|length }}
+
+                        {% if my_clientinterest|length == 1 %}
+                            Request
+                        {% else %}
+                            Requests
+                        {% endif %}
                     </div>
-                  </td>
-                </tr>
-              {% endfor %}
-            {% else %}
-              <tr>
-                <td colspan="7" class="text-center text-white-50 py-4">
-                  You have no interest requests yet.
-                </td>
-              </tr>
-            {% endif %}
-          </tbody>
-        </table>
-      </div>
-
-      <!-- MOBILE CARDS -->
-      <div class="mobile-list" id="interestMobileList">
-        {% if my_clientinterest and my_clientinterest|length > 0 %}
-          {% for it in my_clientinterest %}
-            <div class="mobile-card interest-item"
-                 data-status="{{ it.interest_status }}"
-                 data-search="
-                   {{ it.property.property_title if it.property else 'Property' }}
-                   {% if it.property and it.property.owner %}
-                     {{ it.property.owner.user_fname }} {{ it.property.owner.users_lname }}
-                   {% endif %}
-                   {% if it.property and it.property.agent and it.property.agent.user %}
-                     {{ it.property.agent.user.user_fname }} {{ it.property.agent.user.users_lname }}
-                   {% endif %}
-                 ">
-
-              <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
-                <h6 class="mb-0">
-                  {{ it.property.property_title if it.property else "Property" }}
-                </h6>
-
-                {% if it.interest_status == "requested" %}
-                  <span class="badge bg-warning text-dark">Requested</span>
-                {% elif it.interest_status == "approved" %}
-                  <span class="badge bg-success">Approved</span>
-                {% elif it.interest_status == "declined" %}
-                  <span class="badge bg-danger">Declined</span>
-                {% else %}
-                  <span class="badge bg-danger">{{ it.interest_status }}</span>
                 {% endif %}
-              </div>
-
-              <div class="mobile-row">
-                <span class="mobile-label">ID</span>
-                <span class="mobile-value">{{ it.interest_id }}</span>
-              </div>
-
-              <div class="mobile-row">
-                <span class="mobile-label">Owner</span>
-                <span class="mobile-value">
-                  {% if it.property and it.property.owner %}
-                    {{ it.property.owner.user_fname }} {{ it.property.owner.users_lname }}
-                  {% else %}
-                    -
-                  {% endif %}
-                </span>
-              </div>
-
-              <div class="mobile-row">
-                <span class="mobile-label">Agent</span>
-                <span class="mobile-value">
-                  {% if it.property and it.property.agent and it.property.agent.user %}
-                    {{ it.property.agent.user.user_fname }} {{ it.property.agent.user.users_lname }}
-                  {% else %}
-                    No Agent
-                  {% endif %}
-                </span>
-              </div>
-
-              <div class="mobile-row">
-                <span class="mobile-label">Date</span>
-                <span class="mobile-value">
-                  {{ it.created_at.strftime('%d %b %Y') if it.created_at else "-" }}
-                </span>
-              </div>
-
-              <div class="mt-3 d-flex gap-2">
-                {% if it.property %}
-                  <a class="btn btn-sm btn-outline-light {% if it.interest_status == 'requested' %}w-50{% else %}w-100{% endif %}"
-                     href="{{ url_for('property.public_property_detail', property_id=it.property.property_id, next='my_interest') }}">
-                    View
-                  </a>
-                {% endif %}
-
-                {% if it.interest_status == "requested" %}
-                  <form action="{{ url_for('interest.cancel_request', interest_id=it.interest_id) }}"
-                        method="post"
-                        class="w-50"
-                        onsubmit="return confirm('Are you sure you want to cancel this request?');">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button class="btn btn-sm btn-danger w-100 fw-bold">
-                      Cancel
-                    </button>
-                  </form>
-                {% endif %}
-              </div>
 
             </div>
-          {% endfor %}
-        {% else %}
-          <div class="text-center text-white-50 py-4">
-            You have no interest requests yet.
-          </div>
-        {% endif %}
-      </div>
 
-      <div id="emptyState" class="text-center text-white-50 py-4 d-none">
-        No matching interest request found.
-      </div>
 
-      <nav class="mt-3 d-flex justify-content-center">
-        <ul class="pagination pagination-sm mb-0" id="interestPagination"></ul>
-      </nav>
+            {% if my_clientinterest and my_clientinterest|length > 0 %}
 
-    </div>
-  </div>
+                <!-- FILTER TOOLS -->
+                <div class="interest-tools">
+
+                    <div class="interest-search">
+
+                        <i class="bi bi-search"></i>
+
+                        <input
+                            type="search"
+                            id="interestSearch"
+                            placeholder="Search your requested properties..."
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+                    <select
+                        id="statusFilter"
+                        class="interest-filter"
+                        aria-label="Filter requests by status"
+                    >
+                        <option value="all">
+                            All Status
+                        </option>
+
+                        <option value="requested">
+                            Requested
+                        </option>
+
+                        <option value="approved">
+                            Approved
+                        </option>
+
+                        <option value="declined">
+                            Declined
+                        </option>
+                    </select>
+
+                </div>
+
+
+                <!-- PROPERTY CARDS -->
+                  
+                <div class="row g-4" id="interestList">
+
+                    {% for it in my_clientinterest %}
+
+                        {% set p = it.property %}
+
+                        <div
+                            class="col-12 col-md-6 col-xl-4 interest-item"
+                            data-status="{{ it.interest_status }}"
+                            data-search="
+                                {{ p.property_title if p else 'Property' }}
+                                {{ p.property_type if p else '' }}
+                                {{ p.states.state_name if p and p.states else '' }}
+                            "
+                        >
+
+                            <article class="interest-property-card">
+
+                                <!-- ==========================================
+                                    PROPERTY IMAGE
+                                =========================================== -->
+                                <div class="interest-property-image">
+
+                                    {% if p and covers and covers.get(p.property_id) %}
+
+                                        <img
+                                            src="{{ url_for(
+                                                'static',
+                                                filename=covers[p.property_id]
+                                            ) }}"
+                                            alt="{{ p.property_title or 'Property' }}"
+                                            loading="lazy"
+                                        >
+
+                                    {% else %}
+
+                                        <img
+                                            src="{{ url_for(
+                                                'static',
+                                                filename='image/property-placeholder.jpg'
+                                            ) }}"
+                                            alt="Property image"
+                                            loading="lazy"
+                                        >
+
+                                    {% endif %}
+
+
+                                    <!-- PROPERTY AVAILABILITY -->
+                                    {% if p %}
+
+                                        <span class="property-availability">
+
+                                            <i class="bi bi-check-circle-fill"></i>
+
+                                            {{ p.property_status
+                                              |replace("_", " ")
+                                              |title }}
+
+                                        </span>
+
+                                    {% endif %}
+
+
+                                    <!-- PROPERTY TYPE -->
+                                    {% if p and p.property_type %}
+
+                                        <span class="property-type-badge">
+
+                                            {{ p.property_type|title }}
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- ==========================================
+                                    CARD BODY
+                                =========================================== -->
+                                <div class="interest-property-body">
+
+
+                                    <!-- LOCATION -->
+                                    {% if p and p.states %}
+
+                                        <div class="interest-location">
+
+                                            <i class="bi bi-geo-alt-fill"></i>
+
+                                            {{ p.states.state_name|title }}
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <!-- PROPERTY TITLE -->
+                                    <h3 class="interest-property-title">
+
+                                        {{ p.property_title
+                                          if p
+                                          else "Property unavailable" }}
+
+                                    </h3>
+
+
+                                    <!-- PROPERTY INFORMATION -->
+                                    {% if p %}
+
+                                        <div class="interest-property-tags">
+
+                                            {% if p.property_type %}
+
+                                                <span>
+
+                                                    <i class="bi bi-house-door"></i>
+
+                                                    {{ p.property_type|title }}
+
+                                                </span>
+
+                                            {% endif %}
+
+
+                                            {% if p.listing_type %}
+
+                                                <span>
+
+                                                    <i class="bi bi-tag"></i>
+
+                                                    {{ p.listing_type
+                                                      |replace("_", " ")
+                                                      |title }}
+
+                                                </span>
+
+                                            {% endif %}
+
+                                        </div>
+
+
+                                        <!-- PRICE -->
+                                        <div class="interest-price-label">
+                                            PRICE
+                                        </div>
+
+                                        <div class="interest-property-price">
+
+                                            ₦{{ "{:,.0f}".format(p.price or 0) }}
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <!-- ======================================
+                                        REQUEST INFORMATION
+                                    ======================================= -->
+
+                                    <div class="request-divider"></div>
+
+
+                                    <div class="request-information">
+
+                                        <div>
+
+                                            <span class="request-info-label">
+                                                Request Status
+                                            </span>
+
+
+                                            {% if it.interest_status == "requested" %}
+
+                                                <span class="request-status requested">
+
+                                                    <i class="bi bi-clock-fill"></i>
+
+                                                    Requested
+
+                                                </span>
+
+
+                                            {% elif it.interest_status == "approved" %}
+
+                                                <span class="request-status approved">
+
+                                                    <i class="bi bi-check-circle-fill"></i>
+
+                                                    Approved
+
+                                                </span>
+
+
+                                            {% elif it.interest_status == "declined" %}
+
+                                                <span class="request-status declined">
+
+                                                    <i class="bi bi-x-circle-fill"></i>
+
+                                                    Declined
+
+                                                </span>
+
+
+                                            {% else %}
+
+                                                <span class="request-status declined">
+
+                                                    {{ it.interest_status
+                                                      |replace("_", " ")
+                                                      |title }}
+
+                                                </span>
+
+                                            {% endif %}
+
+                                        </div>
+
+
+                                        <div class="request-date">
+
+                                            <span class="request-info-label">
+                                                Requested
+                                            </span>
+
+                                            <strong>
+
+                                                {{ it.created_at.strftime('%d %b %Y')
+                                                  if it.created_at
+                                                  else "-" }}
+
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- ======================================
+                                        ACTION BUTTONS
+                                    ======================================= -->
+
+                                    <div class="interest-property-actions">
+
+                                        {% if p %}
+
+                                            <a
+                                                href="{{ url_for(
+                                                    'main.home_property_detail',
+                                                    property_id=p.property_id,
+                                                    next='my_interest'
+                                                ) }}"
+                                                class="interest-view-btn"
+                                            >
+
+                                                <i class="bi bi-eye"></i>
+
+                                                View Details
+
+                                            </a>
+
+                                        {% endif %}
+
+
+                                        {% if it.interest_status == "requested" %}
+
+                                            <form
+                                                action="{{ url_for(
+                                                    'interest.cancel_request',
+                                                    interest_id=it.interest_id
+                                                ) }}"
+                                                method="post"
+                                                class="interest-cancel-form"
+                                                onsubmit="return confirm(
+                                                    'Are you sure you want to cancel this property request?'
+                                                );"
+                                            >
+
+                                                <!-- CSRF SECURITY -->
+                                                <input
+                                                    type="hidden"
+                                                    name="csrf_token"
+                                                    value="{{ csrf_token() }}"
+                                                >
+
+                                                <button
+                                                    type="submit"
+                                                    class="interest-cancel-btn"
+                                                >
+
+                                                    <i class="bi bi-x-lg"></i>
+
+                                                    Cancel Request
+
+                                                </button>
+
+                                            </form>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </article>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+                <!-- FILTER EMPTY STATE -->
+                <div
+                    id="emptyState"
+                    class="interest-empty d-none mt-4"
+                >
+
+                    <div class="empty-icon">
+                        <i class="bi bi-search"></i>
+                    </div>
+
+                    <h4>No matching requests</h4>
+
+                    <p>
+                        We couldn't find a property request matching
+                        your search or selected status.
+                    </p>
+
+                </div>
+
+
+                <!-- PAGINATION -->
+                <nav
+                    class="mt-4 d-flex justify-content-center"
+                    aria-label="Interest pagination"
+                >
+                    <ul
+                        class="pagination pagination-sm mb-0"
+                        id="interestPagination"
+                    ></ul>
+                </nav>
+
+
+            {% else %}
+
+                <!-- NO REQUESTS -->
+                <div class="interest-empty">
+
+                    <div class="empty-icon">
+                        <i class="bi bi-heart"></i>
+                    </div>
+
+                    <h4>No property interests yet</h4>
+
+                    <p>
+                        Properties you request will appear here so you
+                        can track their status.
+                    </p>
+
+                    <a
+                        href="{{ url_for('property.explore_properties') }}"
+                        class="explore-btn"
+                    >
+                        <i class="bi bi-search"></i>
+                        Explore Properties
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
 </div>
+
 {% endblock %}
 
+
 {% block scripts %}
+
 <script>
-  const searchInput = document.getElementById("interestSearch");
-  const statusFilter = document.getElementById("statusFilter");
-  const pagination = document.getElementById("interestPagination");
-  const emptyState = document.getElementById("emptyState");
+document.addEventListener("DOMContentLoaded", function () {
 
-  const perPage = 40;
-  let currentPage = 1;
+    const searchInput =
+        document.getElementById("interestSearch");
 
-  function getItems() {
-    return Array.from(document.querySelectorAll(".interest-item"));
-  }
+    const statusFilter =
+        document.getElementById("statusFilter");
 
-  function getFilteredItems() {
-    const keyword = (searchInput.value || "").toLowerCase().trim();
-    const status = statusFilter.value;
+    const pagination =
+        document.getElementById("interestPagination");
 
-    return getItems().filter(function(item) {
-      const text = (item.dataset.search || item.innerText || "").toLowerCase();
-      const itemStatus = item.dataset.status || "";
+    const emptyState =
+        document.getElementById("emptyState");
 
-      const matchesSearch = text.includes(keyword);
-      const matchesStatus = status === "all" || itemStatus === status;
 
-      return matchesSearch && matchesStatus;
-    });
-  }
+    /*
+    ---------------------------------------------------------
+    If there are no requests, these elements will not exist.
+    Stop here safely.
+    ---------------------------------------------------------
+    */
 
-  // this update the page everytime user searches,change page or filter
-  function renderList() {
-    const items = getItems();
-    const filteredItems = getFilteredItems();
-
-    // hide everything first
-    items.forEach(function(item) {
-      item.style.display = "none";
-    });
-
-      // page calc
-    const totalPages = Math.ceil(filteredItems.length / perPage) || 1;
-
-      // Prevents going beyond available pages.
-    if (currentPage > totalPages) {
-      currentPage = totalPages;
+    if (!searchInput || !statusFilter || !pagination) {
+        return;
     }
 
-    // slice current page item
-    const start = (currentPage - 1) * perPage;
-    const end = start + perPage;
 
-    // Cuts only the records for current page.
-    filteredItems.slice(start, end).forEach(function(item) {
-      item.style.display = "";
-    });
+    const perPage = 12;
 
-    // display none if no record found
-    emptyState.classList.toggle("d-none", filteredItems.length !== 0);
+    let currentPage = 1;
 
-    renderPagination(totalPages, filteredItems.length);
-  }
-    function renderPagination(totalPages, totalItems) {
-  pagination.innerHTML = "";
 
-  // Hide pagination completely if records are too few
-  if (totalItems <= perPage || totalPages <= 1) {
-    pagination.style.display = "none";
-    return;
-  }
+    function getItems() {
 
-  // Show pagination only when needed
-  pagination.style.display = "flex";
+        return Array.from(
+            document.querySelectorAll(".interest-item")
+        );
 
-  // Previous button
-  const prevLi = document.createElement("li");
-
-  // disabled previous if its still on first page
-  prevLi.className = "page-item " + (currentPage === 1 ? "disabled" : "");
-
-  prevLi.innerHTML = `
-    <button class="page-link" type="button">
-      Previous
-    </button>
-  `;
-
-  prevLi.addEventListener("click", function () {
-    if (currentPage > 1) {
-      currentPage--;
-      renderList();
     }
-  });
 
-  pagination.appendChild(prevLi);
 
-  // Page numbers
-  for (let i = 1; i <= totalPages; i++) {
+    function getFilteredItems() {
 
-    const li = document.createElement("li");
+        const keyword =
+            searchInput.value
+                .toLowerCase()
+                .trim();
 
-    li.className =
-      "page-item " + (i === currentPage ? "active" : "");
+        const status =
+            statusFilter.value;
 
-    li.innerHTML = `
-      <button class="page-link" type="button">
-        ${i}
-      </button>
-    `;
 
-    li.addEventListener("click", function () {
-      currentPage = i;
-      renderList();
-    });
+        return getItems().filter(function (item) {
 
-    pagination.appendChild(li);
-  }
+            const text =
+                (item.dataset.search || "")
+                    .toLowerCase();
 
-  // Next button
-  if (currentPage < totalPages) {
+            const itemStatus =
+                (item.dataset.status || "")
+                    .toLowerCase();
 
-    const nextLi = document.createElement("li");
 
-    nextLi.className = "page-item";
+            const matchesSearch =
+                text.includes(keyword);
 
-    nextLi.innerHTML = `
-      <button class="page-link" type="button">
-        Next
-      </button>
-    `;
+            const matchesStatus =
+                status === "all" ||
+                itemStatus === status;
 
-    nextLi.addEventListener("click", function () {
-      currentPage++;
-      renderList();
-    });
 
-    pagination.appendChild(nextLi);
-  }
-}
-  searchInput.addEventListener("input", function() {
-    currentPage = 1;
+            return matchesSearch && matchesStatus;
+
+        });
+
+    }
+
+
+    function renderList() {
+
+        const items =
+            getItems();
+
+        const filteredItems =
+            getFilteredItems();
+
+
+        /*
+        Hide all cards first.
+        */
+
+        items.forEach(function (item) {
+
+            item.style.display = "none";
+
+        });
+
+
+        const totalPages =
+            Math.ceil(
+                filteredItems.length / perPage
+            ) || 1;
+
+
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+        }
+
+
+        const start =
+            (currentPage - 1) * perPage;
+
+        const end =
+            start + perPage;
+
+
+        filteredItems
+            .slice(start, end)
+            .forEach(function (item) {
+
+                item.style.display = "";
+
+            });
+
+
+        if (emptyState) {
+
+            emptyState.classList.toggle(
+                "d-none",
+                filteredItems.length !== 0
+            );
+
+        }
+
+
+        renderPagination(
+            totalPages,
+            filteredItems.length
+        );
+
+    }
+
+
+    function renderPagination(
+        totalPages,
+        totalItems
+    ) {
+
+        pagination.innerHTML = "";
+
+
+        /*
+        Don't show pagination when
+        everything fits on one page.
+        */
+
+        if (
+            totalItems <= perPage ||
+            totalPages <= 1
+        ) {
+
+            pagination.style.display = "none";
+
+            return;
+
+        }
+
+
+        pagination.style.display = "flex";
+
+
+        /*
+        PREVIOUS
+        */
+
+        const previous =
+            document.createElement("li");
+
+
+        previous.className =
+            "page-item " +
+            (currentPage === 1
+                ? "disabled"
+                : "");
+
+
+        previous.innerHTML = `
+            <button
+                class="page-link"
+                type="button"
+            >
+                Previous
+            </button>
+        `;
+
+
+        previous.addEventListener(
+            "click",
+            function () {
+
+                if (currentPage > 1) {
+
+                    currentPage--;
+
+                    renderList();
+
+                    window.scrollTo({
+                        top:
+                            document
+                                .querySelector(".interests-content")
+                                .offsetTop - 90,
+
+                        behavior: "smooth"
+                    });
+
+                }
+
+            }
+        );
+
+
+        pagination.appendChild(previous);
+
+
+        /*
+        PAGE NUMBERS
+        */
+
+        for (
+            let page = 1;
+            page <= totalPages;
+            page++
+        ) {
+
+            const li =
+                document.createElement("li");
+
+
+            li.className =
+                "page-item " +
+                (page === currentPage
+                    ? "active"
+                    : "");
+
+
+            li.innerHTML = `
+                <button
+                    class="page-link"
+                    type="button"
+                >
+                    ${page}
+                </button>
+            `;
+
+
+            li.addEventListener(
+                "click",
+                function () {
+
+                    currentPage = page;
+
+                    renderList();
+
+                }
+            );
+
+
+            pagination.appendChild(li);
+
+        }
+
+
+        /*
+        NEXT
+        */
+
+        const next =
+            document.createElement("li");
+
+
+        next.className =
+            "page-item " +
+            (currentPage === totalPages
+                ? "disabled"
+                : "");
+
+
+        next.innerHTML = `
+            <button
+                class="page-link"
+                type="button"
+            >
+                Next
+            </button>
+        `;
+
+
+        next.addEventListener(
+            "click",
+            function () {
+
+                if (currentPage < totalPages) {
+
+                    currentPage++;
+
+                    renderList();
+
+                }
+
+            }
+        );
+
+
+        pagination.appendChild(next);
+
+    }
+
+
+    /*
+    ---------------------------------------------------------
+    SEARCH
+    ---------------------------------------------------------
+    */
+
+    searchInput.addEventListener(
+        "input",
+        function () {
+
+            currentPage = 1;
+
+            renderList();
+
+        }
+    );
+
+
+    /*
+    ---------------------------------------------------------
+    STATUS FILTER
+    ---------------------------------------------------------
+    */
+
+    statusFilter.addEventListener(
+        "change",
+        function () {
+
+            currentPage = 1;
+
+            renderList();
+
+        }
+    );
+
+
+    /*
+    Initial rendering.
+    */
+
     renderList();
-  });
 
-  statusFilter.addEventListener("change", function() {
-    currentPage = 1;
-    renderList();
-  });
-
-  renderList();
+});
 </script>
+
 {% endblock %}
